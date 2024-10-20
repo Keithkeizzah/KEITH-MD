@@ -79,3 +79,12 @@
    
    <a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
 
+
+Enjoy the diverse features of 𝐊𝐄𝐈𝐓𝐇-𝐌𝐃  to enhance your Whatsapp more enjoyable
+
+
+### Credits to:
+- [FortunaMokaya](https://github.com/Fortunatusmokaya) for the founder of this bot's base
+<a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
+<a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
+
