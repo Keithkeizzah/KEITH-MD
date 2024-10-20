@@ -1,23 +1,19 @@
 module.exports = async (context) => {
 
-const { client, m, text } = context;
-const { download } = require("aptoide-scraper");
+const { client, m, text, fetchJson } = context;
+
 
 try {
 if (!text) return m.reply("Provide an app name");
 
-let data = await download(text);
-
-if (data.size.replace(' MB', '') > 250) return m.reply("App is more than 250mb, download yourself");
-       
-
-await client.sendMessage(m.chat, { text: `Downloading and uploading ${text}. . .`}, { quoted: m })
-
-await client.sendMessage(
-        m.chat,
-        { document: { url: data.dllink }, mimetype: 'application/vnd.android.package-archive', fileName: data.name + '.apk' },
-        { quoted: m }
-      )
+let data = await fetchJson (`https://bk9.fun/search/apk?q=${text}`);
+        let dreaded = await fetchJson (`https://bk9.fun/download/apk?id=${data.BK9[0].id}`);
+         await client.sendMessage(
+              m.chat,
+              {
+                document: { url: dreaded.BK9.dllink },
+                fileName: dreaded.BK9.name,
+                mimetype: "application/vnd.android.package-archive"}, { quoted: m });
 
 } catch (error) {
 
