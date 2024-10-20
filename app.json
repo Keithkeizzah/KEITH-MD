@@ -1,10 +1,10 @@
 {
-  "name": "DREADED V2",
+  "name": "KEITH-MD",
   "description": "This is a simple whatsapp bot built with nodejs and baileys with MD support.",
   "keywords": [
     "bot",
     "whatsapp",
-    "dreaded",
+    "keith",
     "whatsapp-stickers",
     "anime",
     "whatsapp-bot",
@@ -14,18 +14,18 @@
     "baileys-md",
     "md-bot"
   ],
-  "website": "https://github.com/Fortunatusmokaya/dreaded-v2#readme",
-  "repository": "https://github.com/Fortunatusmokaya/dreaded-v2.git",
-  "logo": "https://telegra.ph/file/d6dab955fbaa42fce2280.jpg",
+  "website": "https://github.com/Keithkeizzah/KEITH-MD2#readme",
+  "repository": "https://github.com/Keithkeizzah/KEITH-MD2.git",
+  "logo": "https://i.imgur.com/dAtHp2k.jpeg",
   "success_url": "/",
   "env": {
     "PREFIX": {
-      "description": "choose your prefix for dreaded. To prevent errors and confusion you must set a prefix",
+      "description": "choose your prefix for keith. To prevent errors and confusion you must set a prefix",
       "value": ".",
       "required": true
     },
     "DEV": {
-      "description": "Put any phone numbers you want to be bot owner without + or spaces \",\" Ex: 254114018035, 254741889898 ",
+      "description": "Put any phone numbers you want to be bot owner without + or spaces \",\" Ex: 254748387615, 254796299159 ",
       "required": false
     },
     "CODE": {
