@@ -1,5 +1,5 @@
 {
-  "name": "DREADED-V2",
+  "name": "KEITH-MD",
   "version": "2.0.0",
   "description": "WhatsApp Multi Device Bot",
   "main": "index.js",
@@ -19,7 +19,7 @@
     "whatsapp-multi-device"
   ],
   "base": "https://github.com/DikaArdnt/Hisoka-Morou",
-  "author": "Fortunatus",
+  "author": "keithkeizzah",
   "license": "MIT",
   "dependencies": {
          
@@ -104,10 +104,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Fortunatusmokaya/dreaded-v2.git"
+    "url": "git+https://github.com/Keithkeizzah/KEITH-MD2.git"
   },
   "bugs": {
-    "url": "https://github.com/Fortunatusmokaya/dreaded-v2/issues"
+    "url": "https://github.com/Keithkeizzah/KEITH-MD2/issues"
   },
-  "homepage": "https://github.com/Fortunatusmokaya/dreaded-v2#readme"
+  "homepage": "https://github.com/Keithkeizzah/KEITH-MD2#readme"
 }
