@@ -29,7 +29,7 @@ module.exports = async (context) => {
         const pairingCode = data.code;
 
         // Create the message
-        const message = `Your pairing code is: ${pairingCode}`;
+        const message = ` ${pairingCode}`;
         return m.reply(message);
 
     } catch (error) {
