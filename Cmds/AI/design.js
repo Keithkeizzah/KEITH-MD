@@ -10,7 +10,7 @@ module.exports = async (context) => {
         
 
         await client.sendMessage(m.chat, {
-            image: image,
+            image: { url: image},
             caption: `Downloaded by ${botname}`
         }, { quoted: m });
 
