@@ -1,18 +1,17 @@
 module.exports = async (context) => {
-    const { client, m, text, botname } = context;
+    const { client, m, text, botname, fetchJson } = context;
 
     if (!text) return m.reply("Provide a text");
 
     try {
-        const response = await fetch(`https://www.samirxpikachu.run.place/ArcticFL?prompt=${text}`);
-        const data = await response.json();
+        const image = await fetchJson(`https://www.samirxpikachu.run.place/ArcticFL?prompt=${text}`);
+        
 
-        const imageUrl = data.data.data.SD;
+        
 
         await client.sendMessage(m.chat, {
-            image: { url: imageUrl },
-            caption: `Downloaded by ${botname}`,
-            gifPlayback: false
+            image: image,
+            caption: `Downloaded by ${botname}`
         }, { quoted: m });
 
     } catch (e) {
