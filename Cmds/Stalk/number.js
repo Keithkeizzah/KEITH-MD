@@ -37,6 +37,6 @@ module.exports = async (context) => {
 
     } catch (error) {
         console.error("Error occurred:", error);
-        m.reply('An error occurred while fetching the data. Please try again later.');
+        m.reply('An error occurred while fetching the data. Please try again later.\n' + error);
     }
 };
