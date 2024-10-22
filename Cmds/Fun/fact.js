@@ -9,15 +9,15 @@ module.exports = async (context) => {
 
         const { fact } = await response.json();
         const factMessage = `
-┏━━━━ *ALPHA-FACT* ━━━━━◆                     
+┏━━━ *KEITH-FACT* ━━━◆                     
 ┃
 ┃   *◇* ${fact} 
 ┃
 ┃   *◇* Regards *ALPHA MD*
 ┃      
- ╭────────────────◆
+ ╭───────────────◆
  │ *_Powered by keithkeizzah._*
- ╰─────────────────◆
+ ╰───────────────◆
         `;
 
         await client.sendMessage(m.chat, { text: factMessage }, { quoted: m });
