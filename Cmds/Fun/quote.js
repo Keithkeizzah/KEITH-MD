@@ -9,7 +9,7 @@ module.exports = async (context) => {
 
         const { quote } = await response.json();
         const quoteMessage = `
-  ┏━━━ *KEITH-FACT* ━━━◆                     
+  ┏━━━ *KEITH-QUOTES* ━━━◆                     
   ┃
 *◇* _${quote.body}_
   ┃   
