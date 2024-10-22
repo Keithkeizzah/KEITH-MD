@@ -13,7 +13,7 @@ module.exports = async (context) => {
 ┃
 ┃   *◇* ${fact} 
 ┃
-┃   *◇* Regards *ALPHA MD*
+┃   *◇* Regards *KEITH MD*
 ┃      
  ╭───────────────◆
  │ *_Powered by keithkeizzah._*
