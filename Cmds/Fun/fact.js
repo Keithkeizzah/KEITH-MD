@@ -4,24 +4,23 @@ module.exports = async (context) => {
     const { client, m } = context;
 
     try {
-        const response = await fetch(`${API_URL}`);
+        const response = await fetch(API_URL);
         if (!response.ok) throw new Error('Failed to fetch data');
 
-        const { data } = await response.json();
-const factMessage = `
+        const { fact } = await response.json();
+        const factMessage = `
 ┏━━━━ *ALPHA-FACT* ━━━━━◆                     
 ┃
-┃   *◇* ${data.fact} 
+┃   *◇* ${fact} 
 ┃
 ┃   *◇* Regards *ALPHA MD*
 ┃      
  ╭────────────────◆
  │ *_Powered by keithkeizzah._*
  ╰─────────────────◆
-    `;
-    
+        `;
 
-        await client.sendMessage(m.chat, { text: data }, { quoted: m });
+        await client.sendMessage(m.chat, { text: factMessage }, { quoted: m });
     } catch (error) {
         console.error('Error fetching data:', error);
         await client.sendMessage(m.chat, { text: 'An error occurred while fetching the fact.' }, { quoted: m });
