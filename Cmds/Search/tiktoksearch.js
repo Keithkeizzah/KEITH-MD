@@ -10,7 +10,7 @@ module.exports = async (context) => {
         const response = await fetchJson(`https://apis-starlights-team.koyeb.app/starlight/tiktoksearch?text=${query}`);
 
         if (!response.ok) {
-            return m.reply('Error fetching data from API.');
+            return m.reply('Error fetching data from API.' + error);
         }
 
         const results = await response.json();
