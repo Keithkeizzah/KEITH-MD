@@ -37,6 +37,6 @@ module.exports = async (context) => {
         }
     } catch (error) {
         console.log("Error occurred:", error);
-        return m.reply('An error occurred while processing your request.');
+        return m.reply('An error occurred while processing your request.' + error);
     }
 };
