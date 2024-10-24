@@ -4,7 +4,7 @@ module.exports = async (context) => {
 
   try {
     if (!text) {
-      return m.reply("Provide any media link..");
+      return m.reply("Provide any media query..");
     }
 
     const info = await yts(text);
