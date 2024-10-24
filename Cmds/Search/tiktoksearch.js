@@ -10,10 +10,10 @@ module.exports = async (context) => {
         const response = await fetchJson(`https://apis-starlights-team.koyeb.app/starlight/tiktoksearch?text=${query}`);
 
         if (!response.ok) {
-            return m.reply('Error fetching data from API.' + error);
+            return m.reply('Error fetching data from API.');
         }
 
-        const results = await response.json();
+        const results = response.data; // Adjust according to actual response structure
 
         if (!results || results.length < 1 || !results[0].nowm) {
             return m.reply('Invalid username or no results found.');
