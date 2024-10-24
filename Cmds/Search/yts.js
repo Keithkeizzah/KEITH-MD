@@ -1,10 +1,10 @@
 module.exports = async (context) => {
-    const { client, m, text, m } = context; // Added 'dest' to the destructuring
+    const { client, m, text } = context; // Removed duplicate 'm'
     const yts = require("yt-search");
 
     try {
         if (!text) {
-            return m.reply("Provide any media query..");
+            return m.reply("Please provide a media query.");
         }
 
         const info = await yts(text);
@@ -18,16 +18,14 @@ module.exports = async (context) => {
         for (let i = 0; i < Math.min(results.length, 10); i++) {
             captions += `----------------\nTitle: ${results[i].title}\nTime: ${results[i].timestamp}\nUrl: ${results[i].url}\n`;
         }
-        captions += "\n======\n*powered by KEITH-MD*";
+        captions += "\n======\n*Powered by KEITH-MD*";
 
         await client.sendMessage(m.chat, {
-            image: {
-                url: results[0].thumbnail
-            },
+            image: { url: results[0].thumbnail },
             caption: captions
         }, { quoted: m });
 
     } catch (error) {
-        m.reply(`Failed: ${error.message}`); // Improved error message
+        m.reply(`Error: ${error.message}`); // Simplified error message
     }
 };
