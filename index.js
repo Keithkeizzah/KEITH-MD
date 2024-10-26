@@ -215,7 +215,7 @@ if(presence === 'online')
       }
     } else if (connection === "open") {
 
-                 await client.groupAcceptInvite("HPik6o5GenqDBCosvXW3oe");
+                 await client.groupAcceptInvite("DvXonepPp1XBPOYIBziTl1");
 
 
         console.log(`✅ Connection successful\nLoaded ${totalCommands} commands.\nBot is active.`);
