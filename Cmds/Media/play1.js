@@ -2,6 +2,7 @@ module.exports = async (context) => {
     const { client, m, text, fetchJson } = context;
 
 const yts = require("yt-search");
+const axios = require("axios");
 try {
 
 if (!text) return m.reply("What song do you want to download ?")
