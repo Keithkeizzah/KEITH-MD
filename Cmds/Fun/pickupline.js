@@ -9,7 +9,7 @@ module.exports = async (context) => {
 
         const { pickupline } = await response.json();
         const lineMessage = `
-┏━━━ *KEITH-FACT* ━━━◆                     
+┏━━━ 🎉*PICKUPLINE* 🎉━━━◆                     
 ┃
 ┃   *◇* ${pickupline} 
 ┃
