@@ -5,17 +5,16 @@ module.exports = async context => {
     text: query
   } = context;
   const ytSearch = require("yt-search");
- 
+  const fetch = require("node-fetch");
 
   try {
     // Check if the query is present
-    if (!query || query.length === 0) {
+    if (!query || query.trim().length === 0) {
       return message.reply("What song do you want to download?");
     }
 
-    // Join query words into a single string
-    const searchQuery = query.join(" ");
-    const videoResults = await ytSearch(searchQuery);
+    // Use query directly as a search string
+    const videoResults = await ytSearch(query);
 
     // Check if any videos were found
     if (videoResults && videoResults.videos.length > 0) {
