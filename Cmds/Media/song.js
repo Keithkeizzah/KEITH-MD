@@ -35,7 +35,7 @@ module.exports = async context => {
         // Send video info message with thumbnail and details
         const videoInfoMessage = {
           image: { url: video.thumbnail },
-          caption: `*ALPHA-MD AUDIO PLAYER*\n
+          caption: `*KEITH-MD AUDIO PLAYER*\n
 ╭───────────────◆
 │ *Title:* ${jsonResponse.result.title}
 │ *Duration:* ${video.timestamp}
@@ -51,7 +51,7 @@ module.exports = async context => {
         await client.sendMessage(chatId, { document: { url: downloadUrl }, mimetype: "audio/mp3", fileName: `${jsonResponse.result.title}.mp3` }, { quoted: message });
 
         // Confirm successful download
-        await message.reply(`*${jsonResponse.result.title}*\n\n*Downloaded successfully. Keep using Alpha MD*`);
+        await message.reply(`*${jsonResponse.result.title}*\n\n*Downloaded successfully. Keep using Keith MD*`);
       } else {
         message.reply("Failed to download audio. Please try again later.");
       }
