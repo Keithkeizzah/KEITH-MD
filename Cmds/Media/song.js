@@ -35,20 +35,23 @@ module.exports = async context => {
         // Send video info message with thumbnail and details
         const videoInfoMessage = {
           image: { url: video.thumbnail },
-          caption: `*ALPHA-MD VIDEO PLAYER*\n
+          caption: `*ALPHA-MD AUDIO PLAYER*\n
 ╭───────────────◆
 │ *Title:* ${jsonResponse.result.title}
 │ *Duration:* ${video.timestamp}
 │ *Artist:* ${video.author.name}
 ╰────────────────◆`
         };
-        await client.sendMessage(chatId, { text: "*Downloading wait*" }, { quoted: ms });
-let downloadedLength = 0;
-        await client.sendMessage(chatId, messageData, { quoted: ms });
-        await client.sendMessage(chatId, { audio: { url: downloadUrl }, mimetype: "audio/mp4" }, { quoted: ms });
+        await client.sendMessage(chatId, videoInfoMessage, { quoted: message });
 
-         await client.sendMessage(chatId, { document: { url: downloadUrl }, mimetype: "audio/mp4" }, { quoted: ms });
-        message.reply(` * ${jsonResponse.result.title}*\n\n*Downloaded successfully. Keep using Alpha md*`);
+        // Send audio as a voice note
+        await client.sendMessage(chatId, { audio: { url: downloadUrl }, mimetype: "audio/mp3" }, { quoted: message });
+
+        // Send audio as a document (downloadable audio file)
+        await client.sendMessage(chatId, { document: { url: downloadUrl }, mimetype: "audio/mp3", fileName: `${jsonResponse.result.title}.mp3` }, { quoted: message });
+
+        // Confirm successful download
+        await message.reply(`*${jsonResponse.result.title}*\n\n*Downloaded successfully. Keep using Alpha MD*`);
       } else {
         message.reply("Failed to download audio. Please try again later.");
       }
