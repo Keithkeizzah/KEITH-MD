@@ -5,7 +5,7 @@ module.exports = async context => {
     text: query
   } = context;
   const ytSearch = require("yt-search");
-  const fetch = require("node-fetch");
+ 
 
   try {
     // Check if the query is present
