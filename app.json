@@ -75,6 +75,11 @@
       "description": "Type true if you want bot to automatically read viewonce media",
       "required": false
     },
+
+ "AUTOLIKE_STATUS": {
+      "description": "Type true if you want bot to automatically like status updates, this will only work if AUTOVIEW_STATUS is true.",
+      "required": false
+    },
     "AUTOREAD": {
       "description": "Put here true if you want bot to automatically bluetick messages in private.",
       "required": false
