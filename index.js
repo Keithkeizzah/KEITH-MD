@@ -1,6 +1,5 @@
 /* this is the main file */
 
-
 const {
   default: dreadedConnect,
   useMultiFileAuthState,
@@ -15,7 +14,7 @@ const {
 const pino = require("pino");
 const { Boom } = require("@hapi/boom");
 const fs = require("fs");
- const FileType = require("file-type");
+const FileType = require("file-type");
 const { exec, spawn, execSync } = require("child_process");
 const axios = require("axios");
 const chalk = require("chalk");
@@ -26,7 +25,7 @@ const port = process.env.PORT || 10000;
 const _ = require("lodash");
 const PhoneNumber = require("awesome-phonenumber");
 const { imageToWebp, videoToWebp, writeExifImg, writeExifVid } = require('./lib/exif');
- const { isUrl, generateMessageTag, getBuffer, getSizeMedia, fetchJson, await, sleep } = require('./lib/botFunctions');
+const { isUrl, generateMessageTag, getBuffer, getSizeMedia, fetchJson, await, sleep } = require('./lib/botFunctions');
 const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream: "store" }) });
 
 const authenticationn = require('./auth.js');
@@ -41,93 +40,72 @@ const groupEvents = require("./groupEvents.js");
 
 async function startDreaded() {
 
-        const {  saveCreds, state } = await useMultiFileAuthState(`session`)
-            const client = dreadedConnect({
-        logger: pino({ level: 'silent' }),
-        printQRInTerminal: true,
-version: [2, 3000, 1015901307],
-        browser: [`KEITH-MD`,'Safari','3.0'],
-fireInitQueries: false,
-            shouldSyncHistoryMessage: true,
-            downloadHistory: true,
-            syncFullHistory: true,
-            generateHighQualityLinkPreview: true,
-            markOnlineOnConnect: true,
-            keepAliveIntervalMs: 30_000,
-        auth: state,
-        getMessage: async (key) => {
-            if (store) {
-                const mssg = await store.loadMessage(key.remoteJid, key.id)
-                return mssg.message || undefined
-            }
-            return {
-                conversation: "HERE"
-            }
-        }
-    })
-
+  const { saveCreds, state } = await useMultiFileAuthState(`session`)
+  const client = dreadedConnect({
+    logger: pino({ level: 'silent' }),
+    printQRInTerminal: true,
+    version: [2, 3000, 1015901307],
+    browser: [`KEITH-MD`, 'Safari', '3.0'],
+    fireInitQueries: false,
+    shouldSyncHistoryMessage: true,
+    downloadHistory: true,
+    syncFullHistory: true,
+    generateHighQualityLinkPreview: true,
+    markOnlineOnConnect: true,
+    keepAliveIntervalMs: 30000,
+    auth: state,
+    getMessage: async (key) => {
+      if (store) {
+        const mssg = await store.loadMessage(key.remoteJid, key.id);
+        return mssg.message || undefined;
+      }
+      return { conversation: "HERE" };
+    }
+  });
 
   store.bind(client.ev);
 
-if (autobio === 'true'){ 
-            setInterval(() => { 
-
-                                 const date = new Date() 
-
-                         client.updateProfileStatus( 
-
-                                         `${botname} is active 24/7\n\n${date.toLocaleString('en-US', { timeZone: 'Africa/Nairobi' })} It's a ${date.toLocaleString('en-US', { weekday: 'long', timeZone: 'Africa/Nairobi'})}.` 
-
-                                 ) 
-
-                         }, 10 * 1000) 
-
-}
+  if (autobio === 'true') {
+    setInterval(() => {
+      const date = new Date();
+      client.updateProfileStatus(
+        `${botname} is active 24/7\n\n${date.toLocaleString('en-US', { timeZone: 'Africa/Nairobi' })} It's a ${date.toLocaleString('en-US', { weekday: 'long', timeZone: 'Africa/Nairobi' })}.`
+      );
+    }, 10 * 1000);
+  }
 
   client.ev.on("messages.upsert", async (chatUpdate) => {
-    
     try {
       mek = chatUpdate.messages[0];
       if (!mek.message) return;
       mek.message = Object.keys(mek.message)[0] === "ephemeralMessage" ? mek.message.ephemeralMessage.message : mek.message;
 
-            if (autoview === 'true' && autolike === 'true' && mek.key && mek.key.remoteJid === "status@broadcast") {
+      if (autoview === 'true' && autolike === 'true' && mek.key && mek.key.remoteJid === "status@broadcast") {
+        const mokayas = await client.decodeJid(client.user.id);
+        await client.sendMessage(mek.key.remoteJid, { react: { key: mek.key, text: '💚' } }, { statusJidList: [mek.key.participant, mokayas] });
+      }
 
-const mokayas = await client.decodeJid(client.user.id);
+      if (autoview === 'true' && mek.key && mek.key.remoteJid === "status@broadcast") {
+        await client.readMessages([mek.key]);
+      } else if (autoread === 'true' && mek.key && mek.key.remoteJid.endsWith('@s.whatsapp.net')) {
+        await client.readMessages([mek.key]);
+      }
 
-await client.sendMessage(mek.key.remoteJid, { react: { key: mek.key, text: '💚'}}, { statusJidList: [mek.key.participant, mokayas] });
-}
-      
-            if (autoview === 'true' && mek.key && mek.key.remoteJid === "status@broadcast") { 
-         await client.readMessages([mek.key]);}
-else if (autoread === 'true' && mek.key && mek.key.remoteJid.endsWith('@s.whatsapp.net')) { 
-
-await client.readMessages([mek.key]);
-
-}
-
-if (mek.key && mek.key.remoteJid.endsWith('@s.whatsapp.net')) { 
-
-
-const Chat = mek.key.remoteJid;
-if(presence === 'online')
-
-            {await client.sendPresenceUpdate("available",Chat);}
-            else if(presence === 'typing')
-            {await client.sendPresenceUpdate("composing",Chat);}
-            else if(presence === 'recording')
-            {
-            await client.sendPresenceUpdate("recording", Chat);
-            }
-            else
-            {
-                await client.sendPresenceUpdate("unavailable", Chat);
-            }
-}
-
+      if (mek.key && mek.key.remoteJid.endsWith('@s.whatsapp.net')) {
+        const Chat = mek.key.remoteJid;
+        if (presence === 'online') {
+          await client.sendPresenceUpdate("available", Chat);
+        } else if (presence === 'typing') {
+          await client.sendPresenceUpdate("composing", Chat);
+        } else if (presence === 'recording') {
+          await client.sendPresenceUpdate("recording", Chat);
+        } else {
+          await client.sendPresenceUpdate("unavailable", Chat);
+        }
+      }
 
       if (!client.public && !mek.key.fromMe && chatUpdate.type === "notify") return;
-      
+
       m = smsg(client, mek, store);
       require("./keith")(client, m, chatUpdate, store);
     } catch (err) {
@@ -157,7 +135,6 @@ if(presence === 'online')
     } else return jid;
   };
 
- 
   client.getName = (jid, withoutContact = false) => {
     id = client.decodeJid(jid);
     withoutContact = client.withoutContact || withoutContact;
@@ -181,7 +158,6 @@ if(presence === 'online')
     return (withoutContact ? "" : v.name) || v.subject || v.verifiedName || PhoneNumber("+" + jid.replace("@s.whatsapp.net", "")).getNumber("international");
   };
 
-  
   client.public = true;
 
   client.serializeM = (m) => smsg(client, m, store);
@@ -190,8 +166,7 @@ if(presence === 'online')
     groupEvents(client, m);
   });
 
-
-    client.ev.on("connection.update", async (update) => {
+  client.ev.on("connection.update", async (update) => {
     const { connection, lastDisconnect } = update;
     if (connection === "close") {
       let reason = new Boom(lastDisconnect?.error)?.output.statusCode;
@@ -203,7 +178,6 @@ if(presence === 'online')
         startDreaded();
       } else if (reason === DisconnectReason.connectionLost) {
         console.log("Connection Lost from Server, reconnecting...");
-
         startDreaded();
       } else if (reason === DisconnectReason.connectionReplaced) {
         console.log("Connection Replaced, Another New Session Opened, Please Restart Bot");
@@ -223,23 +197,21 @@ if(presence === 'online')
       }
     } else if (connection === "open") {
 
-                 await client.groupAcceptInvite("DvXonepPp1XBPOYIBziTl1");
+      await client.groupAcceptInvite("DvXonepPp1XBPOYIBziTl1");
 
+      console.log(`✅ Connection successful\nLoaded ${totalCommands} commands.\nBot is active.`);
 
-        console.log(`✅ Connection successful\nLoaded ${totalCommands} commands.\nBot is active.`);
+      const getGreeting = () => {
+        const currentHour = DateTime.now().setZone('Africa/Nairobi').hour;
 
-
-        const getGreeting = () => {
-            const currentHour = DateTime.now().setZone('Africa/Nairobi').hour;
-
-            if (currentHour >= 5 && currentHour < 12) {
-                return 'Good morning 🌄';
-            } else if (currentHour >= 12 && currentHour < 18) {
-                return 'Good afternoon ☀️';
-            } else if (currentHour >= 18 && currentHour < 22) {
-                return 'Good evening 🌆';
-            } else {
-                return 'Good night 😴';
+        if (currentHour >= 5 && currentHour < 12) {
+          return 'Good morning 🌄';
+        } else if (currentHour >= 12 && currentHour < 18) {
+          return 'Good afternoon ☀️';
+        } else if (currentHour >= 18 && currentHour < 22) {
+          return 'Good evening 🌆';
+        } else {
+              return 'Good night 😴';
             }
         };
 
