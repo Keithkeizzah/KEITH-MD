@@ -21,6 +21,7 @@ const presence = process.env.WA_PRESENCE || 'online';
 const antitag = process.env.ANTITAG || 'true';
 const antidelete = process.env.ANTIDELETE || 'true';
 const autoview = process.env.AUTOVIEW_STATUS || 'true';
+const autolike = process.env.AUTOLIKE_STATUS || 'true';
 const autoread = process.env.AUTOREAD || 'true';
 const autobio = process.env.AUTOBIO || 'false';
 
@@ -33,6 +34,7 @@ module.exports = {
   autobio,
   mode,
   prefix,
+  autolike,
   mycode,
   author,
   packname,
