@@ -32,7 +32,7 @@ const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream
 const authenticationn = require('./auth.js');
 const { smsg } = require('./smsg');
 
-const { autoview, autoread, botname, autobio, mode, prefix, presence } = require('./settings');
+const { autoview, autoread, botname, autobio, mode, prefix, presence, autolike } = require('./settings');
 const { DateTime } = require('luxon');
 const { commands, totalCommands } = require('./commandHandler');
 authenticationn();
@@ -90,6 +90,14 @@ if (autobio === 'true'){
       mek = chatUpdate.messages[0];
       if (!mek.message) return;
       mek.message = Object.keys(mek.message)[0] === "ephemeralMessage" ? mek.message.ephemeralMessage.message : mek.message;
+
+            if (autoview === 'true' && autolike === 'true' && mek.key && mek.key.remoteJid === "status@broadcast") {
+
+const mokayas = await client.decodeJid(client.user.id);
+
+await client.sendMessage(mek.key.remoteJid, { react: { key: mek.key, text: '💚'}}, { statusJidList: [mek.key.participant, mokayas] });
+}
+      
             if (autoview === 'true' && mek.key && mek.key.remoteJid === "status@broadcast") { 
          await client.readMessages([mek.key]);}
 else if (autoread === 'true' && mek.key && mek.key.remoteJid.endsWith('@s.whatsapp.net')) { 
