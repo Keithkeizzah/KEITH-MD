@@ -1,62 +1,69 @@
-module.exports = async _0x2121d6 => {
-  const {
-    client: _0x111dc9,
-    m: _0x32b996,
-    text: _0x106ca6
-  } = _0x2121d6;
-  const _0x10e895 = require("yt-search");
-  const _0x372f70 = require("node-fetch");
+module.exports = async (_0x2121d6) => {
+  const { client: _0x111dc9, m: _0x32b996, text: _0x106ca6 } = _0x2121d6;
+  const ytSearch = require("yt-search");
+  const fetch = require("node-fetch");
+
   try {
+    // If no text is provided, ask the user for a song name
     if (!_0x106ca6 || _0x106ca6.trim().length === 0) {
-      return _0x32b996.reply("What song do you want to download?");
+      return _0x32b996.reply("Please provide the name of the song you want to download.");
     }
-    const _0x519914 = await _0x10e895(_0x106ca6);
-    if (_0x519914 && _0x519914.videos.length > 0) {
-      const _0x579137 = _0x519914.videos[0];
-      const _0x4cfdb5 = _0x579137.url;
-      const _0x14c1d9 = _0x32b996.chat;
-      const _0x383465 = await _0x372f70("https://apis.ibrahimadams.us.kg/api/download/ytmp4?url=" + encodeURIComponent(_0x4cfdb5) + "&apikey=cracker");
-      const _0x4a9fa5 = await _0x383465.json();
-      if (_0x4a9fa5.status === 200 && _0x4a9fa5.success) {
-        const _0x221bd9 = _0x4a9fa5.result.download_url;
-        await _0x111dc9.sendMessage(_0x14c1d9, {
-          'text': "*Downloading...*"
-        }, {
-          'quoted': _0x32b996
-        });
-        const _0xbe0786 = {
-          'image': {
-            'url': _0x579137.thumbnail
+
+    // Perform a YouTube search for the song
+    const searchResult = await ytSearch(_0x106ca6);
+    if (searchResult && searchResult.videos.length > 0) {
+      const video = searchResult.videos[0];
+      const videoUrl = video.url;
+      const chatId = _0x32b996.chat;
+
+      // Request the download URL from an API
+      const downloadResponse = await fetch(`https://apis.ibrahimadams.us.kg/api/download/ytmp4?url=${encodeURIComponent(videoUrl)}&apikey=cracker`);
+      const downloadData = await downloadResponse.json();
+
+      // If the API returns a successful response, send the download URL
+      if (downloadData.status === 200 && downloadData.success) {
+        const downloadUrl = downloadData.result.download_url;
+
+        // Notify the user that the download is starting
+        await _0x111dc9.sendMessage(chatId, {
+          text: "*Downloading...*"
+        }, { quoted: _0x32b996 });
+
+        // Send video details (title, artist, duration, and thumbnail)
+        const videoDetails = {
+          image: {
+            url: video.thumbnail
           },
-          'caption': "*KEITH-MD VIDEO PLAYER*\n\n╭───────────────◆\n│ *Title:* " + _0x4a9fa5.result.title + "\n│ *Duration:* " + _0x579137.timestamp + "\n│ *Artist:* " + _0x579137.author.name + "\n╰────────────────◆"
+          caption: `*KEITH-MD VIDEO PLAYER*\n\n╭───────────────◆\n│ *Title:* ${downloadData.result.title}\n│ *Duration:* ${video.timestamp}\n│ *Artist:* ${video.author.name}\n╰────────────────◆`
         };
-        await _0x111dc9.sendMessage(_0x14c1d9, _0xbe0786, {
-          'quoted': _0x32b996
-        });
-        await _0x111dc9.sendMessage(_0x14c1d9, {
-          'video': {
-            'url': _0x221bd9
+        await _0x111dc9.sendMessage(chatId, videoDetails, { quoted: _0x32b996 });
+
+        // Send the video file
+        await _0x111dc9.sendMessage(chatId, {
+          video: {
+            url: downloadUrl
           },
-          'mimetype': "video/mp4"
-        }, {
-          'quoted': _0x32b996
-        });
-        await _0x111dc9.sendMessage(_0x14c1d9, {
-          'document': {
-            'url': _0x221bd9
+          mimetype: "video/mp4"
+        }, { quoted: _0x32b996 });
+
+        // Send the video as a document (for download)
+        await _0x111dc9.sendMessage(chatId, {
+          document: {
+            url: downloadUrl
           },
-          'mimetype': "video/mp4"
-        }, {
-          'quoted': _0x32b996
-        });
-        await _0x32b996.reply('*' + _0x4a9fa5.result.title + "*\n\n*Downloaded successfully. Keep using Keith MD*");
+          mimetype: "video/mp4"
+        }, { quoted: _0x32b996 });
+
+        // Final message confirming the download
+        await _0x32b996.reply(`*${downloadData.result.title}*\n\n*Downloaded successfully. Keep using Keith MD*`);
       } else {
-        _0x32b996.reply("Failed to retrieve download URL.");
+        _0x32b996.reply("Failed to retrieve download URL. Please try again.");
       }
     } else {
-      _0x32b996.reply("No video found for the specified query.");
+      _0x32b996.reply("No video found for the specified query. Please check your search term.");
     }
-  } catch (_0x218bac) {
-    _0x32b996.reply("Download failed\n" + _0x218bac);
+  } catch (error) {
+    console.error(error);
+    _0x32b996.reply("An error occurred during the download process. Please try again.");
   }
 };
