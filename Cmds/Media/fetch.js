@@ -2,9 +2,9 @@ const axios = require("axios"); // Import axios for HTTP requests
 const cheerio = require('cheerio'); // Import cheerio for parsing HTML content
 
 module.exports = async (context) => {
-  const { client, m, text, bot, args, sendResponse } = context;
+  const { client, m, text, query, sendResponse } = context;
   
-  const urlInput = args.join(" ");  // Join arguments to form the URL input
+  const urlInput = query.join(" ");  // Join query arguments to form the URL input
 
   // Check if the URL starts with http:// or https://
   if (!/^https?:\/\//.test(urlInput)) {
@@ -33,14 +33,14 @@ module.exports = async (context) => {
     // Handle different content types
     if (/image\/.*/.test(contentType)) {
       // If it's an image, send the image URL
-      await bot.sendMessage(m.sender, {
+      await client.sendMessage(m.sender, {
         image: { url: fetchUrl },
         caption: "*POWERED BY ALPHA-MD*",
       }, { quoted: m });
 
     } else if (/video\/.*/.test(contentType)) {
       // If it's a video, send the video URL
-      await bot.sendMessage(m.sender, {
+      await client.sendMessage(m.sender, {
         video: { url: fetchUrl },
         caption: "*POWERED BY ALPHA-MD*",
       }, { quoted: m });
@@ -61,7 +61,7 @@ module.exports = async (context) => {
 
     } else {
       // If content is neither image, video, nor text/json, send it as a document
-      await bot.sendMessage(m.sender, {
+      await client.sendMessage(m.sender, {
         document: { url: fetchUrl },
         caption: "*POWERED BY ALPHA-MD*",
       }, { quoted: m });
