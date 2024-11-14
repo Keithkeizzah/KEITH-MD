@@ -1,22 +1,29 @@
 const middleware = require('../../utility/botUtil/middleware');
 
 module.exports = async (context) => {
-    // Apply middleware to the context
-    await middleware(context, async () => {
-        const { client, m } = context;
+    try {
+        // Apply the middleware to the context
+        await middleware(context, async () => {
+            const { client, m, bot } = context;
 
-        // Ensure `client` is the correct object and `m` is the message object
-        if (!client || !m) {
-            return m.reply("An error occurred. Please try again.");
-        }
+            // Ensure all necessary variables are present
+            if (!client || !m || !bot) {
+                return m.reply('Error: Missing required data (client, message, or bot). Please try again later.');
+            }
 
-        // Turn off disappearing messages for the group
-        try {
-            await client.groupToggleEphemeral(context.bot, 0); // Ensure `context.bot` is correct here
-            m.reply('Disappearing messages successfully turned off!');
-        } catch (error) {
-            console.error('Error turning off disappearing messages:', error);
-            m.reply('Failed to turn off disappearing messages. Please try again later.');
-        }
-    });
+            // Attempt to disable disappearing messages
+            try {
+                await client.groupToggleEphemeral(bot, 0); // 0 to turn off ephemeral messages
+                m.reply('Disappearing messages successfully turned off!');
+            } catch (error) {
+                // Handle any errors that occur when turning off ephemeral messages
+                console.error('Error disabling disappearing messages:', error);
+                m.reply('Failed to turn off disappearing messages. Please try again later.');
+            }
+        });
+    } catch (error) {
+        // Handle errors that might occur during middleware execution
+        console.error('Middleware execution error:', error);
+        context.m.reply('An unexpected error occurred. Please try again later.');
+    }
 };
