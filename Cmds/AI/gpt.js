@@ -2,7 +2,7 @@ module.exports = async (context) => {
     const { client, m, text } = context;
 
     try {
-        if (!text) return m.reply("This is dreaded, an AI using Gemini APIs to process text, provide a text");
+        if (!text) return m.reply("This is Keith assistant what is your query?");
 
        
         const { default: Gemini } = await import('gemini-ai');
