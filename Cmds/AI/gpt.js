@@ -1,42 +1,22 @@
+const axios = require('axios');
+
 module.exports = async (context) => {
-  const { client, message, text } = context;
+    const { client, m, text, senderId } = context;
 
-  // Ensure there is some text provided, else prompt the user
-  if (!text || text.trim() === '') {
-    return message.reply("Please provide some text to chat with AI.");
-  }
+    // Check if the user provided any text
+    if (!text) return m.reply("What's your question?");
 
-  // Extract the sender's ID
-  const senderId = message.sender.split('@')[0];
+    try {
+        // Send the request to the new API
+        const response = await axios.get(`https://chatgptforprabath-md.vercel.app/api/gptv1?q=${encodeURIComponent(senderId)}`);
 
-  // Build the URL to interact with the AI service
-  const apiUrl = `https://chatgptforprabath-md.vercel.app/api/gptv1?q=${encodeURIComponent(senderId)}`;
+        // Assuming the response has the result you want to send back
+        const result = response.data;
 
-  try {
-    // Fetch the response from the API
-    const apiResponse = await fetch(apiUrl);
-
-    // Check if the response is successful (status code 200)
-    if (!apiResponse.ok) {
-      throw new Error(`API error: ${apiResponse.statusText}`);
+        // Reply with the result from the API
+        m.reply(result);
+    } catch (e) {
+        console.error(e);
+        m.reply("An error occurred while processing your request.");
     }
-
-    // Parse the JSON response
-    const responseData = await apiResponse.json();
-
-    // Check if the result is present in the response
-    if (!responseData || !responseData.result) {
-      throw new Error("AI response is empty or malformed.");
-    }
-
-    // Extract the result from the response
-    const aiResponse = responseData.result;
-
-    // Reply with the AI's response
-    await message.reply(aiResponse);
-  } catch (error) {
-    // Handle any errors that occur during the fetch or processing
-    console.error('Error:', error); // Log the error for debugging
-    await message.reply(`An error occurred: ${error.message || 'Unknown error'}`);
-  }
 };
