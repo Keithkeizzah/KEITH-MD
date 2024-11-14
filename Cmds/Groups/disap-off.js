@@ -2,11 +2,15 @@ const middleware = require('../../utility/botUtil/middleware');
 
 module.exports = async (context) => {
     try {
-        // Apply the middleware to the context
+        // Apply middleware to the context
         await middleware(context, async () => {
+            // Log the context to understand its structure
+            console.log('Context:', context);
+
+            // Destructure necessary properties from the context object
             const { client, m, bot } = context;
 
-            // Ensure all necessary variables are present
+            // Check if the required properties are present in the context
             if (!client || !m || !bot) {
                 return m.reply('Error: Missing required data (client, message, or bot). Please try again later.');
             }
