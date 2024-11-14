@@ -1,8 +1,8 @@
 module.exports = async (context) => {
   try {
-    const { client, message } = context;
-    const from = message.from; // Get the sender's phone number
-    const mek = message; // Message object for quoting
+    const { client, m } = context;
+    const from = m.from; // Get the sender's phone number
+    const mek = m; // The message object for quoting
 
     // Define the steps of the prank
     const steps = [
