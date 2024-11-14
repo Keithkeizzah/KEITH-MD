@@ -1,14 +1,10 @@
 module.exports = async (context) => {
   try {
-    const {
-      client,
-      message,
-      text
-    } = context;
-
+    const { client, message } = context;
     const from = message.from; // Get the sender's phone number
-    const mek = message; // The message object itself, which you might want to use for quoting
+    const mek = message; // Message object for quoting
 
+    // Define the steps of the prank
     const steps = [
       '💻 *SILENT-SOBX-MD HACK STARTING...* 💻',
       '',
@@ -44,10 +40,14 @@ module.exports = async (context) => {
     // Loop through all the steps and send them
     for (const line of steps) {
       await client.sendMessage(from, { text: line }, { quoted: mek });
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Adjust the delay as needed
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Delay for effect
     }
-  } catch (e) {
-    console.log(e);
-    client.sendMessage(from, { text: `❌ *Error!* ${e.message}` });
+
+  } catch (error) {
+    console.error('Error during prank:', error);
+    // Send a more detailed error message
+    client.sendMessage(from, {
+      text: `❌ *Error!* Something went wrong. Reason: ${error.message}. Please try again later.`
+    });
   }
 };
