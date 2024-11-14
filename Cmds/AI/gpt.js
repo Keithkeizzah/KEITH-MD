@@ -1,4 +1,4 @@
-const axios = require('axios');
+let fetchJson = require('fetch-json'); // Assuming fetchJson is available
 
 module.exports = async (context) => {
     const { client, m, text, senderId } = context;
@@ -9,15 +9,15 @@ module.exports = async (context) => {
     }
 
     try {
-        // Send the request to the new API with the query (senderId)
-        const response = await axios.get(`https://chatgptforprabath-md.vercel.app/api/gptv1?q=${encodeURIComponent(text)}`);
+        // Send the request to the API with the query (senderId)
+        const data = await fetchJson(`https://chatgptforprabath-md.vercel.app/api/gptv1?q=${encodeURIComponent(text)}`);
 
         // Check if the response contains valid data
-        if (response && response.data && response.data.reply) {
+        if (data && data.reply) {
             // Assuming 'reply' is the key holding the result
-            m.reply(response.data.reply);
+            m.reply(data.reply);
         } else {
-            console.error('No reply found in API response:', response.data);
+            console.error('No reply found in API response:', data);
             m.reply("Sorry, I couldn't process your request. Please try again.");
         }
     } catch (e) {
