@@ -5,7 +5,7 @@ module.exports = async (context) => {
         // Ensure that there is a language code and text to translate
         const args = text.split(' ');
         if (args.length < 2) {
-            return m.reply("❗ Please provide a language code and text. Usage: .translate [language code] [text]");
+            return m.reply(" Please provide a language code and text. Usage: .translate [language code] [text] or type langcode to list all common language codes and their names");
         }
 
         // Extract the language code and the text to translate
@@ -33,15 +33,15 @@ module.exports = async (context) => {
 
         // Prepare the message to send
         const message = `
-🌍 *KEITH-MD TRANSLATION* 🌍
+ 🌍 *KEITH-MD TRANSLATION* 🌍
 
-🔤 *Original*: ${textToTranslate}
+💧 *Original*: ${textToTranslate}
 
-🔠 *Translated*: ${translatedText}
+💧 *Translated*: ${translatedText}
 
-🌐 *Language*: ${targetLang.toUpperCase()}
+💧 *Language*: ${targetLang.toUpperCase()}
 
-*KEITH-MD CREATION*`;
+*Regards Keithkeizzah*`;
 
         // Send the translated message back to the user
         await client.sendMessage(m.chat, { text: message }, { quoted: m });
