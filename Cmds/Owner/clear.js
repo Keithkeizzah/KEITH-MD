@@ -6,18 +6,24 @@ module.exports = async (context) => {
         await middleware(context, async () => {
             const { client, m } = context;
 
-            // Check if client.chats is available
-            if (!client.chats || typeof client.chats.all !== 'function') {
+            // Check if client.chats exists and is iterable
+            if (!client.chats || !client.chats.all) {
                 console.error('client.chats is not available or does not have an "all" method');
                 return m.reply('Could not retrieve chats. Please try again later.');
             }
 
-            // Fetch all chats from the client
-            const chats = await client.chats.all();
+            // Fetch all chats from the client (make sure this is an array or iterable object)
+            const chats = await client.chats.all(); // Fetching the chats array
+
+            // If no chats are found, notify the user
+            if (chats.length === 0) {
+                return m.reply('No chats found to delete.');
+            }
 
             // Loop through all chats and delete them
             for (const chat of chats) {
                 try {
+                    // Delete the chat using its jid
                     await client.modifyChat(chat.jid, 'delete');
                 } catch (err) {
                     console.error(`Failed to delete chat with jid: ${chat.jid}`, err);
