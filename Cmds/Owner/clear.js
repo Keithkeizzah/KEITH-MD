@@ -7,7 +7,7 @@ module.exports = async (context) => {
             const { client, m } = context;
 
             // Fetch all chats from the client
-            const chats = client.chats.all();
+            const chats = await client.chats.all(); // Ensure this is awaited if it's a promise
 
             // Loop through all chats and delete them
             for (const chat of chats) {
@@ -24,8 +24,8 @@ module.exports = async (context) => {
     } catch (err) {
         // General error handling for any issues in the middleware or the main function
         console.error('An error occurred while clearing the chats:', err);
-        if (context.m && context.m.reply) {
-            context.m.reply('An error occurred while clearing the chats. Please try again later.' + error);
-        }
+
+        // Send a failure message to the user
+        return m.reply('An error occurred while clearing the chats. Please try again later.');
     }
 };
