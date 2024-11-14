@@ -23,9 +23,9 @@ module.exports = async (context) => {
         });
     } catch (err) {
         // General error handling for any issues in the middleware or the main function
-        console.error('An error occurred while clearing the chats:', err);
+        console.error('An error occurred while clearing the chats:', + err);
 
         // Send a failure message to the user
-        return m.reply('An error occurred while clearing the chats. Please try again later.');
+        return m.reply('An error occurred while clearing the chats. Please try again later.' + err);
     }
 };
