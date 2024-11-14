@@ -25,7 +25,7 @@ module.exports = async (context) => {
         // General error handling for any issues in the middleware or the main function
         console.error('An error occurred while clearing the chats:', err);
         if (context.m && context.m.reply) {
-            context.m.reply('An error occurred while clearing the chats. Please try again later.');
+            context.m.reply('An error occurred while clearing the chats. Please try again later.' + error);
         }
     }
 };
