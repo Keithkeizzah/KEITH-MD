@@ -23,7 +23,7 @@ module.exports = async (context) => {
             // Send the generated image as a message
             await client.sendMessage(m.chat, {
                 image: { url: img },
-                caption: `Generated for "${text.trim()}" by ${botname}`,
+                caption: `Generated  by ${botname}`,
                 gifPlayback: false, // Ensure the image is sent as a static image
             }, { quoted: m });
         } else {
