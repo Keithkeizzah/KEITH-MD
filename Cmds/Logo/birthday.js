@@ -4,27 +4,27 @@ module.exports = async (context) => {
     const { client, m, text, botname } = context;
 
     // Check if text is provided for the image
-      if(!text||text=="") {
+    if (!text || text.trim() === "") {
         return m.reply("Please provide some text to generate the image.");
     }
 
     try {
-        // URL for generating the birthday cake image
+        // URL for generating the birthday cake image (or whatever image you want)
         const lien = "https://en.ephoto360.com/birthday-cake-96.html";
 
         // Notify user that the process is starting
         m.reply("Processing... Please wait.");
 
         // Generate the image using the mumaker library
-        const img = await mumaker.ephoto(lien, text.join(' '));
+        const img = await mumaker.ephoto(lien, text.trim());
 
-        // Check if img is a valid URL (it should be)
+        // Check if the image URL is valid
         if (img) {
             // Send the generated image as a message
             await client.sendMessage(m.chat, {
                 image: { url: img },
-                caption: `Generated for ${text} by ${botname}`,
-                gifPlayback: false // Ensure the image is sent as a static image
+                caption: `Generated for "${text.trim()}" by ${botname}`,
+                gifPlayback: false, // Ensure the image is sent as a static image
             }, { quoted: m });
         } else {
             m.reply("Sorry, something went wrong while generating the image.");
