@@ -6,7 +6,7 @@ module.exports = async (context) => {
         // If no text is provided, return a usage instruction
         if (!text) {
             return await m.reply(
-                `Keith Fancy Text Converter Here.\n Please use .fancy *_your_text_* or .fancy5 *_your_text_* to get a specific style.`
+                `Keith Fancy Text Converter Here.\n Please use .fancy *_your_text_* or .fancy *_style_id_ your_text_* to get a specific style.`
             );
         }
 
@@ -15,8 +15,8 @@ module.exports = async (context) => {
         const id = args[0]?.match(/\d+/)?.[0]; // First argument could be an ID
         const inputText = args.slice(1).join(" "); // Rest of the arguments form the text
 
-        // If no valid ID or text, show usage instructions
-        if (!inputText || id === undefined) {
+        // If no valid text or ID, show usage instructions
+        if (!inputText) {
             return await m.reply(
                 `Please provide both style number (optional) and the text. Usage: .fancy *_your_text_* or .fancy *_style_id_ your_text_*`
             );
@@ -30,16 +30,20 @@ module.exports = async (context) => {
         if (response.data && response.data.result) {
             const styles = response.data.result;
 
+            // Limit the number of styles to a maximum of 35
+            const maxStyles = 35;
+            const limitedStyles = styles.slice(0, maxStyles);
+
             // If an ID was provided and is within valid range
-            if (id && id > 0 && id <= styles.length) {
-                const selectedStyle = styles[id - 1].result;
+            if (id && id > 0 && id <= limitedStyles.length) {
+                const selectedStyle = limitedStyles[id - 1].result;
                 await client.sendMessage(m.chat, {
                     text: `Fancy Text Style ${id}:\n\n${selectedStyle}`
                 }, { quoted: m });
             } else {
-                // If no ID provided or it's invalid, list all styles
+                // If no ID provided or it's invalid, list all available styles up to the limit
                 let styleList = "Fancy Text Styles:\n\n";
-                styles.forEach((style, index) => {
+                limitedStyles.forEach((style, index) => {
                     if (style.result.trim()) {
                         styleList += `${index + 1}. ${style.result}\n`;
                     }
