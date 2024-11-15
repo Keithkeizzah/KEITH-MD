@@ -1,4 +1,4 @@
-const s = require("../settings");  // Importing the settings file
+const s = require("../settings.js");  // Importing the settings file
 
 module.exports = async (context) => {
     const { client, m } = context;
