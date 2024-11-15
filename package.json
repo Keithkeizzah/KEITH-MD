@@ -48,6 +48,7 @@
     "compile-run": "^2.3.4",
     "badadvice": "^1.0.0",
     "crypto": "^1.0.1",
+    "dotenv": "^16.3.1",
         "file-type": "16.5.3",
     "figlet": "^1.5.2",
     "heroku-client": "^3.1.0",
