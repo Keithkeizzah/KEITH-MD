@@ -4,7 +4,7 @@ module.exports = async (context) => {
     const { client, m, text, botname } = context;
 
     // Check if text is provided for the image
-    if (!text) {
+      if(!text||text=="") {
         return m.reply("Please provide some text to generate the image.");
     }
 
@@ -16,7 +16,7 @@ module.exports = async (context) => {
         m.reply("Processing... Please wait.");
 
         // Generate the image using the mumaker library
-        const img = await mumaker.ephoto(lien, text);
+        const img = await mumaker.ephoto(lien, text.join(' '));
 
         // Check if img is a valid URL (it should be)
         if (img) {
