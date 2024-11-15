@@ -17,10 +17,11 @@ module.exports = async (context) => {
             return m.reply("Please provide two arguments separated by '|'. Example: * .avenger Keith|Tech");
         }
 
-        // Build the API request URL
-        const apiUrl = `https://en.ephoto360.com/create-logo-3d-style-avengers-online-427.html`;
+        // Example API that accepts query parameters to create a logo
+        // Replace this URL with the correct API endpoint if available
+        const apiUrl = `https://api.example.com/create-logo?text1=${encodeURIComponent(text1)}&text2=${encodeURIComponent(text2)}`;
 
-        // Fetch the image from the API
+        // Fetch the image data from the API
         const response = await fetch(apiUrl);
 
         // Check if the request was successful
@@ -28,14 +29,13 @@ module.exports = async (context) => {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        // Convert the response to a buffer
-        const arrayBuffer = await response.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
+        // The API might return an image as a direct response or a URL to an image
+        const imageBuffer = await response.buffer();
 
         // Send the image as a message
         await client.sendMessage(m.chat, {
-            image: buffer,
-            caption: `Downloaded by ${botname}`,
+            image: imageBuffer,
+            caption: `Logo created for ${text1} & ${text2} by ${botname}`,
         }, { quoted: m });
 
     } catch (error) {
