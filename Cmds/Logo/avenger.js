@@ -18,7 +18,7 @@ module.exports = async (context) => {
         }
 
         // Build the API request URL
-        const apiUrl = `https://api.neoxr.eu/api/avenger?text1=${encodeURIComponent(text1)}&text2=${encodeURIComponent(text2)}&apikey=mcandy`;
+        const apiUrl = `https://en.ephoto360.com/create-logo-3d-style-avengers-online-427.html`;
 
         // Fetch the image from the API
         const response = await fetch(apiUrl);
@@ -44,4 +44,3 @@ module.exports = async (context) => {
         m.reply(`An error occurred: ${error.message}. The API might be down or there was an issue with the request.`);
     }
 };
-
