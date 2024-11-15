@@ -1,5 +1,5 @@
 {
-  "name": "DREADED-V2",
+  "name": "KEITH-MD",
   "version": "2.0.0",
   "description": "WhatsApp Multi Device Bot",
   "main": "index.js",
@@ -43,6 +43,7 @@
    "querystring": "^0.2.1",
    "g-i-s": "^2.1.7",
    "aptoide-scraper":"^1.0.1", 
+    "cheerio": "^1.0.0-rc.12", 
     "child-process": "^1.0.2",
     "compile-run": "^2.3.4",
     "badadvice": "^1.0.0",
