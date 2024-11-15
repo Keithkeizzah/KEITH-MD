@@ -1,8 +1,7 @@
-const s = require("../settings");
 
 module.exports = async (context) => {
-    const { client, m } = context;
-    const ownernumber = s.dev;
+    const { client, m, dev } = context;
+    const ownernumber = dev;
 
     try {
         await client.sendContact(m.chat, [ownernumber], m);
