@@ -1,4 +1,7 @@
-const { client, m, text, botname } = context;
+const fetch = require('node-fetch'); 
+
+module.exports = async (context) => {
+    const { client, m, text, botname } = context;
 
 if (!text.includes('|')) {
     return m.reply("Example Usage: * .avenger Keith|Tech");
