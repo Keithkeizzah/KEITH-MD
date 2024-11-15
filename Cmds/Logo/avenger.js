@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const mumaker = require('mumaker'); // Assuming mumaker is the logo generation tool
 
 module.exports = async (context) => {
     const { client, m, text, botname } = context;
@@ -17,36 +18,30 @@ module.exports = async (context) => {
             return m.reply("Please provide two arguments separated by '|'. Example: * .avenger Keith|Tech");
         }
 
-        // Hypothetical API URL for logo creation
-        const apiUrl = `https://api.logoapi.com/create-logo?text1=${encodeURIComponent(text1)}&text2=${encodeURIComponent(text2)}`;
+        // Use mumaker to create the logo (assuming it has a `createLogo` method or similar)
+        const logoData = await mumaker.createLogo({
+            text1: text1,
+            text2: text2,
+            size: 'large', // You can adjust this based on your needs
+        });
 
-        // Fetch the image data from the API
-        const response = await fetch(apiUrl);
-
-        // Check if the request was successful
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+        // Check if mumaker returned a valid logo image
+        if (!logoData || !logoData.imageUrl) {
+            throw new Error('No logo returned from mumaker');
         }
 
-        // Check if the response contains an image URL or the image buffer
-        const jsonResponse = await response.json();
+        // Fetch the image buffer from the generated image URL (if the URL is returned)
+        const imageBuffer = await fetch(logoData.imageUrl).then(res => res.buffer());
 
-        if (jsonResponse.imageUrl) {
-            // If the API returns a URL to the image, download it
-            const imageBuffer = await fetch(jsonResponse.imageUrl).then(res => res.buffer());
-
-            // Send the image as a message
-            await client.sendMessage(m.chat, {
-                image: imageBuffer,
-                caption: `Logo created for ${text1} & ${text2} by ${botname}`,
-            }, { quoted: m });
-        } else {
-            throw new Error('No image returned from the API');
-        }
+        // Send the logo image as a message
+        await client.sendMessage(m.chat, {
+            image: imageBuffer,
+            caption: `Logo created for ${text1} & ${text2} by ${botname}`,
+        }, { quoted: m });
 
     } catch (error) {
         // Handle any errors that occur during the process
         console.error(error);
-        m.reply(`An error occurred: ${error.message}. The API might be down or there was an issue with the request.`);
+        m.reply(`An error occurred: ${error.message}. Please try again later.`);
     }
 };
