@@ -17,9 +17,8 @@ module.exports = async (context) => {
             return m.reply("Please provide two arguments separated by '|'. Example: * .avenger Keith|Tech");
         }
 
-        // Example API that accepts query parameters to create a logo
-        // Replace this URL with the correct API endpoint if available
-        const apiUrl = `https://api.example.com/create-logo?text1=${encodeURIComponent(text1)}&text2=${encodeURIComponent(text2)}`;
+        // Hypothetical API URL for logo creation
+        const apiUrl = `https://api.logoapi.com/create-logo?text1=${encodeURIComponent(text1)}&text2=${encodeURIComponent(text2)}`;
 
         // Fetch the image data from the API
         const response = await fetch(apiUrl);
@@ -29,14 +28,21 @@ module.exports = async (context) => {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        // The API might return an image as a direct response or a URL to an image
-        const imageBuffer = await response.buffer();
+        // Check if the response contains an image URL or the image buffer
+        const jsonResponse = await response.json();
 
-        // Send the image as a message
-        await client.sendMessage(m.chat, {
-            image: imageBuffer,
-            caption: `Logo created for ${text1} & ${text2} by ${botname}`,
-        }, { quoted: m });
+        if (jsonResponse.imageUrl) {
+            // If the API returns a URL to the image, download it
+            const imageBuffer = await fetch(jsonResponse.imageUrl).then(res => res.buffer());
+
+            // Send the image as a message
+            await client.sendMessage(m.chat, {
+                image: imageBuffer,
+                caption: `Logo created for ${text1} & ${text2} by ${botname}`,
+            }, { quoted: m });
+        } else {
+            throw new Error('No image returned from the API');
+        }
 
     } catch (error) {
         // Handle any errors that occur during the process
