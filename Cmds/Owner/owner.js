@@ -2,7 +2,7 @@ const { getAllSudoNumbers, isSudoTableNotEmpty } = require("../lib/sudo");
 const s = require("../settings");
 
 module.exports = async (context) => {
-  const { client, m, text, botname, dest } = context;
+  const { client, m } = context;
 
   // Check if the sudo table is not empty
   const thsudo = await isSudoTableNotEmpty();
@@ -29,7 +29,7 @@ module.exports = async (context) => {
 
     // Send the message with image and mentions
     client.sendMessage(
-      dest,
+      m.chat, // Destination chat is now inferred from the context message `m`
       {
         image: { url: "https://i.imgur.com/HfeSoW0.jpeg" }, // Use the provided image URL
         caption: msg,
@@ -47,7 +47,7 @@ module.exports = async (context) => {
       'END:VCARD';
 
     // Send the contact card as a message
-    client.sendMessage(dest, {
+    client.sendMessage(m.chat, {
       contacts: {
         displayName: s.DEV,
         contacts: [{ vcard }],
