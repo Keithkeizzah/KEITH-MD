@@ -3,6 +3,15 @@ const fetch = require('node-fetch'); // Import node-fetch
 module.exports = async (context) => {
   const { client, m, url } = context; // Ensure URL is part of the context
 
+  // Check if the URL exists and is a string
+  if (!url || typeof url !== 'string') {
+    return m.reply("No URL provided.");
+  }
+
+  // Debug: Log the URL to verify it's passed correctly
+  console.log("Received URL:", url);
+
+  // Ensure URL starts with 'http://' or 'https://'
   if (!/^https?:\/\//.test(url)) {
     return m.reply("Start the *URL* with http:// or https://");
   }
@@ -11,6 +20,9 @@ module.exports = async (context) => {
     // Parse the URL
     const parsedUrl = new URL(url);
     const fullUrl = `${parsedUrl.origin}${parsedUrl.pathname}?${parsedUrl.searchParams.toString()}`;
+
+    // Debug: Log the full URL to be fetched
+    console.log("Fetching data from:", fullUrl);
 
     // Fetch data from the URL
     const response = await fetch(fullUrl);
