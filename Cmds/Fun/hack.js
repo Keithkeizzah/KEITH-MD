@@ -1,4 +1,7 @@
- const mek = m; // The message object for quoting
+module.exports = async (context) => {
+  try {
+    const { m } = context;
+    const mek = m; // The message object for quoting
 
     // Define the steps of the prank
     const steps = [
