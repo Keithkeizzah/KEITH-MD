@@ -1,29 +1,45 @@
+const { exec } = require('child_process');
+const speed = require('performance-now');  // Corrected to match proper usage
+
 module.exports = async (context) => {
-    const { client, m, dreadedspeed } = context;
+    const { client, m } = context;  // Simplified the destructuring, 'dreadedspeed' is not used
 
-    try {
-        // Prepare the response text with speed data
-        const menuText = `𝖐𝖊𝖎𝖙𝖍 𝖘𝖕𝖊𝖊𝖊𝖉\n${dreadedspeed.toFixed(4)}𝐌\𝐒`;
+    let thumbnail = 'https://www.guruapi.tech/K.jpg';
+    
+    let fgg = {
+        key: { remoteJid: m.chat, participant: `0@s.whatsapp.net` },  // Use m.chat directly
+        message: {
+            contactMessage: {
+                displayName: `Keith md`,
+                vcard: `BEGIN:VCARD\nVERSION:3.0\nN:;a,;;;\nFN:KEITH MD\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD`,
+            },
+        },
+    };
 
-        // Define the contact message structure with the sender's number
-        const vcard = `BEGIN:VCARD\nVERSION:3.0\nN:;a,;;;\nFN:KEITH MD\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD`;
+    let pingMsg = await client.sendMessage(m.chat, { text: 'Pinging...' }, { quoted: fgg });
 
-        // Send the message with the context info (mention the sender and include external ad reply)
-        await client.sendMessage(m.chat, {
-            text: menuText,
-            contextInfo: {
-                mentionedJid: [m.sender], // Mention the sender
-                externalAdReply: {
-                    displayName: "KEITH MD", // Display name for external ad
-                    vcard: vcard, // Attach the vCard with sender's number
-                    sourceUrl: "https://whatsapp.com/channel/0029Vaan9TF9Bb62l8wpoD47", // Source URL for external ad
-                    mediaType: 1, // Media type (image, video, etc.)
-                    renderLargerThumbnail: true // Render a larger thumbnail for the external ad
+    let timestamp = speed();  // Start measuring speed (latency)
+
+    exec('neofetch --stdout', async (error, stdout) => {
+        if (error) {
+            console.error('Error executing neofetch:', error);
+            return;
+        }
+
+        let latency = (speed() - timestamp).toFixed(4);  // Calculate latency
+
+        await client.relayMessage(  // Use relayMessage correctly
+            m.chat,
+            {
+                protocolMessage: {
+                    key: pingMsg.key,
+                    type: 14,  // Edit message
+                    editedMessage: {
+                        conversation: `*Ping:* *${latency} ms*`,
+                    },
                 },
-            }
-        });
-    } catch (error) {
-        console.error("Error sending message:", error);
-        m.reply('An error occurred while sending the menu.');
-    }
+            },
+            {}
+        );
+    });
 };
