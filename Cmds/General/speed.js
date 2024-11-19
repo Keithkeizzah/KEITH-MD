@@ -17,23 +17,26 @@ module.exports = async (context) => {
         },
     };
 
-    // Send the initial ping message
-    let pingMsg = await client.sendMessage(m.chat, { text: 'Pinging...' }, { quoted: fgg });
-
-    // Start measuring latency
+    // Start measuring the initial ping time
     let timestamp = speed();
+    let latency = (speed() - timestamp).toFixed(4);
+
+    // Send the initial ping message
+    await client.sendMessage(m.chat, { text: `*Ping:* *${latency} ms*` });
 
     // Execute the neofetch command to get system info
-    exec('neofetch --stdout', async (error, stdout) => {
+    exec('neofetch --stdout', async (error, stdout, stderr) => {
         if (error) {
             console.error('Error executing neofetch:', error);
+            await client.sendMessage(m.chat, { text: 'Error executing system information command.' });
             return;
         }
 
-        // Calculate the latency
-        let latency = (speed() - timestamp).toFixed(4);
+        if (stderr) {
+            console.error('stderr:', stderr);
+        }
 
-        // Send the ping result (latency) to the same chat
-        await client.sendMessage(m.chat, { text: `*Ping:* *${latency} ms*` });
+        // Send the output of neofetch as a message
+        await client.sendMessage(m.chat, { text: `*System Info:*\n${stdout}` });
     });
 };
