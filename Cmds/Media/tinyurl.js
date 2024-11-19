@@ -22,7 +22,7 @@ module.exports = async (context) => {
       }
       apiUrl = `https://api.maskser.me/api/linkshort/tinyurlwithalias?link=${encodeURIComponent(url)}&alias=${encodeURIComponent(alias)}`;
     } else {
-      apiUrl = `https://widipe.com/tinyurl?link=${encodeURIComponent(urlToShorten)}`;
+      apiUrl = `https://tinyurl.com/api-create.php?url=${encodeURIComponent(urlToShorten)}`;
     }
 
     // Fetch the shortened URL
