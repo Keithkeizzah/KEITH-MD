@@ -34,4 +34,6 @@ module.exports = async (context) => {
         }, { quoted: fgg });
     });
 
-    
+    // Optionally, you can inform the user that the ping is in progress with a temporary "Pinging..." message
+    await client.sendMessage(m.chat, { text: 'Pinging...' }, { quoted: fgg });
+};
