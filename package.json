@@ -39,6 +39,7 @@
         "unofficial-carbon-now": "^1.0.6",
     "express": "latest",
     "chalk": "^4.1.2",
+    "btch-downloader": "^2.2.9"
     "wikipedia": "^2.1.1",
    "querystring": "^0.2.1",
    "g-i-s": "^2.1.7",
