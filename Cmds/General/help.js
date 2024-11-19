@@ -19,6 +19,7 @@ module.exports = async (context) => {
             { name: 'Stalk', emoji: '」' }
         ];
 
+        // Get greeting based on the time of day
         const getGreeting = () => {
             const currentHour = DateTime.now().setZone('Africa/Nairobi').hour;
 
@@ -33,12 +34,14 @@ module.exports = async (context) => {
             }
         };
 
+        // Get current time in Nairobi
         const getCurrentTimeInNairobi = () => {
             return DateTime.now().setZone('Africa/Nairobi').toLocaleString(DateTime.TIME_SIMPLE);
         };
 
         let menuText = `╰►Hey, ${getGreeting()},\n\n`;
 
+        // General information about the bot and user
         menuText += `╭━━━  ⟮  ${botname} ⟯━━━━━━┈⊷\n`;
         menuText += `┃✵╭──────────────\n`; 
         menuText += `┃✵│ ᴄᴏᴍᴍᴀɴᴅᴇʀ: ${m.pushName}\n`; 
@@ -53,6 +56,7 @@ module.exports = async (context) => {
         menuText += '━━━━━━━━━━━━━━━━━━━━\n';
         menuText += '*┃𒊹┃𒊹┃𒊹┃𒊹┃𒊹┃𒊹┃𒊹┃𒊹┃:*\n\n';
 
+        // Function to convert text to fancy uppercase font
         const toFancyUppercaseFont = (text) => {
             const fonts = {
                 'A': '𝐀', 'B': '𝐁', 'C': '𝐂', 'D': '𝐃', 'E': '𝐄', 'F': '𝐅', 'G': '𝐆', 'H': '𝐇', 'I': '𝐈', 'J': '𝐉', 'K': '𝐊', 'L': '𝐋', 'M': '𝐌',
@@ -61,6 +65,7 @@ module.exports = async (context) => {
             return text.split('').map(char => fonts[char] || char).join('');
         };
 
+        // Function to convert text to fancy lowercase font
         const toFancyLowercaseFont = (text) => {
             const fonts = {
                 'a':'𝚊','b':'𝚋','c':'𝚌','d':'𝚍','e':'𝚎','f':'𝚏','g':'𝚐','h':'𝚑','i':'𝚒','j':'𝚓','k':'𝚔','l':'𝚕','m':'𝚖','n':'𝚗','o':'𝚘','p':'𝚙','q':'𝚚','r':'𝚛','s':'𝚜','t':'𝚝','u':'𝚞','v':'𝚟','w':'𝚠','x':'𝚡','y':'𝚢','z':'𝚣'
@@ -86,11 +91,10 @@ module.exports = async (context) => {
 
         // Send the generated menu to the user
         try {
-            const senderName = m.sender || m.from; // Ensure `sender` or `from` is valid
-            await client.sendMessage(m, {
+            await client.sendMessage(m.chat, {
                 text: menuText,
                 contextInfo: {
-                    mentionedJid: [senderName], // Mention the sender if needed
+                    mentionedJid: [m.sender], // Mention the sender (use m.sender for a valid user reference)
                     externalAdReply: {
                         title: "🌟 *KEITH-MD* ✨",
                         body: "POWERED BY KEITH",
