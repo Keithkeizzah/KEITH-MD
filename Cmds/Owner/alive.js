@@ -13,7 +13,7 @@ module.exports = async (context) => {
     key: {
       fromMe: false,
       participant: `${m.sender.split('@')[0]}@s.whatsapp.net`,
-      ...(m.chat ? { remoteJid: '254700143167@s.whatsapp.net' } : {}),
+      ...(m.chat ? { remoteJid: '254748387615@s.whatsapp.net' } : {}),
     },
     message: {
       contactMessage: {
