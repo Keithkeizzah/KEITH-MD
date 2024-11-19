@@ -35,6 +35,9 @@ module.exports = async (context) => {
       ╰───────────────────
     `;
 
+    // Define an image URL (replace this with your actual image URL)
+    const imageUrl = 'https://i.imgur.com/v9gJCSD.jpeg';  // Replace with the actual image URL
+
     // Send the generated message to the user
     await client.sendMessage(m.chat, {
       text: messageCaption,
@@ -44,7 +47,8 @@ module.exports = async (context) => {
           title: "🌟 𝐊𝐄𝐈𝐓𝐇-𝐌𝐃 ✨",
           body: "𝐫𝐞𝐠𝐚𝐫𝐝𝐬 𝐊𝐞𝐢𝐭𝐡𝐤𝐞𝐢𝐳𝐳𝐚𝐡",
           sourceUrl: "https://whatsapp.com/channel/0029Vaan9TF9Bb62l8wpoD47",
-          mediaType: 1,
+          mediaUrl: imageUrl,  // Make sure this points to a valid image URL
+          mediaType: 1, // Image media type
           renderLargerThumbnail: true
         }
       }
