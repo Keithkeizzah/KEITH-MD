@@ -15,9 +15,6 @@ module.exports = async (context) => {
         },
     };
 
-    // Send the initial ping message
-    let pingMsg = await client.sendMessage(m.chat, { text: 'Pinging...' }, { quoted: fgg });
-
     // Start measuring latency with performance-now
     let timestamp = speed();
 
@@ -31,7 +28,12 @@ module.exports = async (context) => {
         // Calculate latency by subtracting timestamp from current time
         let latency = (speed() - timestamp).toFixed(4);
 
-        // Send the latency message
-        await client.sendMessage(m.chat, { text: `*Ping:* *${latency} ms*\n\nSystem Info:\n${stdout}` });
+        // Send the final message with the calculated latency and system info
+        await client.sendMessage(m.chat, {
+            text: `*Ping:* *${latency} ms*\n\nSystem Info:\n${stdout}`
+        });
     });
+
+    // Optionally, you can inform the user that the ping is in progress with a temporary "Pinging..." message
+    await client.sendMessage(m.chat, { text: 'Pinging...' }, { quoted: fgg });
 };
