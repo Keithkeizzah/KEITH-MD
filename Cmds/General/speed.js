@@ -1,13 +1,14 @@
 const { exec } = require('child_process');
-const speed = require('performance-now');  // Corrected to match proper usage
+const speed = require('performance-now');
 
 module.exports = async (context) => {
-    const { client, m } = context;  // Simplified the destructuring, 'dreadedspeed' is not used
+    const { client, m } = context;
 
     let thumbnail = 'https://www.guruapi.tech/K.jpg';
-    
+
+    // Prepare the contact message to be sent first
     let fgg = {
-        key: { remoteJid: m.chat, participant: `0@s.whatsapp.net` },  // Use m.chat directly
+        key: { remoteJid: m.chat, participant: `0@s.whatsapp.net` },
         message: {
             contactMessage: {
                 displayName: `Keith md`,
@@ -16,30 +17,23 @@ module.exports = async (context) => {
         },
     };
 
+    // Send the initial ping message
     let pingMsg = await client.sendMessage(m.chat, { text: 'Pinging...' }, { quoted: fgg });
 
-    let timestamp = speed();  // Start measuring speed (latency)
+    // Start measuring latency
+    let timestamp = speed();
 
+    // Execute the neofetch command to get system info
     exec('neofetch --stdout', async (error, stdout) => {
         if (error) {
             console.error('Error executing neofetch:', error);
             return;
         }
 
-        let latency = (speed() - timestamp).toFixed(4);  // Calculate latency
+        // Calculate the latency
+        let latency = (speed() - timestamp).toFixed(4);
 
-        await client.relayMessage(  // Use relayMessage correctly
-            m.chat,
-            {
-                protocolMessage: {
-                    key: pingMsg.key,
-                    type: 14,  // Edit message
-                    editedMessage: {
-                        conversation: `*Ping:* *${latency} ms*`,
-                    },
-                },
-            },
-            {}
-        );
+        // Send the ping result (latency) to the same chat
+        await client.sendMessage(m.chat, { text: `*Ping:* *${latency} ms*` });
     });
 };
