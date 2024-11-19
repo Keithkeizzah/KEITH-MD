@@ -1,22 +1,12 @@
 module.exports = async (context) => {
-    const { client, m, text, ytmp3 } = context;
+    const { client, m, text } = context;
 
-    // Define response messages as constants
-    const responseMessages = [
-        "Enter Title / Link From YouTube!",
-        "Please wait...",
-        "Video/Audio reply to download",
-        "Video is longer than 1 hour!",
-        "audio/mpeg",
-        "Error: "
-    ];
-
-    // If no text is provided, prompt the user to enter a title or link
-    if (!text) return m.reply(responseMessages[0]);
+    // Check if the user has provided input (either a title or link)
+    if (!text) return m.reply("Please provide a title or YouTube link.");
 
     // Inform the user that the process is starting
-    await m.reply(responseMessages[1]);
-    
+    await m.reply("Please wait...");
+
     try {
         // Import the necessary modules
         const search = require("yt-search");
@@ -27,11 +17,11 @@ module.exports = async (context) => {
         const firstVideo = searchResults.videos[0];
         
         // If no video is found, inform the user
-        if (!firstVideo) return m.reply(responseMessages[2]);
+        if (!firstVideo) return m.reply("No video found.");
 
         // Check if the video is longer than 1 hour (3600 seconds)
         if (firstVideo.seconds >= 3600) {
-            return m.reply(responseMessages[3]);
+            return m.reply("Video is longer than 1 hour, unable to download.");
         }
 
         // Try to fetch the audio URL from YouTube
@@ -39,19 +29,17 @@ module.exports = async (context) => {
         try {
             audioUrl = await youtube(firstVideo.url);
         } catch (error) {
-            // In case of an error, retry fetching the audio URL
-            await m.reply(responseMessages[1]);
+            // Retry fetching audio URL if an error occurs
             audioUrl = await youtube(firstVideo.url);
         }
 
-        // Send the audio message with the proper metadata
+        // Send the audio message with proper metadata
         await client.sendMessage(m.chat, {
             audio: { url: audioUrl.mp3 },
-            mimetype: responseMessages[4],
+            mimetype: "audio/mpeg",
             contextInfo: {
                 externalAdReply: {
                     title: firstVideo.title,
-                    body: "",
                     thumbnailUrl: firstVideo.image,
                     sourceUrl: audioUrl.mp3,
                     mediaType: 1,
@@ -62,8 +50,9 @@ module.exports = async (context) => {
         }, {
             quoted: m
         });
+
     } catch (error) {
         // If an error occurs, send the error message
-        await m.reply(`${responseMessages[5]} ${error.message}`);
+        await m.reply("Error: " + error.message);
     }
 };
