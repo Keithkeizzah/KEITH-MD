@@ -31,9 +31,7 @@ module.exports = async (context) => {
         // Send the final message with the calculated latency and system info
         await client.sendMessage(m.chat, {
             text: `*Ping:* *${latency} ms*\n\nSystem Info:\n${stdout}`
-        });
+        }, { quoted: fgg });
     });
 
-    // Optionally, you can inform the user that the ping is in progress with a temporary "Pinging..." message
-    await client.sendMessage(m.chat, { text: 'Pinging...' }, { quoted: fgg });
-};
+    
