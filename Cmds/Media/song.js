@@ -2,7 +2,8 @@ module.exports = async (messageDetails) => {
   const { client: botClient, m: message, text: queryText } = messageDetails;
 
   const ytSearch = require('yt-search');
-  const fetch = require('node-fetch');
+  const { downloadAudio } = require("../lib/scrap");  // Import the downloadAudio function from lib/scrap
+  const fs = require('fs');
 
   try {
     // Ensure that the queryText is not empty
@@ -18,38 +19,35 @@ module.exports = async (messageDetails) => {
 
       const chat = message.chat;
 
-      // Fetch download link from an external API (without apikey)
-      const response = await fetch(`https://dark-yasiya-api-new.vercel.app/download/ytmp3?url=${encodeURIComponent(videoUrl)}`);
-      const downloadData = await response.json();
+      // Use the downloadAudio function from lib/scrap
+      const audioData = await downloadAudio(videoUrl);
 
-      if (downloadData.status === 200 && downloadData.success) {
-        const downloadUrl = downloadData.result.download_url;
-
+      if (audioData && audioData.status) {
         // Send message indicating that the download has started
         await botClient.sendMessage(chat.id, { text: "*Downloading...*" }, { quoted: message });
 
         // Send thumbnail and video info
         const videoInfoMessage = {
           image: { url: firstVideo.thumbnail },
-          caption: `*KEITH-MD AUDIO PLAYER*\n\n╭───────────────◆\n│ *Title:* ${downloadData.result.title}\n│ *Duration:* ${firstVideo.timestamp}\n│ *Artist:* ${firstVideo.author.name}\n╰────────────────◆`
+          caption: `*KEITH-MD AUDIO PLAYER*\n\n╭───────────────◆\n│ *Title:* ${audioData.title}\n│ *Duration:* ${firstVideo.timestamp}\n│ *Artist:* ${firstVideo.author.name}\n╰────────────────◆`
         };
         await botClient.sendMessage(chat.id, videoInfoMessage, { quoted: message });
 
         // Send the audio file
         await botClient.sendMessage(chat.id, {
-          audio: { url: downloadUrl },
+          audio: { url: audioData.downloadLink },
           mimetype: "audio/mp3"
         }, { quoted: message });
 
         // Optionally, send the audio as a downloadable file
         await botClient.sendMessage(chat.id, {
-          document: { url: downloadUrl },
+          document: { url: audioData.downloadLink },
           mimetype: "audio/mp3",
-          fileName: `${downloadData.result.title}.mp3`
+          fileName: `${audioData.title}.mp3`
         }, { quoted: message });
 
         // Final message to the user after download is complete
-        await message.reply(`*${downloadData.result.title}*\n\n*Downloaded successfully. Keep using Keith MD*`);
+        await message.reply(`*${audioData.title}*\n\n*Downloaded successfully. Keep using Keith MD*`);
       } else {
         message.reply("Failed to download audio. Please try again later.");
       }
