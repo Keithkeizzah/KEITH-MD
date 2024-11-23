@@ -1,9 +1,11 @@
-module.exports = async (messageDetails) => {
-  const { client: botClient, m: message, text: queryText } = messageDetails;
-
-  const ytSearch = require('yt-search');
+const ytSearch = require('yt-search');
   const { downloadAudio } = require("../lib/scrap");  // Import the downloadAudio function from lib/scrap
   const fs = require('fs');
+
+module.exports = async (context) => {
+  const { client: botClient, m: message, text: queryText } = context;
+
+  
 
   try {
     // Ensure that the queryText is not empty
