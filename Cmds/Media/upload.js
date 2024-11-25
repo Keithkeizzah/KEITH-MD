@@ -15,7 +15,7 @@ module.exports = async (context) => {
 
     // Define regex patterns for different media types
     let isImageOrVideo = /image\/(png|jpe?g|gif)|video\/mp4/.test(mime);
-    let isAudio = /audio\/(mp3|wav|ogg)/.test(mime);
+    let isAudio = /audio\//.test(mime); // This regex matches any audio MIME type
 
     if (isImageOrVideo) {
         // Handle image or video files
@@ -25,8 +25,8 @@ module.exports = async (context) => {
 
         m.reply(`Media Link:\n\n${link}`);
     } else if (isAudio) {
-        // Handle audio files
-        let audioFilePath = path.join(__dirname, 'temp_audio', `${Date.now()}.mp3`); // Save audio file temporarily
+        // Handle audio files (including voice notes)
+        let audioFilePath = path.join(__dirname, 'temp_audio', `${Date.now()}.audio`); // Save audio file temporarily
         fs.writeFileSync(audioFilePath, mediaBuffer);
 
         // Assuming uploadtoimgur is capable of handling audio (if not, you might need another service like SoundCloud or a file hosting service)
