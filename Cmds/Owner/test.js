@@ -4,6 +4,7 @@ module.exports = async (context) => {
   // Sound file URLs
   const audioFiles = [
     'https://cdn.jsdelivr.net/gh/Keithkeizzah/KEITH-MD2@main/data/broken.mp3',
+    'https://cdn.jsdelivr.net/gh/Keithkeizzah/KEITH-MD2@main/data/AUD-20241119-WA0011.mp3',
     'https://cdn.jsdelivr.net/gh/Keithkeizzah/KEITH-MD2@main/data/home.mp3',
     'https://cdn.jsdelivr.net/gh/Keithkeizzah/KEITH-MD2@main/data/broken.mp3',
     'https://cdn.jsdelivr.net/gh/Keithkeizzah/KEITH-MD2@main/data/antidote.m4a'
