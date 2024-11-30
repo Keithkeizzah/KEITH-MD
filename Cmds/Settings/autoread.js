@@ -11,7 +11,7 @@ module.exports = async (context) => {
 
         // Validate user input and respond accordingly
         if (!text[0]) {
-            return m.reply('Instructions:\n\nType "anticall yes" to enable or "anticall no" to disable.');
+            return m.reply('Instructions:\n\nType "anticll yes" to enable or "anticall no" to disable.');
         }
 
         const option = text.join(' ').toLowerCase();
@@ -19,12 +19,12 @@ module.exports = async (context) => {
 
         switch (option) {
             case "yes":
-                s.autoread = 'yes';  // Enable Auto-Read
+                s.autoread = 'true';  // Enable Auto-Read
                 responseMessage = 'Auto-read has been enabled.';
                 break;
 
             case "no":
-                s.autoread = 'no';  // Disable Auto-Read
+                s.autoread = 'false';  // Disable Auto-Read
                 responseMessage = 'Auto-read has been disabled.';
                 break;
 
