@@ -1,9 +1,9 @@
 module.exports = async (context) => {
-    const { client, m, dreadedspeed } = context;
+    const { client, m, keithspeed } = context;
 
     try {
         // Prepare the response text with speed data
-        const menuText = `𝖐𝖊𝖎𝖙𝖍 𝖘𝖕𝖊𝖊𝖉\n${dreadedspeed.toFixed(4)}𝐌\𝐒`;
+        const menuText = `𝖐𝖊𝖎𝖙𝖍 𝖘𝖕𝖊𝖊𝖉\n${keithspeed.toFixed(4)}𝐌\𝐒`;
 
         // Send message with contextInfo and mention the sender
         await client.sendMessage(m.chat, {
