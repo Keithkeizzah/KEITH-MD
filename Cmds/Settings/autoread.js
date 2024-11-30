@@ -1,6 +1,6 @@
-const s = require("../settings");
+const s = require("../settings")
 const fs = require('fs');
-const ownerMiddleware = require('../../utility/botUtil/Ownermiddleware');
+const ownerMiddleware = require('../../utility/botUtil/Ownermiddleware')
 
 // This middleware ensures the command can only be run by the bot owner
 module.exports = async (context) => {
