@@ -37,6 +37,7 @@
     "unofficial-carbon-now": "^1.0.6",
     "express": "latest",
     "chalk": "^4.1.2",
+    "heroku-client": "^3.1.0",
     "wikipedia": "^2.1.1",
     "querystring": "^0.2.1",
     "g-i-s": "^2.1.7",
@@ -51,7 +52,6 @@
     "figlet": "^1.5.2",
     "heroku-client": "^3.1.0",
     "mumaker": "^1.0.0",
-    "nayan-media-downloader": "^2.5.4",
     "ip-location": "^1.0.1",
     "calculator-engine": "^0.1.0",
     "link-preview-js": "^3.0.4",
@@ -104,10 +104,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Fortunatusmokaya/dreaded-v2.git"
+    "url": "git+https://github.com/Keithkeizzah/KEITH-MD2.git"
   },
   "bugs": {
-    "url": "https://github.com/Fortunatusmokaya/dreaded-v2/issues"
+    "url": "https://github.com/Keithkeizzah/KEITH-MD2/issues"
   },
-  "homepage": "https://github.com/Fortunatusmokaya/dreaded-v2#readme"
+  "homepage": "https://github.com/Keithkeizzah/KEITH-MD2#readme"
 }
