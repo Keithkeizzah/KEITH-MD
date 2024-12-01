@@ -6,19 +6,15 @@ module.exports = async (context) => {
 
     const fs = require("fs");
     let gcdata = await client.groupMetadata(m.chat);
-    let gcmem = participants.map(a => a.id);
 
     let vcard = '';
     
-    // Iterate over each participant
+    // Iterate over each participant in the group
     for (let a of gcdata.participants) {
-        // Check if the participant is the group admin or owner
-        let isAdminOrOwner = a.id === gcdata.owner || a.admin;
+        // Get the participant's actual WhatsApp name (display name)
+        let username = a.notify || `⚔️🗡️${a.id.split("@")[0]}`;  // Use 'notify' (the display name) or fallback to their phone number
         
-        // Use the participant's username (pushName) or fallback to a default name if no name exists
-        let username = a.notify || m.pushName || `⚔️🗡️${isAdminOrOwner ? 'Admin' : 'Member'} ${a.id.split("@")[0]}`;
-        
-        // Create vCard format
+        // Create vCard format for the participant
         vcard += `BEGIN:VCARD\nVERSION:3.0\nFN:${username}\nTEL;type=CELL;type=VOICE;waid=${a.id.split("@")[0]}:+${a.id.split("@")[0]}\nEND:VCARD\n`;
     }
 
