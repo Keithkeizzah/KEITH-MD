@@ -3,17 +3,14 @@ const axios = require("axios");
 module.exports = async (context) => {
   const { client, m, text } = context;
   
-  // Ensure that a search query is provided
-  const query = text.join(" ");
-
-  if (!query) {
+  if (!text) {
     m.reply("Please provide a search query.");
     return;
   }
 
   try {
     // Make a request to the Spotify search API
-    const response = await axios.get(`https://spotifyapi.caliphdev.com/api/search/tracks?q=${encodeURIComponent(query)}`);
+    const response = await axios.get(`https://spotifyapi.caliphdev.com/api/search/tracks?q=${encodeURIComponent(text)}`);
     const results = response.data.tracks; // Assuming the response structure contains a 'tracks' array
 
     if (!results || results.length === 0) {
