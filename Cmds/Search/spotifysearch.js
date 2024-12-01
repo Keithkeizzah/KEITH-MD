@@ -2,7 +2,7 @@ const axios = require("axios");
 
 module.exports = async (context) => {
   const { client, m, text } = context;
-  
+
   if (!text) {
     m.reply("Please provide a search query.");
     return;
@@ -11,8 +11,13 @@ module.exports = async (context) => {
   try {
     // Make a request to the Spotify search API
     const response = await axios.get(`https://spotifyapi.caliphdev.com/api/search/tracks?q=${encodeURIComponent(text)}`);
-    const results = response.data.tracks; // Assuming the response structure contains a 'tracks' array
+    
+    // Log the response for debugging purposes (can be removed later)
+    console.log(response.data);
 
+    const results = response.data.tracks; // Assuming the response contains a 'tracks' array
+
+    // Check if there are any tracks in the response
     if (!results || results.length === 0) {
       m.reply("No results found.");
       return;
@@ -34,6 +39,7 @@ module.exports = async (context) => {
 
   } catch (error) {
     // Handle any errors that occur during the request
-    m.reply("Error during the search process: " + error.message);
+    console.error("Error during the search process:", error);
+    m.reply("Error during the search process. Please try again later.");
   }
 };
