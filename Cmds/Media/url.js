@@ -8,11 +8,28 @@ module.exports = async (context) => {
     let q = m.quoted ? m.quoted : m;
     let mime = (q.msg || q).mimetype || '';
 
-    if (!mime) return m.reply('Quote an image, video, audio, or gif to upload.');
+    if (!mime && !q.url) {
+        return m.reply('Please quote an image, video, audio, or gif to upload.');
+    }
 
-    let mediaBuffer = await q.download();
+    let mediaBuffer;
+    if (q.url) {
+        // Handle URL-based media
+        try {
+            const mediaUrl = q.url;
+            const response = await fetch(mediaUrl);
+            mediaBuffer = await response.buffer();
+        } catch (error) {
+            return m.reply('Error fetching media from URL.');
+        }
+    } else {
+        // Handle quoted media (image, video, gif, or audio)
+        mediaBuffer = await q.download();
+    }
 
-    if (mediaBuffer.length > 10 * 1024 * 1024) return m.reply('Media is too large.');
+    if (mediaBuffer.length > 10 * 1024 * 1024) {
+        return m.reply('Media is too large. Please upload something smaller than 10 MB.');
+    }
 
     // Supported media types (image, video, audio, gif)
     let isMedia = /image\/(png|jpe?g|gif)|video\/mp4|audio\/(mp3|ogg|aac)/.test(mime);
