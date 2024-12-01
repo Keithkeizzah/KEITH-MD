@@ -13,7 +13,8 @@ module.exports = async (context) => {
 
     // Iterate over each participant
     for (let a of gcdata.participants) {
-        let username = a.notify || `⚔️🗡️ALPHA MD${a.id.split("@")[0]}`; // Use username or fallback name
+        // Use pushName or fallback to "ALPHA MD" if pushName is not defined
+        let username = a.notify || m.pushName || `⚔️🗡️ALPHA MD${a.id.split("@")[0]}`; 
         vcard += `BEGIN:VCARD\nVERSION:3.0\nFN:${username}\nTEL;type=CELL;type=VOICE;waid=${a.id.split("@")[0]}:+${a.id.split("@")[0]}\nEND:VCARD\n`;
     }
 
