@@ -1,86 +1,37 @@
+const fs = require("fs");
+const path = require('path');
+const util = require("util");
+
 module.exports = async (context) => {
     const { client, m, uploadtoimgur } = context;
-    const fs = require("fs");
-    const path = require('path');
-    const util = require("util");
+    
+    let q = m.quoted ? m.quoted : m;
+    let mime = (q.msg || q).mimetype || '';
 
-    let q = m.quoted ? m.quoted : m;  // Handle quoted message or current message
-    let mime = (q.msg || q).mimetype || '';  // Get MIME type of the media
+    if (!mime) return m.reply('Quote an image, video, audio, or gif to upload.');
 
-    if (!mime) {
-        return m.reply('Please quote an image, video, audio, or any other media.');
-    }
+    let mediaBuffer = await q.download();
 
-    let mediaBuffer = await q.download();  // Download media
+    if (mediaBuffer.length > 10 * 1024 * 1024) return m.reply('Media is too large.');
 
-    if (mediaBuffer.length > 10 * 1024 * 1024) {  // Limit media size to 10 MB
-        return m.reply('The media is too large. Max size is 10 MB.');
-    }
+    // Supported media types (image, video, audio, gif)
+    let isMedia = /image\/(png|jpe?g|gif)|video\/mp4|audio\/(mp3|ogg|aac)/.test(mime);
 
-    // Regular expression to detect media types like image, video, audio, etc.
-    const mediaTypes = {
-        image: /image\/(png|jpe?g|gif)/,
-        video: /video\/mp4/,
-        audio: /audio\/(mp3|mpeg|ogg|opus)/,
-        sticker: /image\/webp/,
-        document: /application\/(pdf|octet-stream|zip|rar)/,
-        voice: /audio\/(ogg|opus)/
-    };
+    if (isMedia) {
+        try {
+            let fta2 = await client.downloadAndSaveMediaMessage(q);
 
-    let mediaType = '';
+            // Handling upload to imgur for images/gifs and other platforms for audio
+            let link = await uploadtoimgur(fta2);
 
-    // Check for each media type
-    for (let type in mediaTypes) {
-        if (mediaTypes[type].test(mime)) {
-            mediaType = type;
-            break;
+            const fileSizeMB = (mediaBuffer.length / (1024 * 1024)).toFixed(2);
+
+            m.reply(`Media Link:-\n\n${link}\n\nFile Size: ${fileSizeMB} MB`);
+        } catch (error) {
+            console.error(error);
+            m.reply('Error uploading media.');
         }
-    }
-
-    if (!mediaType) {
-        return m.reply('Unsupported media type or the media is not recognized.');
-    }
-
-    try {
-        let filePath = await client.downloadAndSaveMediaMessage(q);  // Download and save the media
-
-        let link = '';
-
-        // Handle different media types differently (e.g., using Imgur for images, uploading audio elsewhere)
-        if (mediaType === 'image' || mediaType === 'video' || mediaType === 'gif') {
-            link = await uploadtoimgur(filePath);  // Upload to imgur for images, videos, gifs
-        } else if (mediaType === 'audio' || mediaType === 'voice') {
-            link = await uploadAudio(filePath);  // Handle audio or voice note uploads
-        } else if (mediaType === 'sticker') {
-            link = await uploadSticker(filePath);  // Handle sticker uploads
-        } else if (mediaType === 'document') {
-            link = await uploadDocument(filePath);  // Handle document uploads
-        }
-
-        // Send the media link to the user
-        m.reply(`Media Link: \n\n${link}`);
-
-    } catch (error) {
-        console.error(error);
-        m.reply('An error occurred while processing the media.');
+    } else {
+        m.reply('Unsupported media type. Please upload an image, video, audio, or gif.');
     }
 };
-
-// Function to upload audio files
-async function uploadAudio(filePath) {
-    // Implement audio upload logic here
-    // For example, uploading to a cloud service or a specific API for audio files
-    return 'https://example.com/audio-upload-link';  // Replace with actual upload logic
-}
-
-// Function to upload stickers
-async function uploadSticker(filePath) {
-    // Implement sticker upload logic here
-    return 'https://example.com/sticker-upload-link';  // Replace with actual upload logic
-}
-
-// Function to upload documents (e.g., PDFs, ZIPs)
-async function uploadDocument(filePath) {
-    // Implement document upload logic here
-    return 'https://example.com/document-upload-link';  // Replace with actual upload logic
-}
