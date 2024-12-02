@@ -29,13 +29,22 @@ async function downloadVideo(url) {
       "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
     };
 
+    // Make the request to start the download process
     const response = await axios.get("https://ab.cococococ.com/ajax/download.php", {
       params: requestParams,
       headers: headers
     });
 
+    // Log the initial response to debug
+    console.log("Initial download response:", response.data);
+
     const fileId = response.data.id;
 
+    if (!fileId) {
+      throw new Error("No file ID returned from the server.");
+    }
+
+    // Function to check the download progress
     async function checkDownloadProgress() {
       const progressResponse = await axios.get("https://p.oceansaver.in/ajax/progress.php", {
         params: { id: fileId },
@@ -43,6 +52,9 @@ async function downloadVideo(url) {
       });
 
       const { progress, download_url, text } = progressResponse.data;
+
+      // Log progress to debug
+      console.log("Download Progress:", progress, "Text:", text, "Download URL:", download_url);
 
       if (text === "Finished" && download_url) {
         return download_url;
@@ -69,15 +81,21 @@ module.exports = async (messageDetails) => {
       return message.reply("What video do you want to download?");
     }
 
+    // Perform a YouTube search based on the query
     const searchResults = await ytSearch(query);
 
     if (searchResults && searchResults.videos.length > 0) {
       const firstVideo = searchResults.videos[0];
       const videoUrl = firstVideo.url;
 
+      // Notify the user about the download process
       await message.reply("Downloading video...");
 
+      // Fetch video download URL
       const videoDownloadUrl = await downloadVideo(videoUrl);
+
+      // Log the final download URL
+      console.log("Final Video Download URL:", videoDownloadUrl);
 
       if (videoDownloadUrl) {
         // Send the video once it's ready
@@ -94,6 +112,7 @@ module.exports = async (messageDetails) => {
       await message.reply("No video found for the specified query.");
     }
   } catch (error) {
+    console.error("Error during download:", error);
     message.reply("Download failed\n" + error);
   }
 };
