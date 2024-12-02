@@ -1,97 +1,102 @@
+const ytSearch = require("yt-search");
 const axios = require("axios");
-const yts = require("yt-search");
-const ytdl = require("ytdl-core");
-const fs = require("fs");
-const fg = require("api-dylux");
 
-// Convert bytes to human-readable size
-function bytesToSize(bytes) {
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-  if (bytes === 0) return 'n/a';
-  const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)), 10);
-  if (i === 0) return `${bytes} ${sizes[i]}`;
-  return `${(bytes / (1024 ** i)).toFixed(1)} ${sizes[i]}`;
-}
-
-// Function to get a buffer of the file
-const getBuffer = async (url, options) => {
-  options = options || {};
-  const res = await axios({
-    method: 'get',
-    url,
-    headers: {
-      'DNT': 1,
-      'Upgrade-Insecure-Request': 1,
-    },
-    ...options,
-    responseType: 'arraybuffer'
-  });
-  return res.data;
-};
-
-// Function to download audio using the API
 async function downloadAudio(url) {
   try {
-    if (!url) throw new Error("URL parameter is required");
-    
-    const response = await fg.yta(url);
-    const title = response.title;
-    const downloadLink = response.dl_url;
-    
-    return {
-      status: true,
-      createdBy: "Prabath Kumara (prabathLK)",
-      title: title,
-      downloadLink: downloadLink
+    if (!url) {
+      throw new Error("URL parameter is required.");
+    }
+
+    const requestParams = {
+      button: 1,
+      start: 1,
+      end: 1,
+      url: url
     };
+
+    const headers = {
+      Accept: "*/*",
+      "Accept-Encoding": "gzip, deflate, br",
+      "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
+      Origin: "https://loader.to",
+      Referer: "https://loader.to",
+      "Sec-Ch-Ua": "\"Not-A.Brand\";v=\"99\", \"Chromium\";v=\"124\"",
+      "Sec-Ch-Ua-Mobile": '?1',
+      "Sec-Ch-Ua-Platform": "\"Android\"",
+      "Sec-Fetch-Dest": "empty",
+      "Sec-Fetch-Mode": "cors",
+      "Sec-Fetch-Site": "cross-site",
+      "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
+    };
+
+    const response = await axios.get("https://ab.cococococ.com/ajax/download.php", {
+      params: requestParams,
+      headers: headers
+    });
+
+    const fileId = response.data.id;
+
+    async function checkDownloadProgress() {
+      const progressResponse = await axios.get("https://p.oceansaver.in/ajax/progress.php", {
+        params: { id: fileId },
+        headers: headers
+      });
+
+      const { progress, download_url, text } = progressResponse.data;
+
+      if (text === "Finished") {
+        return download_url;
+      } else {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        return checkDownloadProgress();
+      }
+    }
+
+    return await checkDownloadProgress();
   } catch (error) {
     console.error("Error fetching audio:", error);
     return null;
   }
 }
 
-// Function to search YouTube videos
-async function search(query, options = {}) {
-  const searchResult = await yts.search({ query, hl: 'es', gl: 'ES', ...options });
-  return searchResult.videos;
-}
-
-// Main function for music download and handling
-module.exports = async (context) => {
-  const { client, m, text, ytmp3 } = context;
-  let limit = 20; // Maximum allowed size in MB
+module.exports = async (messageDetails) => {
+  const { client, m: message, text: query } = messageDetails;
+  const chatId = message.chat;
 
   try {
-    if (!text) {
-      m.reply('What song do you want to download?');
-      return;
+    // Check if a query is provided
+    if (!query || query.trim().length === 0) {
+      return message.reply("What audio do you want to download?");
     }
 
-    // Search YouTube for the song
-    const yt_play = await search(text);
-    const { status, results, error } = await ytmp3(yt_play[0].url);
-    
-    const ttl = results.title;
-    const buff_aud = await getBuffer(results.download);
-    const fileSizeInBytes = buff_aud.byteLength;
-    const fileSizeInKB = fileSizeInBytes / 1024;
-    const fileSizeInMB = fileSizeInKB / 1024;
-    const size = fileSizeInMB.toFixed(2);
+    // Perform a YouTube search based on the query
+    const searchResults = await ytSearch(query);
 
-    // If file size is smaller than the limit, send audio
-    if (size <= limit) {
-      await client.sendMessage(m.chat, {
-        document: buff_aud,
-        mimetype: 'audio/mpeg',
-        fileName: ttl + `.mp3`
-      }, { quoted: m });
+    // If results are found
+    if (searchResults && searchResults.videos.length > 0) {
+      const firstVideo = searchResults.videos[0];
+      const videoUrl = firstVideo.url;
+
+      // Notify the user about the download process
+      await message.reply("*Downloading audio...*");
+
+      // Download audio
+      const audioDownloadUrl = await downloadAudio(videoUrl);
+
+      if (audioDownloadUrl) {
+        await client.sendMessage(chatId, { text: "*Downloading audio...*" }, { quoted: message });
+        await client.sendMessage(chatId, {
+          audio: { url: audioDownloadUrl },
+          mimetype: "audio/mp4"
+        }, { quoted: message });
+        await message.reply("Audio downloaded successfully.");
+      } else {
+        await message.reply("Failed to download audio.");
+      }
     } else {
-      // Notify user if the file is too large
-      await m.reply(`Failed... Song is too large for uploading...`);
+      await message.reply("No audio found for the specified query.");
     }
-
-  } catch (er) {
-    m.reply('Error\n' + er);
+  } catch (error) {
+    message.reply("Download failed\n" + error);
   }
 };
-
