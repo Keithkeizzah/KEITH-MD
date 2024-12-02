@@ -30,18 +30,22 @@
     },
     "CODE": {
       "description": "Enter your country code without +. Example: 254 for Kenya. This will allow bot to detect and remove foreigners if commanded",
+      "value": "254",
       "required": true
     },
     "STICKER_AUTHOR": {
       "description": "Put your sticker author data",
+      "value": "Keith",
       "required": false
     },
     "STICKER_PACKNAME": {
       "description": "Put your sticker packname data",
+      "value": "Keizzah",
       "required": false
     },
     "BOTNAME": {
-      "description": "Enter name for your bot.",
+      "description": "Enter name for your bot,,you can change this.",
+      "value": "𝐊𝐄𝐈𝐓𝐇-𝐌𝐃",
       "required": false
     },
     "GC_PRESENCE": {
@@ -54,34 +58,40 @@
     },
     "AUTOVIEW_STATUS": {
       "description": "Type true if you want bot to automatically read all status update",
+      "value": "true",
       "required": false
     },
 
 "EVENTS": {
       "description": "choose whether to allow bot to detect events in groups such as promote, demote, remove and add. If set to true bot will send welcome/goodbye messages and signal when somebody is promoted or demoted.",
-      "value": "true",
+      "value": "false",
       "required": true
     },
 "AUTOBIO": {
       "description": "Type true if you want bot to autoupdate it's bio constantly",
+      "value": "true",
       "required": false
     },
 
 "ANTITAG": {
       "description": "Type true if you want bot to automatically remove members who tagall or use hidetag.",
+      "value": "true",
       "required": false
     },
 "ANTIVIEWONCE": {
       "description": "Type true if you want bot to automatically read viewonce media",
+      "value": "true",
       "required": false
     },
 
  "AUTOLIKE_STATUS": {
       "description": "Type true if you want bot to automatically like status updates, this will only work if AUTOVIEW_STATUS is true.",
+      "value": "true",
       "required": false
     },
     "AUTOREAD": {
       "description": "Put here true if you want bot to automatically bluetick messages in private.",
+      "value": "false",
       "required": false
     },
     "WA_PRESENCE": {
@@ -91,6 +101,7 @@
     },
     "MODE": {
       "description": "Type private if you don't want other people to use the bot or public if you want everyone to access.",
+      "value": "public",
       "required": false
     }
   },
