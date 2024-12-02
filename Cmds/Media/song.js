@@ -4,17 +4,16 @@ const ytdl = require("ytdl-core");
 const fs = require("fs");
 const fg = require("api-dylux");
 
-// Convert bytes to human-readable size
+// Convert bytes to human-readable size (KB, MB, etc.)
 function bytesToSize(bytes) {
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
   if (bytes === 0) return 'n/a';
   const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)), 10);
-  if (i === 0) return `${bytes} ${sizes[i]}`;
-  return `${(bytes / (1024 ** i)).toFixed(1)} ${sizes[i]}`;
+  return `${(bytes / (1024 ** i)).toFixed(2)} ${sizes[i]}`;
 }
 
 // Function to get a buffer of the file
-const getBuffer = async (url, options) => {
+const getBuffer = async (url, options = {}) => {
   options = options || {};
   const res = await axios({
     method: 'get',
@@ -29,7 +28,7 @@ const getBuffer = async (url, options) => {
   return res.data;
 };
 
-// Function to download audio using the API
+// Function to download audio using the API (ytmp3)
 async function downloadAudio(url) {
   try {
     if (!url) throw new Error("URL parameter is required");
@@ -50,16 +49,16 @@ async function downloadAudio(url) {
   }
 }
 
-// Function to search YouTube videos
+// Function to search YouTube for videos
 async function search(query, options = {}) {
   const searchResult = await yts.search({ query, hl: 'es', gl: 'ES', ...options });
   return searchResult.videos;
 }
 
-// Main function for music download and handling
+// Main function to download and handle the music
 module.exports = async (context) => {
   const { client, m, text, ytmp3 } = context;
-  let limit = 20; // Maximum allowed size in MB
+  let limit = 20; // Max allowed size in MB
 
   try {
     if (!text) {
@@ -67,30 +66,38 @@ module.exports = async (context) => {
       return;
     }
 
-    // Search YouTube for the song
+    // Search for the video on YouTube
     const yt_play = await search(text);
+    if (!yt_play || yt_play.length === 0) {
+      return m.reply('No results found!');
+    }
+    
     const { status, results, error } = await ytmp3(yt_play[0].url);
+    if (!status || !results) {
+      return m.reply('Error fetching audio details');
+    }
     
     const ttl = results.title;
-    const buff_aud = await getBuffer(results.download);
+    const audioUrl = results.download;
+    
+    // Fetch the audio buffer (file)
+    const buff_aud = await getBuffer(audioUrl);
     const fileSizeInBytes = buff_aud.byteLength;
-    const fileSizeInKB = fileSizeInBytes / 1024;
-    const fileSizeInMB = fileSizeInKB / 1024;
-    const size = fileSizeInMB.toFixed(2);
+    const size = bytesToSize(fileSizeInBytes);
 
-    // If file size is smaller than the limit, send audio
-    if (size <= limit) {
+    // If the file size is smaller than the limit, send audio
+    if (fileSizeInBytes <= limit * 1024 * 1024) {
       await client.sendMessage(m.chat, {
         document: buff_aud,
         mimetype: 'audio/mpeg',
-        fileName: ttl + `.mp3`
+        fileName: `${ttl}.mp3`
       }, { quoted: m });
     } else {
-      // Notify user if the file is too large
-      await m.reply(`Failed... Song is too large for uploading...`);
+      await m.reply(`Failed... Song is too large for uploading... Size: ${size}`);
     }
-
+    
   } catch (er) {
-    m.reply('Error\n' + er);
+    console.error(er);
+    m.reply('Error\n' + er.message || er);
   }
 };
