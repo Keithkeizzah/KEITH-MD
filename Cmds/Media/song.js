@@ -1,6 +1,6 @@
 const axios = require("axios");
 const ytSearch = require("yt-search");
-const fg = require("api-dylux");  // This is the correct module for downloading audio
+const fg = require("api-dylux");  // Correct module for downloading audio
 
 // Function to download audio from a URL using the API
 async function downloadAudio(url) {
@@ -62,7 +62,12 @@ module.exports = async (messageDetails) => {
         await client.sendMessage(chatId, videoInfo, { quoted: message });
 
         // Send the audio file (as MP3) to the user
-        await client.sendMessage(chatId, { audio: { url: downloadUrl }, mimetype: "audio/mp3" }, { quoted: message });
+        const fileName = `${videoDetails.title}.mp3`;
+        await client.sendMessage(chatId, { 
+          audio: { url: downloadUrl }, 
+          mimetype: "audio/mpeg", 
+          fileName: fileName 
+        }, { quoted: message });
 
         // Inform the user that the download was successful
         await message.reply(`*${videoDetails.title}*\n\n*Downloaded successfully. Keep using Keith MD*`);
@@ -73,6 +78,7 @@ module.exports = async (messageDetails) => {
       message.reply("No video found for the specified query.");
     }
   } catch (error) {
-    message.reply("Download failed\n" + error);
+    console.error(error);
+    message.reply("Download failed. Please try again later.");
   }
 };
