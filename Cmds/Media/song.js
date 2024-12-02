@@ -64,7 +64,7 @@ module.exports = async (messageDetails) => {
         // Send the audio file (as MP3) to the user
         const fileName = `${videoDetails.title}.mp3`;
         await client.sendMessage(chatId, { 
-          audio: { url: downloadUrl }, 
+          document: { url: downloadUrl }, 
           mimetype: "audio/mpeg", 
           fileName: fileName 
         }, { quoted: message });
