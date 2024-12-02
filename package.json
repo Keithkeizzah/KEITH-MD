@@ -104,10 +104,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Keithkeizzah/KEITH-MD2.git"
+    "url": "git+https://github.com/Keithkeizzah/KEITH-MD.git"
   },
   "bugs": {
-    "url": "https://github.com/Keithkeizzah/KEITH-MD2/issues"
+    "url": "https://github.com/Keithkeizzah/KEITH-MD/issues"
   },
-  "homepage": "https://github.com/Keithkeizzah/KEITH-MD2#readme"
+  "homepage": "https://github.com/Keithkeizzah/KEITH-MD#readme"
 }
