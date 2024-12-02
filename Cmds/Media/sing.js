@@ -1,16 +1,41 @@
-const ytSearch = require("yt-search");
 const axios = require("axios");
+const fg = require("api-dylux");
+const ytSearch = require("yt-search");
 
-async function downloadVideo(url) {
+async function downloadAudio(url) {
   try {
     if (!url) {
-      throw new Error("URL parameter is required.");
+      throw new Error("URL parameter is required");
     }
+    
+    const response = await fg.yta(url);
+    const title = response.title;
+    const downloadLink = response.dl_url;
 
+    return {
+      status: true,
+      createdBy: "Prabath Kumara (prabathLK)",
+      title: title,
+      downloadLink: downloadLink
+    };
+  } catch (error) {
+    console.error("Error fetching audio:", error);
+    return null;
+  }
+}
+
+async function downloadVideo(url, format) {
+  try {
+    if (!url || !format) {
+      throw new Error("URL and format parameters are required.");
+    }
+    
+    const formatValue = parseInt(format.replace('p', ''), 10);
     const requestParams = {
       button: 1,
       start: 1,
       end: 1,
+      format: formatValue,
       url: url
     };
 
@@ -29,22 +54,14 @@ async function downloadVideo(url) {
       "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
     };
 
-    // Make the request to start the download process
     const response = await axios.get("https://ab.cococococ.com/ajax/download.php", {
       params: requestParams,
       headers: headers
     });
-
-    // Log the initial response to debug
-    console.log("Initial download response:", response.data);
-
+    
     const fileId = response.data.id;
 
-    if (!fileId) {
-      throw new Error("No file ID returned from the server.");
-    }
-
-    // Function to check the download progress
+    // Poll for progress until download is complete
     async function checkDownloadProgress() {
       const progressResponse = await axios.get("https://p.oceansaver.in/ajax/progress.php", {
         params: { id: fileId },
@@ -53,13 +70,10 @@ async function downloadVideo(url) {
 
       const { progress, download_url, text } = progressResponse.data;
 
-      // Log progress to debug
-      console.log("Download Progress:", progress, "Text:", text, "Download URL:", download_url);
-
-      if (text === "Finished" && download_url) {
+      if (text === "Finished") {
         return download_url;
       } else {
-        // Retry after 1 second if not finished
+        // Wait for a second before checking progress again
         await new Promise(resolve => setTimeout(resolve, 1000));
         return checkDownloadProgress();
       }
@@ -77,42 +91,52 @@ module.exports = async (messageDetails) => {
   const chatId = message.chat;
 
   try {
+    // Check if a query is provided
     if (!query || query.trim().length === 0) {
-      return message.reply("What video do you want to download?");
+      return message.reply("What song or video do you want to download?");
     }
 
     // Perform a YouTube search based on the query
     const searchResults = await ytSearch(query);
 
+    // If results are found
     if (searchResults && searchResults.videos.length > 0) {
       const firstVideo = searchResults.videos[0];
       const videoUrl = firstVideo.url;
 
-      // Notify the user about the download process
-      await message.reply("Downloading video...");
+      // Ask the user to choose the video format (e.g., 720p)
+      const format = '720p';  // You can dynamically choose the format, for example
 
-      // Fetch video download URL
-      const videoDownloadUrl = await downloadVideo(videoUrl);
+      // Use the downloadVideo function to get the download URL
+      const downloadUrl = await downloadVideo(videoUrl, format);
 
-      // Log the final download URL
-      console.log("Final Video Download URL:", videoDownloadUrl);
+      // If the download URL is successfully retrieved
+      if (downloadUrl) {
+        // Inform the user that the download is starting
+        await client.sendMessage(chatId, { text: "*Downloading...*" }, { quoted: message });
 
-      if (videoDownloadUrl) {
-        // Send the video once it's ready
-        await client.sendMessage(chatId, {
-          video: { url: videoDownloadUrl },
-          mimetype: "video/mp4"
-        }, { quoted: message });
+        // Send a message with video details (title, duration, artist)
+        const videoInfo = {
+          image: { url: firstVideo.thumbnail },
+          caption: `*KEITH-MD VIDEO PLAYER*\n\n╭───────────────◆\n│ *Title:* ${firstVideo.title}\n│ *Duration:* ${firstVideo.timestamp}\n│ *Artist:* ${firstVideo.author.name}\n╰────────────────◆`
+        };
+        await client.sendMessage(chatId, videoInfo, { quoted: message });
 
-        await message.reply("Video downloaded successfully.");
+        // Send the video file to the user
+        await client.sendMessage(chatId, { video: { url: downloadUrl }, mimetype: "video/mp4" }, { quoted: message });
+
+        // Send the video file as a document (optional)
+        await client.sendMessage(chatId, { document: { url: downloadUrl }, mimetype: "video/mp4" }, { quoted: message });
+
+        // Inform the user that the download was successful
+        await message.reply(`*${firstVideo.title}*\n\n*Downloaded successfully. Keep using Keith MD*`);
       } else {
-        await message.reply("Failed to download video.");
+        message.reply("Failed to retrieve download URL.");
       }
     } else {
-      await message.reply("No video found for the specified query.");
+      message.reply("No video found for the specified query.");
     }
   } catch (error) {
-    console.error("Error during download:", error);
     message.reply("Download failed\n" + error);
   }
 };
