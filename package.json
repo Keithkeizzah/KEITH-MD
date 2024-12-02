@@ -50,6 +50,7 @@
     "dotenv": "^16.3.1",
     "file-type": "^16.5.3",
     "figlet": "^1.5.2",
+    "node-catbox": "3.2.0",
     "heroku-client": "^3.1.0",
     "mumaker": "^1.0.0",
     "ip-location": "^1.0.1",
