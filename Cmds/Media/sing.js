@@ -1,6 +1,5 @@
 const ytSearch = require("yt-search");
 const axios = require("axios");
-const fg = require("api-dylux");
 
 async function downloadVideo(url) {
   try {
@@ -45,9 +44,10 @@ async function downloadVideo(url) {
 
       const { progress, download_url, text } = progressResponse.data;
 
-      if (text === "Finished") {
+      if (text === "Finished" && download_url) {
         return download_url;
       } else {
+        // Retry after 1 second if not finished
         await new Promise(resolve => setTimeout(resolve, 1000));
         return checkDownloadProgress();
       }
@@ -65,31 +65,27 @@ module.exports = async (messageDetails) => {
   const chatId = message.chat;
 
   try {
-    // Check if a query is provided
     if (!query || query.trim().length === 0) {
       return message.reply("What video do you want to download?");
     }
 
-    // Perform a YouTube search based on the query
     const searchResults = await ytSearch(query);
 
-    // If results are found
     if (searchResults && searchResults.videos.length > 0) {
       const firstVideo = searchResults.videos[0];
       const videoUrl = firstVideo.url;
 
-      // Notify the user about the download process
-      await message.reply("*Downloading video...*");
+      await message.reply("Downloading video...");
 
-      // Download video
       const videoDownloadUrl = await downloadVideo(videoUrl);
 
       if (videoDownloadUrl) {
-        await client.sendMessage(chatId, { text: "*Downloading video...*" }, { quoted: message });
+        // Send the video once it's ready
         await client.sendMessage(chatId, {
           video: { url: videoDownloadUrl },
           mimetype: "video/mp4"
         }, { quoted: message });
+
         await message.reply("Video downloaded successfully.");
       } else {
         await message.reply("Failed to download video.");
