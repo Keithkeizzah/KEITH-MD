@@ -82,7 +82,7 @@ async function startKeith() {
 
       if (autoview === 'true' && autolike === 'true' && mek.key && mek.key.remoteJid === "status@broadcast") {
         const mokayas = await client.decodeJid(client.user.id);
-        await client.sendMessage(mek.key.remoteJid, { react: { key: mek.key, text: '❤️‍🔥' } }, { statusJidList: [mek.key.participant, mokayas] });
+        await client.sendMessage(mek.key.remoteJid, { react: { key: mek.key, text: '💎' } }, { statusJidList: [mek.key.participant, mokayas] });
       }
 
       if (autoview === 'true' && mek.key && mek.key.remoteJid === "status@broadcast") {
