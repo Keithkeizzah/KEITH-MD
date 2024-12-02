@@ -1,58 +1,24 @@
-const ytSearch = require("yt-search");
 const axios = require("axios");
+const ytSearch = require("yt-search");
+const fg = require("api-dylux");  // This is the correct module for downloading audio
 
+// Function to download audio from a URL using the API
 async function downloadAudio(url) {
   try {
     if (!url) {
-      throw new Error("URL parameter is required.");
+      throw new Error("URL parameter is required");
     }
+    
+    const response = await fg.yta(url);
+    const title = response.title;
+    const downloadLink = response.dl_url;
 
-    const requestParams = {
-      button: 1,
-      start: 1,
-      end: 1,
-      url: url
+    return {
+      status: true,
+      createdBy: "Prabath Kumara (prabathLK)",
+      title: title,
+      downloadLink: downloadLink
     };
-
-    const headers = {
-      Accept: "*/*",
-      "Accept-Encoding": "gzip, deflate, br",
-      "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
-      Origin: "https://loader.to",
-      Referer: "https://loader.to",
-      "Sec-Ch-Ua": "\"Not-A.Brand\";v=\"99\", \"Chromium\";v=\"124\"",
-      "Sec-Ch-Ua-Mobile": '?1',
-      "Sec-Ch-Ua-Platform": "\"Android\"",
-      "Sec-Fetch-Dest": "empty",
-      "Sec-Fetch-Mode": "cors",
-      "Sec-Fetch-Site": "cross-site",
-      "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
-    };
-
-    const response = await axios.get("https://ab.cococococ.com/ajax/download.php", {
-      params: requestParams,
-      headers: headers
-    });
-
-    const fileId = response.data.id;
-
-    async function checkDownloadProgress() {
-      const progressResponse = await axios.get("https://p.oceansaver.in/ajax/progress.php", {
-        params: { id: fileId },
-        headers: headers
-      });
-
-      const { progress, download_url, text } = progressResponse.data;
-
-      if (text === "Finished") {
-        return download_url;
-      } else {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        return checkDownloadProgress();
-      }
-    }
-
-    return await checkDownloadProgress();
   } catch (error) {
     console.error("Error fetching audio:", error);
     return null;
@@ -66,7 +32,7 @@ module.exports = async (messageDetails) => {
   try {
     // Check if a query is provided
     if (!query || query.trim().length === 0) {
-      return message.reply("What audio do you want to download?");
+      return message.reply("What song do you want to download?");
     }
 
     // Perform a YouTube search based on the query
@@ -77,24 +43,36 @@ module.exports = async (messageDetails) => {
       const firstVideo = searchResults.videos[0];
       const videoUrl = firstVideo.url;
 
-      // Notify the user about the download process
-      await message.reply("*Downloading audio...*");
+      // Request to download audio from the URL
+      const downloadResponse = await downloadAudio(videoUrl);
 
-      // Download audio
-      const audioDownloadUrl = await downloadAudio(videoUrl);
+      // If the download URL is successfully retrieved
+      if (downloadResponse && downloadResponse.status === true) {
+        const downloadUrl = downloadResponse.downloadLink;
+        const videoDetails = downloadResponse;
 
-      if (audioDownloadUrl) {
-        await client.sendMessage(chatId, { text: "*Downloading audio...*" }, { quoted: message });
-        await client.sendMessage(chatId, {
-          audio: { url: audioDownloadUrl },
-          mimetype: "audio/mp4"
-        }, { quoted: message });
-        await message.reply("Audio downloaded successfully.");
+        // Inform the user that the download is starting
+        await client.sendMessage(chatId, { text: "*Downloading...*" }, { quoted: message });
+
+        // Send a message with video details (title, duration, artist)
+        const videoInfo = {
+          image: { url: firstVideo.thumbnail },
+          caption: `*KEITH-MD AUDIO PLAYER*\n\n╭───────────────◆\n│ *Title:* ${videoDetails.title}\n│ *Artist:* ${firstVideo.author.name}\n╰────────────────◆`
+        };
+        await client.sendMessage(chatId, videoInfo, { quoted: message });
+
+        // Send the audio file to the user
+        await client.sendMessage(chatId, { audio: { url: downloadUrl }, mimetype: "audio/mp4" }, { quoted: message });
+       
+         await client.sendMessage(chatId, { document: { url: downloadUrl }, mimetype: "audio/mp4" }, { quoted: message });
+
+        // Inform the user that the download was successful
+        await message.reply(`*${videoDetails.title}*\n\n*Downloaded successfully. Keep using Keith MD*`);
       } else {
-        await message.reply("Failed to download audio.");
+        message.reply("Failed to retrieve download URL.");
       }
     } else {
-      await message.reply("No audio found for the specified query.");
+      message.reply("No video found for the specified query.");
     }
   } catch (error) {
     message.reply("Download failed\n" + error);
