@@ -2,28 +2,6 @@ const ytSearch = require("yt-search");
 const axios = require("axios");
 const fg = require("api-dylux");
 
-async function downloadAudio(url) {
-  try {
-    if (!url) {
-      throw new Error("URL parameter is required");
-    }
-
-    const response = await fg.yta(url);
-    const title = response.title;
-    const downloadLink = response.dl_url;
-
-    return {
-      status: true,
-      createdBy: "Prabath Kumara (prabathLK)",
-      title: title,
-      downloadLink: downloadLink
-    };
-  } catch (error) {
-    console.error("Error fetching audio:", error);
-    return null;
-  }
-}
-
 async function downloadVideo(url) {
   try {
     if (!url) {
@@ -89,7 +67,7 @@ module.exports = async (messageDetails) => {
   try {
     // Check if a query is provided
     if (!query || query.trim().length === 0) {
-      return message.reply("What song or video do you want to download?");
+      return message.reply("What video do you want to download?");
     }
 
     // Perform a YouTube search based on the query
@@ -100,49 +78,21 @@ module.exports = async (messageDetails) => {
       const firstVideo = searchResults.videos[0];
       const videoUrl = firstVideo.url;
 
-      // Ask user if they want to download audio or video
-      await message.reply("Do you want to download audio or video? Type 'audio' or 'video'");
+      // Notify the user about the download process
+      await message.reply("*Downloading video...*");
 
-      // Listen for the user's reply
-      const reply = await client.awaitMessages({
-        filter: m => m.chat.id === chatId && m.text.toLowerCase() === 'audio' || m.text.toLowerCase() === 'video',
-        time: 30000, // 30 seconds timeout for reply
-        max: 1,
-        errors: ['time']
-      });
+      // Download video
+      const videoDownloadUrl = await downloadVideo(videoUrl);
 
-      const option = reply.first().text.toLowerCase();
-
-      if (option === 'audio') {
-        // Download audio
-        const audioData = await downloadAudio(videoUrl);
-
-        if (audioData && audioData.status) {
-          await client.sendMessage(chatId, { text: "*Downloading audio...*" }, { quoted: message });
-          await client.sendMessage(chatId, {
-            audio: { url: audioData.downloadLink },
-            mimetype: "audio/mp4"
-          }, { quoted: message });
-          await message.reply(`*${audioData.title}*\n\n*Audio downloaded successfully. Enjoy your music!`);
-        } else {
-          await message.reply("Failed to download audio.");
-        }
-      } else if (option === 'video') {
-        // Download video
-        const videoDownloadUrl = await downloadVideo(videoUrl);
-
-        if (videoDownloadUrl) {
-          await client.sendMessage(chatId, { text: "*Downloading video...*" }, { quoted: message });
-          await client.sendMessage(chatId, {
-            video: { url: videoDownloadUrl },
-            mimetype: "video/mp4"
-          }, { quoted: message });
-          await message.reply("Video downloaded successfully.");
-        } else {
-          await message.reply("Failed to download video.");
-        }
+      if (videoDownloadUrl) {
+        await client.sendMessage(chatId, { text: "*Downloading video...*" }, { quoted: message });
+        await client.sendMessage(chatId, {
+          video: { url: videoDownloadUrl },
+          mimetype: "video/mp4"
+        }, { quoted: message });
+        await message.reply("Video downloaded successfully.");
       } else {
-        await message.reply("Invalid option. Please type 'audio' or 'video'.");
+        await message.reply("Failed to download video.");
       }
     } else {
       await message.reply("No video found for the specified query.");
