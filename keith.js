@@ -91,7 +91,7 @@ module.exports = Keith = async (client, m, chatUpdate, message, store) => {
     const IsGroup = m.chat?.endsWith("@g.us");
 
     const context = {
-        client, m, text, isBotMessage, Owner, chatUpdate, store, isBotAdmin, isAdmin, IsGroup, participants,
+        client, m, text, isBotMessage, message, antibot, Owner, chatUpdate, store, isBotAdmin, isAdmin, IsGroup, participants,
         pushname, body, budy, totalCommands, args, mime, qmsg, msgKeith, botNumber, itsMe,
         packname, author, generateProfilePicture, groupMetadata, Keithspeed, mycode,
         fetchJson, exec, getRandom, UploadFileUgu, TelegraPh, prefix, cmd, botname, mode, gcpresence, antitag,antidelete, antionce, fetchBuffer,store, uploadtoimgur, chatUpdate, ytmp3, getGroupAdmins, Tag
