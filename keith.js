@@ -19,6 +19,7 @@ const antiviewonce = require('./Functions/antiviewonce');
 const gcPresence = require('./Functions/gcPresence');
 const antilink = require('./Functions/antilink');
 const antitaggc = require('./Functions/antitag');
+const antibotgc = require('./Functions/antibot');
 const masterEval = require('./Functions/masterEval');
 
 const {
@@ -111,6 +112,7 @@ module.exports = Keith = async (client, m, chatUpdate, store) => {
     await antiviewonce(client, m, antionce);
     await gcPresence(client, m, gcpresence);
     await antitaggc(client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antitag);
+    await antibotgc(client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antibot);
 
     await masterEval(client, m, Owner, budy, fetchJson, store);
 
