@@ -57,6 +57,7 @@ module.exports = Keith = async (client, m, chatUpdate, store) => {
     const pushname = m.pushName || "No Name";
     const botNumber = await client.decodeJid(client.user.id);
     const itsMe = m.sender == botNumber ? true : false;
+     const isBotMessage = m.sender == botNumber ? true : false;
     let text = (q = args.join(" "));
     const arg = budy.trim().substring(budy.indexOf(" ") + 1);
     const arg1 = arg.trim().substring(arg.indexOf(" ") + 1);
@@ -90,7 +91,7 @@ module.exports = Keith = async (client, m, chatUpdate, store) => {
     const IsGroup = m.chat?.endsWith("@g.us");
 
     const context = {
-        client, m, text, isBotMessage, message, Owner, chatUpdate, store, isBotAdmin, isAdmin, IsGroup, participants,
+        client, m, text, isBotMessage, Owner, chatUpdate, store, isBotAdmin, isAdmin, IsGroup, participants,
         pushname, body, budy, totalCommands, args, mime, qmsg, msgKeith, botNumber, itsMe,
         packname, author, generateProfilePicture, groupMetadata, Keithspeed, mycode,
         fetchJson, exec, getRandom, UploadFileUgu, TelegraPh, prefix, cmd, botname, mode, gcpresence, antitag,antidelete, antionce, fetchBuffer,store, uploadtoimgur, chatUpdate, ytmp3, getGroupAdmins, Tag
