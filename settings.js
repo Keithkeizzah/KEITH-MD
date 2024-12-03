@@ -19,6 +19,7 @@ const sessionName = "session";
 const presence = process.env.WA_PRESENCE || 'online';
 
 const antitag = process.env.ANTITAG || 'true';
+const antibot = process.env.ANTIBOT || 'true';
 const anticall = process.env.ANTICALL || 'true';
 const antidelete = process.env.ANTIDELETE || 'true';
 const autoview = process.env.AUTOVIEW_STATUS || 'true';
@@ -44,6 +45,7 @@ module.exports = {
   DevKeith,
   gcpresence,
   antionce,
+  antibot,
   session,
   antitag,
   antidelete
