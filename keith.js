@@ -27,7 +27,6 @@ const {
    dev, gcpresence, antionce, antitag, antidelete
 } = require('./settings');
 
-
 module.exports = Keith = async (client, m, chatUpdate, store) => {
   try {
     var body =
@@ -68,9 +67,8 @@ module.exports = Keith = async (client, m, chatUpdate, store) => {
        } 
        return admins || []; 
      };
-    const fortu = (m.quoted || m); 
-    const quoted = (fortu.mtype == 'buttonsMessage') ? fortu[Object.keys(fortu)[1]] : (fortu.mtype == 'templateMessage') ? fortu.hydratedTemplate[Object.keys(fortu.hydratedTemplate)[1]] : (fortu.mtype == 'product') ? fortu[Object.keys(fortu)[0]] : m.quoted ? m.quoted : m; 
-
+    const keizzah = (m.quoted || m); 
+    const quoted = (keizzah.mtype == 'buttonsMessage') ? keizzah[Object.keys(keizzah)[1]] : (keizzah.mtype == 'templateMessage') ? keizzah.hydratedTemplate[Object.keys(keizzah.hydratedTemplate)[1]] : (keizzah.mtype == 'product') ? keizzah[Object.keys(keizzah)[0]] : m.quoted ? m.quoted : m; 
 
     const color = (text, color) => {
       return !color ? chalk.green(text) : chalk.keyword(color)(text);
