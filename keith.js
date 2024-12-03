@@ -28,7 +28,7 @@ const {
    dev, gcpresence, antionce, antitag, antidelete
 } = require('./settings');
 
-module.exports = Keith = async (client, m, chatUpdate, store) => {
+module.exports = Keith = async (client, m, chatUpdate, message, store) => {
   try {
     var body =
       m.mtype === "conversation"
