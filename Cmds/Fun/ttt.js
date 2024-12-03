@@ -1,3 +1,5 @@
+const util = require('util');  // Import the required 'util' module for formatting
+
 class TicTacToe {
     constructor(playerX = 'x', playerO = 'o') {
         this.playerX = playerX;
@@ -168,7 +170,7 @@ export async function before(m) {
             if (!isSurrender) return true;
         }
 
-        if (debugMode) m.reply('[DEBUG]\n' + require('util').format({ isSurrender, text: m.text }));
+        if (debugMode) m.reply('[DEBUG]\n' + util.format({ isSurrender, text: m.text }));
 
         if (!isSurrender && 1 > (ok = room.game.turn(m.sender === room.game.playerO, parseInt(m.text) - 1))) {
             m.reply({
@@ -237,12 +239,10 @@ Type *surrender* to give up
             if (isWin) {
                 users[winner].exp += winScore - playScore;
             }
-            if (debugMode) m.reply('[DEBUG]\n' + format(room));
+            if (debugMode) m.reply('[DEBUG]\n' + util.format(room));
             delete this.game[room.id];
         }
     }
 
     return true;
 }
-
-export default TicTacToe;
