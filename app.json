@@ -78,6 +78,11 @@
       "value": "true",
       "required": false
     },
+"ANTILINK": {
+      "description": "Type true if you want bot to automatically remove members who send link.",
+      "value": "true",
+      "required": false
+    },    
 "ANTIVIEWONCE": {
       "description": "Type true if you want bot to automatically read viewonce media",
       "value": "true",
