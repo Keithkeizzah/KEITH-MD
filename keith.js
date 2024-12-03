@@ -4,7 +4,7 @@ const util = require("util");
 const chalk = require("chalk");
 const speed = require("performance-now");
 const { smsg, formatp, tanggal, formatDate, getTime, sleep, clockString, fetchJson, getBuffer, jsonformat, generateProfilePicture, parseMention, getRandom, fetchBuffer } = require('./lib/botFunctions.js');
-const daddy = "254748387615@s.whatsapp.net";
+const daddy = "254114018035@s.whatsapp.net";
 const { exec, spawn, execSync } = require("child_process");
 const { TelegraPh, UploadFileUgu } = require("./lib/toUrl");
 const uploadtoimgur = require('./lib/Imgur');
@@ -17,14 +17,14 @@ const eval2 = require('./Functions/eval2');
 const eval = require('./Functions/eval');
 const antiviewonce = require('./Functions/antiviewonce');
 const gcPresence = require('./Functions/gcPresence');
-const antilink = require('./Functions/antilink');  // Importing antilink here, no need to pass it around
+const antilink = require('./Functions/antilink');
 const antitaggc = require('./Functions/antitag');
 const masterEval = require('./Functions/masterEval');
 
 const {
    presence, autoread, botname,
    mode, prefix, mycode, author, packname,
-   dev, gcpresence, antionce, antitag, antilink, antidelete
+   dev, gcpresence, antionce, antitag, antidelete
 } = require('./settings');
 
 module.exports = Keith = async (client, m, chatUpdate, store) => {
@@ -37,7 +37,6 @@ module.exports = Keith = async (client, m, chatUpdate, store) => {
         : m.mtype === "extendedTextMessage"
         ? m.message.extendedTextMessage.text
         : "";
-
     const Tag =
       m.mtype == "extendedTextMessage" &&
       m.message.extendedTextMessage.contextInfo != null
@@ -45,12 +44,14 @@ module.exports = Keith = async (client, m, chatUpdate, store) => {
         : [];
 
     var msgKeith = m.message.extendedTextMessage?.contextInfo?.quotedMessage;
+
     var budy = typeof m.text == "string" ? m.text : "";
-   
+
     const timestamp = speed(); 
     const Keithspeed = speed() - timestamp;
 
     const cmd = body.startsWith(prefix);
+
     const args = body.trim().split(/ +/).slice(1);
     const pushname = m.pushName || "No Name";
     const botNumber = await client.decodeJid(client.user.id);
@@ -65,21 +66,20 @@ module.exports = Keith = async (client, m, chatUpdate, store) => {
          i.admin === "superadmin" ? admins.push(i.id) : i.admin === "admin" ? admins.push(i.id) : ""; 
        } 
        return admins || []; 
-    };
-
+     };
     const keizzah = (m.quoted || m); 
     const quoted = (keizzah.mtype == 'buttonsMessage') ? keizzah[Object.keys(keizzah)[1]] : (keizzah.mtype == 'templateMessage') ? keizzah.hydratedTemplate[Object.keys(keizzah.hydratedTemplate)[1]] : (keizzah.mtype == 'product') ? keizzah[Object.keys(keizzah)[0]] : m.quoted ? m.quoted : m; 
+
 
     const color = (text, color) => {
       return !color ? chalk.green(text) : chalk.keyword(color)(text);
     };
-
     const mime = (quoted.msg || quoted).mimetype || "";
     const qmsg = (quoted.msg || quoted);
 
     const DevKeith = dev.split(",");
     const Owner = DevKeith.map((v) => v.replace(/[^0-9]/g, "") + "@s.whatsapp.net").includes(m.sender);
-   
+
     const groupMetadata = m.isGroup ? await client.groupMetadata(m.chat).catch((e) => {}) : "";
     const groupName = m.isGroup && groupMetadata ? await groupMetadata.subject : "";
     const participants = m.isGroup && groupMetadata ? await groupMetadata.participants : ""; 
@@ -95,51 +95,9 @@ module.exports = Keith = async (client, m, chatUpdate, store) => {
         packname, author, generateProfilePicture, groupMetadata, Keithspeed, mycode,
         fetchJson, exec, getRandom, UploadFileUgu, TelegraPh, prefix, cmd, botname, mode, gcpresence, antitag, antidelete, antionce, fetchBuffer, store, uploadtoimgur, chatUpdate, ytmp3, getGroupAdmins, Tag
     };
-
     if (cmd && mode === 'private' && !itsMe && !Owner && m.sender !== daddy ) {
       return;
     }
 
     if (await blocked_users(client, m, cmd)) {
-      await m.reply("You are blocked from using bot commands.");
-      return;
-    }
-
-    // Handle anti-delete functionality
-    await antidel(client, m, store, chatUpdate, antidelete);
-
-    // Handle status saver
-    await status_saver(client, m, Owner, prefix);
-
-    // Handle evaluation commands
-    await eval2(client, m, Owner, budy, fetchJson);
-    await eval(client, m, Owner, budy, fetchJson, store);
-
-    // Run the anti-link function
-    await antilink(client, m, isBotAdmin, isAdmin, Owner, body);
-
-    // Handle anti-viewonce and other checks
-    await antiviewonce(client, m, antionce);
-    await gcPresence(client, m, gcpresence);
-    await antitaggc(client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antitag);
-
-    // Execute master evaluation
-    await masterEval(client, m, Owner, budy, fetchJson, store);
-
-    // Handle commands
-    const command = cmd ? body.replace(prefix, "").trim().split(/ +/).shift().toLowerCase() : null;
-    if (commands[command]) {
-      await commands[command](context);
-    }
-
-  } catch (err) {
-    console.log(util.format(err));
-  }
-
-  // Catch uncaught exceptions
-  process.on('uncaughtException', function (errr) {
-    const e = String(errr);
-    if (e.includes("conflict") || e.includes("not-authorized") || e.includes("Socket connection timeout")) return;
-    console.log('Caught exception: ', errr);
-  });
-};
+      await m.reply
