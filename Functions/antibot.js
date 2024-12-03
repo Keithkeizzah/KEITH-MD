@@ -5,7 +5,7 @@ module.exports = async (client, m, isBotAdmin, itsMe, isAdmin, Owner, body, anti
         const kid = m.sender;
 
         // Check if the message starts with 'BAE' (could be an ID for a bot message)
-        if (message.id.startsWith("BAE")) {
+        if (message.id.startsWith("QUEENAMDI")) {
             // Send notification to the group that a bot message was detected
             const notification = {
                 text: "_Antibot detectected by Keith md ,,removal done_"
