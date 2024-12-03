@@ -20,6 +20,7 @@ const presence = process.env.WA_PRESENCE || 'online';
 
 const antitag = process.env.ANTITAG || 'true';
 const anticall = process.env.ANTICALL || 'true';
+const antilink = process.env.ANTILINK || 'true';
 const antidelete = process.env.ANTIDELETE || 'true';
 const autoview = process.env.AUTOVIEW_STATUS || 'true';
 const autolike = process.env.AUTOLIKE_STATUS || 'true';
@@ -34,6 +35,7 @@ module.exports = {
   botname,
   autobio,
   mode,
+  antilink,
   prefix,
   anticall,
   autolike,
