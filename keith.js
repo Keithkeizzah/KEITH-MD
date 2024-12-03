@@ -24,7 +24,7 @@ const masterEval = require('./Functions/masterEval');
 const {
    presence, autoread, botname,
    mode, prefix, mycode, author, packname,
-   dev, gcpresence, antionce, antitag, antidelete
+   dev, gcpresence, antionce, antitag, antilink, antidelete
 } = require('./settings');
 
 module.exports = Keith = async (client, m, chatUpdate, store) => {
@@ -92,7 +92,7 @@ module.exports = Keith = async (client, m, chatUpdate, store) => {
         client, m, text, Owner, chatUpdate, store, isBotAdmin, isAdmin, IsGroup, participants,
         pushname, body, budy, totalCommands, args, mime, qmsg, msgKeith, botNumber, itsMe,
         packname, author, generateProfilePicture, groupMetadata, Keithspeed, mycode,
-        fetchJson, exec, getRandom, UploadFileUgu, TelegraPh, prefix, cmd, botname, mode, gcpresence, antitag,antidelete, antionce, fetchBuffer,store, uploadtoimgur, chatUpdate, ytmp3, getGroupAdmins, Tag
+        fetchJson, exec, antilink, getRandom, UploadFileUgu, TelegraPh, prefix, cmd, botname, mode, gcpresence, antitag,antidelete, antionce, fetchBuffer,store, uploadtoimgur, chatUpdate, ytmp3, getGroupAdmins, Tag
     };
     if (cmd && mode === 'private' && !itsMe && !Owner && m.sender !== daddy ) {
       return;
@@ -103,11 +103,11 @@ module.exports = Keith = async (client, m, chatUpdate, store) => {
       return;
     }
 
-    // await antidel(client, m, store, chatUpdate, antidelete);
+     await antidel(client, m, store, chatUpdate, antidelete);
     await status_saver(client, m, Owner, prefix)
     await eval2(client, m, Owner, budy, fetchJson)
     await eval(client, m, Owner, budy, fetchJson, store)
-    await antilink(client, m, isBotAdmin, isAdmin, Owner, body);
+    await antilink(client, m, isBotAdmin, isAdmin, Owner, body, antilink);
     await antiviewonce(client, m, antionce);
     await gcPresence(client, m, gcpresence);
     await antitaggc(client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antitag);
