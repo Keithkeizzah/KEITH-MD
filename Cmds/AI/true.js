@@ -17,7 +17,7 @@ module.exports = async (context) => {
         // Set up search data for Truecaller
         const searchData = {
             number: text, // User-provided phone number
-            countryCode: "IN", // Country code (IN for India in this case)
+            countryCode: "KE", // Country code (IN for India in this case)
             installationId: "a1k07--Vgdfyvv_rftf5uuudhuhnkljyvvtfftjuhbuijbhug", // Your installation ID
         };
 
