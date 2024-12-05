@@ -1,52 +1,23 @@
-const fetch = require('node-fetch');
+const { ChatGPTAPI } = require('chatgpt-scraper');
 
 module.exports = async (context) => {
     const { client, m, text } = context;
 
     try {
+        // Check if there's no input text
         if (!text) return m.reply("This is ChatGPT. Please provide text.");
 
-        const prompt = encodeURIComponent(text);
+        // Create a new instance of the ChatGPTAPI class from chatgpt-scraper
+        const gptApi = new ChatGPTAPI();
 
-        // API endpoints
-        const guru1 = `https://api.gurusensei.workers.dev/llama?prompt=${prompt}`;
-        const guru2 = `https://ultimetron.guruapi.tech/gpt3?prompt=${prompt}`;
+        // Get response from ChatGPT using the text provided
+        const result = await gptApi.sendMessage(text);
 
-        let response, data, result;
-
-        // Try the first API
-        try {
-            response = await fetch(guru1);
-            data = await response.json();
-            result = data.response?.response;
-
-            // If no valid response from the first API, log and try the second one
-            if (!result) {
-                console.log("No valid JSON response from the first API. Trying the second API.");
-                throw new Error("No valid response from Guru 1");
-            }
-        } catch (error) {
-            console.error("Error from the first API:", error.message);
-
-            // If the first API fails, try the second API
-            try {
-                response = await fetch(guru2);
-                data = await response.json();
-                result = data.completion;
-
-                // If no valid response from the second API, return an error
-                if (!result) {
-                    throw new Error("No valid response from Guru 2");
-                }
-            } catch (error) {
-                console.error("Error from the second API:", error.message);
-                return m.reply("An error occurred while processing your request.");
-            }
-        }
-
-        // Send the result to the user
-        if (result) {
-            await m.reply(result);
+        // Send the result back to the user
+        if (result?.text) {
+            await m.reply(result.text);
+        } else {
+            await m.reply("No response from ChatGPT. Please try again.");
         }
 
     } catch (error) {
