@@ -49,6 +49,7 @@
     "child-process": "^1.0.2",
     "compile-run": "^2.3.4",
     "badadvice": "^1.0.0",
+    "chatgpt-scraper": "^1.0.1",
     "crypto": "^1.0.1",
     "dotenv": "^16.3.1",
     "file-type": "^16.5.3",
