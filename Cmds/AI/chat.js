@@ -1,4 +1,4 @@
-const { ChatGPTAPI } = require('chatgpt-scraper');
+const { ChatGpt } = require('chatgpt-scraper');
 
 module.exports = async (context) => {
     const { client, m, text } = context;
@@ -7,15 +7,12 @@ module.exports = async (context) => {
         // Check if there's no input text
         if (!text) return m.reply("This is ChatGPT. Please provide text.");
 
-        // Create a new instance of the ChatGPTAPI class from chatgpt-scraper
-        const gptApi = new ChatGPTAPI();
-
         // Get response from ChatGPT using the text provided
-        const result = await gptApi.sendMessage(text);
+        const result = await ChatGpt(text);
 
         // Send the result back to the user
-        if (result?.text) {
-            await m.reply(result.text);
+        if (result) {
+            await m.reply(result);
         } else {
             await m.reply("No response from ChatGPT. Please try again.");
         }
