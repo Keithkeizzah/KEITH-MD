@@ -23,6 +23,7 @@
   "dependencies": {
     "@whiskeysockets/baileys": "git+https://github.com/whiskeysockets/baileys.git",
     "@bochilteam/scraper": "^4.2.4",
+     "@bochilteam/scraper-instagram": "^5.0.0",
     "@distube/ytdl-core": "latest",
     "@adiwajshing/keyed-db": "^0.2.4",
     "@hapi/boom": "^10.0.0",
