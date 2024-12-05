@@ -38,6 +38,7 @@
     "unofficial-carbon-now": "^1.0.6",
     "express": "latest",
     "chalk": "^4.1.2",
+    "tiktokdl": "^0.0.5", 
     "heroku-client": "^3.1.0",
     "wikipedia": "^2.1.1",
     "querystring": "^0.2.1",
