@@ -7,7 +7,7 @@ module.exports = async (context) => {
        
         const { default: Gemini } = await import('gemini-ai');
 
-        const gemini = new Gemini("QUl6YVN5QndaN3FwYkRaZmJQVHRnV0hWMkcySk5WZW05RURLUmVF");
+        const gemini = new Gemini("AIzaSyBK1U4dgP9XtN6qgyB3YtMD5nsLbmM7ruM");
         const chat = gemini.createChat();
 
         const res = await chat.ask(text);
