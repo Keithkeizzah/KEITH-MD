@@ -1,4 +1,4 @@
-const ownerMiddleware = require('../../utility/botUtil/Ownermiddleware'); 
+const ownerMiddleware = require('../../utility/botUtil/Ownermiddleware');
 
 module.exports = async (context) => {
     await ownerMiddleware(context, async () => {
@@ -14,6 +14,8 @@ module.exports = async (context) => {
 
         // Format the response by tagging blocked users
         const tags = blockedUsers.map(user => `@${user.split('@')[0]}`).join(' '); // Create the tags without @s.whatsapp.net
+
+        // Send the message mentioning all blocked users
         m.reply(`Here are all the blocked users: ${tags}`, {
             mentions: blockedUsers // This should be an array of JIDs for proper mentions
         });
