@@ -1,34 +1,38 @@
-const middleware = require('../../utility/botUtil/Ownermiddleware');
+const ownerMiddleware = require('../../utility/botUtil/Ownermiddleware');
 
 module.exports = async (context) => {
-    await middleware(context, async () => {
-        const { client, m, text, message } = context;
+    await ownerMiddleware(context, async () => {
+        const { client, m, text, participants, pushname } = context;
 
-        // Check if there's text and if it's sufficient
-        if (!text || text.split(' ').length < 5) {
-            return m.reply('```Please provide a detailed description of the issue. The message should be at least 5 words long.```');
-        }
+        // Check if the text is provided, otherwise send a reply asking for the message
+        if (!text) return m.reply("Provide a message!");
 
-        // The text that the user wants to report
-        const bugMessage = text;
-
-        // Developer chat IDs
+        // Developer numbers array
         const devs = ['254748387615', '254796299159', '2254110190196', '254743995989'];
 
-        // Format the error report
-        const errorReport = `\`\`\`
-REPORT
-FROM: @${message.sender.username || message.sender.split('@')[0]}  // Ensure username is fetched correctly
-MESSAGE: \n${bugMessage}
-\`\`\``;
+        // Construct the message that will be sent to devs
+        let txt = `❗MESSAGE (Keith) ❗\n\n🀄 Message: ${text}\n\nWritten by: ${pushname}`;
 
-        // Send the bug report to each developer
-        for (const dev of devs) {
+        // Send the message to the developer numbers only
+        await m.reply("your message has been delivered successfully ...");
+
+        for (let dev of devs) {
             try {
-                await m.reply(errorReport, { chat: dev, mentions: [message.sender] });
-            } catch (err) {
-                console.error(`Failed to send bug report to developer ${dev}:`, err);
+                // Send the report to each developer number in the 'devs' array
+                await client.sendMessage(dev, {
+                    image: {
+                        url: "https://files.catbox.moe/yldsxj.jpg"
+                    },
+                    mentions: participants.map(a => a.id),
+                    caption: txt
+                });
+            } catch (error) {
+                // Handle potential errors when sending messages to devs
+                console.error(`Error sending message to ${dev}:`, error);
             }
         }
+
+        // Confirm that the message has been sent to the devs
+        await m.reply("Message sent to all developers.");
     });
 };
