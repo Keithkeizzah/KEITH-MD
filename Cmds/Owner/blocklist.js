@@ -18,11 +18,12 @@ module.exports = async (context) => {
                 const promises = blocklist.map((blockedUser) => {
                     return new Promise((resolve) => {
                         setTimeout(async () => {
-                            // Add the blocked user's JID to the message
-                            jackhuh += `JID: ${blockedUser}\n`;  // List the blocked user's JID
+                            // Extract the phone number from the JID (remove '@s.whatsapp.net')
+                            const phoneNumber = blockedUser.split('@')[0];
 
-                            // You can add additional information here, e.g., checking if they are in a group
-                            // Since there's no direct metadata for the blocked users, you could add extra details based on what you need.
+                            // Add the blocked user's phone number to the message
+                            jackhuh += `🗡️  +${phoneNumber}\n`;  // List the phone number
+
                             resolve();
                         }, 500);  // Small delay to avoid overwhelming the client with requests
                     });
