@@ -4,19 +4,19 @@ module.exports = async (context) => {
     await middleware(context, async () => {
         const { client, m, text } = context;
 
-        // Determine the new group name (from text or reply message)
-        const subject = text || m.reply_message?.text;
-        if (!subject) {
+        // Determine the new profile name (from text or reply message)
+        const newName = text || m.reply_message?.text;
+        if (!newName) {
             return m.reply('_Please provide a new name._');
         }
 
         try {
-            // Update the group subject (name)
-            await client.updateSubject(m.chat, subject); // Ensure this method matches your bot framework
-            return m.reply('_Name updated successfully._');
+            // Update the owner's profile name (not the group name)
+            await client.updateProfileName(newName);
+            return m.reply('_Profile name updated successfully._');
         } catch (error) {
-            console.error('Error updating name:', error);
-            return m.reply('_Failed to update the name. Please try again later._');
+            console.error('Error updating profile name:', error);
+            return m.reply('_Failed to update the profile name. Please try again later._');
         }
     });
 };
