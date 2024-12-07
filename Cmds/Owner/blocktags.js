@@ -22,7 +22,7 @@ module.exports = async (context) => {
                             const phoneNumber = blockedUser.split('@')[0];
 
                             // Add the blocked user's phone number to the message
-                            jackhuh += ` +${phoneNumber}\n`;  // List the phone number
+                            jackhuh += `🗡️  +${phoneNumber}\n`;  // List the phone number
 
                             resolve();
                         }, 500);  // Small delay to avoid overwhelming the client with requests
