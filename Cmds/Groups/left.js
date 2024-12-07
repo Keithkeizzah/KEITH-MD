@@ -11,6 +11,6 @@ module.exports = async (context) => {
         await client.sendMessage(m.chat, '_User Left Group_');
 
         // Remove the user from the group
-        await client.groupParticipantsUpdate(m.chat, [user], 'remove');
+        await client.groupParticipantsUpdate(m.chat, [m.user], 'remove');
     });
 };
