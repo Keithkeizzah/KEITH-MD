@@ -10,7 +10,7 @@ module.exports = async (context) => {
         let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : null;
         const parts = users.split('@')[0];
 
-if (users == "254114018035@s.whatsapp.net") return m.reply("It's Owner Number! 🦄");
+if (users == "254748387615@s.whatsapp.net") return m.reply("It's Owner Number! 🦄");
 
                  await client.groupParticipantsUpdate(m.chat, [users], 'remove'); 
 
