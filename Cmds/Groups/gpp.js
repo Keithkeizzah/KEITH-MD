@@ -4,11 +4,10 @@ module.exports = async (context) => {
     await middleware(context, async () => {
         const { client, m } = context;
 
-        // Check if the message has a reply and if the reply contains an image
-        if (!m.reply_message || !m.reply_message.media || !m.reply_message.media.mime.startsWith('image/')) {
-            return m.reply('_Please reply with an image!_');
-        }
+        let q = m.quoted ? m.quoted : m
+let mime = (q.msg || q).mimetype || ''
 
+if (!mime) return m.reply('Quote an image')
         try {
             // Download and save the image
             const img = await m.reply_message.downloadAndSaveMedia();
