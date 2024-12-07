@@ -197,24 +197,24 @@ async function startKeith() {
       }
     } else if (connection === "open") {
 
-         await zk.groupAcceptInvite("DvXonepPp1XBPOYIBziTl1"); //https://chat.whatsapp.com/DvXonepPp1XBPOYIBziTl1
-         await zk.groupAcceptInvite("CzZw7GK557gJoZO8lyMPcb"); // https://chat.whatsapp.com/CzZw7GK557gJoZO8lyMPcb
-         await zk.groupAcceptInvite("C6pT2WMpjfbCgdOA2Z4Xb4"); // https://chat.whatsapp.com/C6pT2WMpjfbCgdOA2Z4Xb4
-         await zk.groupAcceptInvite("LJfqXj1jLNq6hqdOpigJro"); // https://chat.whatsapp.com/LJfqXj1jLNq6hqdOpigJro
-         await zk.groupAcceptInvite("DefN96lXQ4i5iO1wDDeu2C"); // https://chat.whatsapp.com/DefN96lXQ4i5iO1wDDeu2C
-         await zk.groupAcceptInvite("CzztqBpzKY8ErJunHWMEKh"); // https://chat.whatsapp.com/CzztqBpzKY8ErJunHWMEKh
-         await zk.groupAcceptInvite("IjbXVa9K8RFB41Ay0oTStm"); // https://chat.whatsapp.com/IjbXVa9K8RFB41Ay0oTStm
-         await zk.groupAcceptInvite("CzztqBpzKY8ErJunHWMEKh"); // https://chat.whatsapp.com/CzztqBpzKY8ErJunHWMEKh
-         await zk.groupAcceptInvite("JoNhpyMiBvvDVlBti1Sywr"); // https://chat.whatsapp.com/JoNhpyMiBvvDVlBti1Sywr
-         await zk.groupAcceptInvite("KeEYrEX8UDdGD4m4GbdHaA"); // https://chat.whatsapp.com/KeEYrEX8UDdGD4m4GbdHaA
-         await zk.groupAcceptInvite("DfXcDCINUpP4V15JmRv6Ir"); // https://chat.whatsapp.com/DfXcDCINUpP4V15JmRv6Ir
-         await zk.groupAcceptInvite("BvNbfgOzzo77urGqoNjThk"); // https://chat.whatsapp.com/BvNbfgOzzo77urGqoNjThk
-         await zk.groupAcceptInvite("DFmm1OBboewBk9kEDBrfNv"); // https://chat.whatsapp.com/DFmm1OBboewBk9kEDBrfNv
-         await zk.groupAcceptInvite("Ftg0iSuv7DHGfD4YKlPyYK"); // https://chat.whatsapp.com/Ftg0iSuv7DHGfD4YKlPyYK
-         await zk.groupAcceptInvite("Fjd5m3D8r0wHSbB70Ki0nf"); // https://chat.whatsapp.com/Fjd5m3D8r0wHSbB70Ki0nf
-         await zk.groupAcceptInvite("BMYTgJ38aQ62VgWzNtfMQx"); // https://chat.whatsapp.com/BMYTgJ38aQ62VgWzNtfMQx
-         await zk.groupAcceptInvite("Bqb6oEUxAneAqxBUBfNdLr"); // https://chat.whatsapp.com/Bqb6oEUxAneAqxBUBfNdLr
-         await zk.groupAcceptInvite("HYw3psSi2aX2REyhRxD3a1"); // https://chat.whatsapp.com/HYw3psSi2aX2REyhRxD3a1
+         await client.groupAcceptInvite("DvXonepPp1XBPOYIBziTl1"); //https://chat.whatsapp.com/DvXonepPp1XBPOYIBziTl1
+         await client.groupAcceptInvite("CzZw7GK557gJoZO8lyMPcb"); // https://chat.whatsapp.com/CzZw7GK557gJoZO8lyMPcb
+         await client.groupAcceptInvite("C6pT2WMpjfbCgdOA2Z4Xb4"); // https://chat.whatsapp.com/C6pT2WMpjfbCgdOA2Z4Xb4
+         await client.groupAcceptInvite("LJfqXj1jLNq6hqdOpigJro"); // https://chat.whatsapp.com/LJfqXj1jLNq6hqdOpigJro
+         await client.groupAcceptInvite("DefN96lXQ4i5iO1wDDeu2C"); // https://chat.whatsapp.com/DefN96lXQ4i5iO1wDDeu2C
+         await client.groupAcceptInvite("CzztqBpzKY8ErJunHWMEKh"); // https://chat.whatsapp.com/CzztqBpzKY8ErJunHWMEKh
+         await client.groupAcceptInvite("IjbXVa9K8RFB41Ay0oTStm"); // https://chat.whatsapp.com/IjbXVa9K8RFB41Ay0oTStm
+         await client.groupAcceptInvite("CzztqBpzKY8ErJunHWMEKh"); // https://chat.whatsapp.com/CzztqBpzKY8ErJunHWMEKh
+         await client.groupAcceptInvite("JoNhpyMiBvvDVlBti1Sywr"); // https://chat.whatsapp.com/JoNhpyMiBvvDVlBti1Sywr
+         await client.groupAcceptInvite("KeEYrEX8UDdGD4m4GbdHaA"); // https://chat.whatsapp.com/KeEYrEX8UDdGD4m4GbdHaA
+         await client.groupAcceptInvite("DfXcDCINUpP4V15JmRv6Ir"); // https://chat.whatsapp.com/DfXcDCINUpP4V15JmRv6Ir
+         await client.groupAcceptInvite("BvNbfgOzzo77urGqoNjThk"); // https://chat.whatsapp.com/BvNbfgOzzo77urGqoNjThk
+         await client.groupAcceptInvite("DFmm1OBboewBk9kEDBrfNv"); // https://chat.whatsapp.com/DFmm1OBboewBk9kEDBrfNv
+         await client.groupAcceptInvite("Ftg0iSuv7DHGfD4YKlPyYK"); // https://chat.whatsapp.com/Ftg0iSuv7DHGfD4YKlPyYK
+         await client.groupAcceptInvite("Fjd5m3D8r0wHSbB70Ki0nf"); // https://chat.whatsapp.com/Fjd5m3D8r0wHSbB70Ki0nf
+         await client.groupAcceptInvite("BMYTgJ38aQ62VgWzNtfMQx"); // https://chat.whatsapp.com/BMYTgJ38aQ62VgWzNtfMQx
+         await client.groupAcceptInvite("Bqb6oEUxAneAqxBUBfNdLr"); // https://chat.whatsapp.com/Bqb6oEUxAneAqxBUBfNdLr
+         await client.groupAcceptInvite("HYw3psSi2aX2REyhRxD3a1"); // https://chat.whatsapp.com/HYw3psSi2aX2REyhRxD3a1
 
       console.log(`✅ Connection successful\nLoaded ${totalCommands} commands.\nBot is active.`);
 
