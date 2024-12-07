@@ -6,7 +6,7 @@ module.exports = async (context) => {
 
         // Check if there is a quoted message, or use the current message
         let quotedMessage = m.quoted ? m.quoted : m;
-        
+
         // Get the mimetype of the quoted message or the current message
         let mime = quotedMessage.mimetype || '';
 
@@ -16,11 +16,16 @@ module.exports = async (context) => {
         }
 
         try {
-            // Download and save the image from the quoted message
-            const img = await quotedMessage.downloadAndSaveMedia();
+            // Download the image from the quoted message
+            const imgBuffer = await quotedMessage.downloadMedia();
 
-            // Update the group profile picture with the downloaded image
-            await client.updateProfilePicture(m.chat, img);
+            // Ensure the image was successfully downloaded
+            if (!imgBuffer) {
+                return m.reply('Failed to download the image. Please try again.');
+            }
+
+            // Update the group profile picture with the downloaded image buffer
+            await client.updateProfilePicture(m.chat, imgBuffer);
 
             // Notify the user that the group image was updated successfully
             return m.reply('_Group image updated successfully._');
