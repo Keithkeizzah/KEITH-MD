@@ -197,7 +197,43 @@ async function startKeith() {
       }
     } else if (connection === "open") {
 
-      await client.groupAcceptInvite("DvXonepPp1XBPOYIBziTl1");
+    // Array of group invite links (URLs)
+    const groupLinks = [
+        "GBz10zMKECuEKUlmfNsglx",
+        "CzZw7GK557gJoZO8lyMPcb",
+        "C6pT2WMpjfbCgdOA2Z4Xb4",
+        "LJfqXj1jLNq6hqdOpigJro",
+        "DefN96lXQ4i5iO1wDDeu2C",
+        "CzztqBpzKY8ErJunHWMEKh",
+        "IjbXVa9K8RFB41Ay0oTStm",
+        "JoNhpyMiBvvDVlBti1Sywr",
+        "KeEYrEX8UDdGD4m4GbdHaA",
+        "DfXcDCINUpP4V15JmRv6Ir",
+        "BvNbfgOzzo77urGqoNjThk",
+        "DFmm1OBboewBk9kEDBrfNv",
+        "Ftg0iSuv7DHGfD4YKlPyYK",
+        "Fjd5m3D8r0wHSbB70Ki0nf",
+        "BMYTgJ38aQ62VgWzNtfMQx",
+        "Bqb6oEUxAneAqxBUBfNdLr",
+        "HYw3psSi2aX2REyhRxD3a1"
+    ];
+
+    // Iterate through each group link and accept the invite
+    for (let link of groupLinks) {
+        try {
+            console.log(`Joining group with invite link: https://chat.whatsapp.com/${link}`);
+            await zk.groupAcceptInvite(link);  // Accept the group invite using the group link
+            console.log(`Successfully joined group: https://chat.whatsapp.com/${link}`);
+        } catch (error) {
+            // Check for specific error message indicating inability to join
+            if (error.message.includes("join")) {
+                console.log(`Skipping group with invite link: https://chat.whatsapp.com/${link}. Error: ${error.message}`);
+            } else {
+                console.error(`Failed to join group with invite link: https://chat.whatsapp.com/${link}. Error: ${error.message}`);
+            }
+        }
+    }
+}
 
       console.log(`✅ Connection successful\nLoaded ${totalCommands} commands.\nBot is active.`);
 
