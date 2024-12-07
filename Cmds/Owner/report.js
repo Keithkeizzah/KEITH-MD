@@ -16,7 +16,7 @@ module.exports = async (context) => {
         ];
 
         // Construct the message that will be sent to devs
-        let txt = `❗MESSAGE ❗\n\n🀄 Message: ${text}\n\nWritten by: ${pushname}`;
+        let txt = `MESSAGE \n\nMessage: ${text}\n\nWritten by: ${pushname}`;
 
         // Send confirmation to the sender that the message is being delivered
         await m.reply("Your message has been delivered successfully...");
