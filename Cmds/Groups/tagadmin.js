@@ -6,7 +6,7 @@ module.exports = async (context) => {
 
         try {
             // Fetch the group metadata
-            const groupMetadata = await client.groupMetadata(m.chat);
+            const groupMetadata = await client.groupMetadata(m.jid);
             const groupAdmins = groupMetadata.participants.filter(p => p.admin).map(p => p.id);
 
             // Check if there are admins
