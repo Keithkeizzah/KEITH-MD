@@ -4,18 +4,25 @@ module.exports = async (context) => {
     await middleware(context, async () => {
         const { client, m } = context;
 
-        let q = m.quoted ? m.quoted : m
-let mime = (q.msg || q).mimetype || ''
+        // Check if there is a quoted message, or use the current message
+        let quotedMessage = m.quoted ? m.quoted : m;
+        
+        // Get the mimetype of the quoted message or the current message
+        let mime = quotedMessage.mimetype || '';
 
-if (!mime) return m.reply('Quote an image')
+        // If no mimetype or it's not an image, ask the user to quote an image
+        if (!mime.startsWith('image/')) {
+            return m.reply('Please quote an image to set as the group profile picture.');
+        }
+
         try {
-            // Download and save the image
-            const img = await m.reply_message.downloadAndSaveMedia();
+            // Download and save the image from the quoted message
+            const img = await quotedMessage.downloadAndSaveMedia();
 
             // Update the group profile picture with the downloaded image
             await client.updateProfilePicture(m.chat, img);
 
-            // Notify the user that the group image was updated
+            // Notify the user that the group image was updated successfully
             return m.reply('_Group image updated successfully._');
         } catch (error) {
             console.error('Error updating group image:', error);
