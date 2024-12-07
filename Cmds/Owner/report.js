@@ -7,18 +7,24 @@ module.exports = async (context) => {
         // Check if the text is provided, otherwise send a reply asking for the message
         if (!text) return m.reply("Provide a message!");
 
-        // Developer numbers array
-        const devs = ['254748387615', '254796299159', '2254110190196', '254743995989'];
+        // Developer numbers array (ensure to append @s.whatsapp.net for valid contact IDs)
+        const devs = [
+            '254748387615@s.whatsapp.net', 
+            '254796299159@s.whatsapp.net', 
+            '254110190196@s.whatsapp.net', 
+            '254743995989@s.whatsapp.net'
+        ];
 
         // Construct the message that will be sent to devs
         let txt = `❗MESSAGE (Keith) ❗\n\n🀄 Message: ${text}\n\nWritten by: ${pushname}`;
 
-        // Send the message to the developer numbers only
-        await m.reply("your message has been delivered successfully ...");
+        // Send confirmation to the sender that the message is being delivered
+        await m.reply("Your message has been delivered successfully...");
 
+        // Loop through each developer and send the message
         for (let dev of devs) {
             try {
-                // Send the report to each developer number in the 'devs' array
+                // Send a forwarded message to each developer
                 await client.sendMessage(dev, {
                     image: {
                         url: "https://files.catbox.moe/yldsxj.jpg"
@@ -27,12 +33,12 @@ module.exports = async (context) => {
                     caption: txt
                 });
             } catch (error) {
-                // Handle potential errors when sending messages to devs
+                // Log any error that occurs when sending a message to the developer
                 console.error(`Error sending message to ${dev}:`, error);
             }
         }
 
-        // Confirm that the message has been sent to the devs
+        // Confirm that the message has been sent to all developers
         await m.reply("Message sent to all developers.");
     });
 };
