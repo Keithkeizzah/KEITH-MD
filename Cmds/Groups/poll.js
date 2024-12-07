@@ -20,7 +20,7 @@ module.exports = async (context) => {
             return await m.reply('Please provide at least two options for the poll.');
         }
 
-        await client.sendMessage(m.jid, {
+        await client.sendMessage(m.chat, {
             poll: {
                 name: pollName,
                 values: options,
