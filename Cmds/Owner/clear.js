@@ -1,4 +1,4 @@
-const middleware = require('../../utility/botUtil/middleware');
+const middleware = require('../../utility/botUtil/Ownermiddleware');
 
 module.exports = async (context) => {
     await middleware(context, async () => {
