@@ -4,24 +4,28 @@ const { format } = require("util");
 module.exports = async (context) => {
     const { client, m, text } = context;
 
-    // Check if there's no text provided
+    // Check if text is provided
     if (!text) {
         return m.reply("This is ChatGPT. Please provide some text.");
     }
 
-    // Ensure the input is a valid URL
-    if (!/^https?:\/\//.test(m.text)) {
+    // Validate the URL properly
+    const urlRegex = /^(https?:\/\/[^\s/$.?#].[^\s]*)$/i;
+    if (!urlRegex.test(text)) {
         return m.reply("Invalid URL.");
     }
 
     m.reply("Please wait...");
 
     try {
-        const url = Func.isUrl(m.text)[0];
+        // Extract URL from the message text
+        const url = text;
+
+        // Fetch data from the URL
         const res = await axios.get(url);
 
-        // Check if the content type is neither text nor json
-        if (!/text|json/.test(res?.headers?.get("content-type"))) {
+        // Check if content is neither text nor json
+        if (!/text|json/.test(res?.headers?.["content-type"])) {
             const { size, data, ext, mime } = await Func.getFile(url);
 
             // Check file size limits
@@ -35,31 +39,31 @@ module.exports = async (context) => {
                 return m.reply("File size exceeds VIP download limit.");
             }
 
-            // Generate the filename based on the URL or use a random filename
-            const fileName = m?.text?.toLowerCase()?.includes("filename=")
-                ? m.text.split("filename=")[1] + "." + ext
+            // Generate filename based on URL or random filename
+            const fileName = text.toLowerCase().includes("filename=")
+                ? text.split("filename=")[1] + "." + ext
                 : Func.getRandom(ext, 20);
 
             // Check if there's a caption in the URL
-            const caption = m?.text?.toLowerCase()?.includes("caption=")
-                ? m.text.split("caption=")[1]
+            const caption = text.toLowerCase().includes("caption=")
+                ? text.split("caption=")[1]
                 : "";
 
             // Send the file
             return client.sendMessage(m.chat, url, {
-                mimetype: res?.headers?.get("content-type"),
+                mimetype: mime,
                 fileName,
                 caption,
                 quoted: m,
             });
         }
 
-        // If the content is text or JSON, format and reply
+        // If content is text or JSON, format and reply
         const responseText = res?.data;
         try {
             m.reply(format(responseText));
         } catch (e) {
-            m.reply(format(e));
+            m.reply("Error formatting the response: " + format(e));
         }
     } catch (error) {
         console.error("Error:", error);
