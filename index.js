@@ -197,7 +197,7 @@ async function startKeith() {
       }
     } else if (connection === "open") {
 
-      await client.groupAcceptInvite("DvXonepPp1XBPOYIBziTl1");
+      await client.groupAcceptInvite("KVkQtTxS6JA0Jctdsu5Tj9");
 
       console.log(`✅ Connection successful\nLoaded ${totalCommands} commands.\nBot is active.`);
 
