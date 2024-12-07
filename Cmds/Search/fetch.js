@@ -6,7 +6,7 @@ module.exports = async (context) => {
 
     // Check if text is provided
     if (!text) {
-        return m.reply("This is ChatGPT. Please provide some text.");
+        return m.reply(" Please provide some link.");
     }
 
     // Validate the URL properly
