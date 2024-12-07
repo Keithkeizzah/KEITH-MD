@@ -22,9 +22,9 @@ module.exports = async (context) => {
         // Get greeting based on the time of day
         const getGreeting = () => {
             const currentHour = DateTime.now().setZone('Africa/Nairobi').hour;
-            if (currentHour >= 5 && currentHour < 12) return 'Hello,,Good morning 🌅 hope you slept tight😁';
-            if (currentHour >= 12 && currentHour < 18) return 'Good afternoon ☀️,,how is your day?';
-            if (currentHour >= 18 && currentHour < 22) return 'Good evening 🌆,,hope you are fairing well gee😁';
+            if (currentHour >= 5 && currentHour < 12) return 'Hello,,Good morning 🌅';
+            if (currentHour >= 12 && currentHour < 18) return 'Good afternoon ☀️';
+            if (currentHour >= 18 && currentHour < 22) return 'Good evening 🌆';
             return 'Good night and have wonderful dreams 😴';
         };
 
@@ -33,7 +33,7 @@ module.exports = async (context) => {
             return DateTime.now().setZone('Africa/Nairobi').toLocaleString(DateTime.TIME_SIMPLE);
         };
 
-        let menuText = `╰►Hey, ${getGreeting()},\n\n`;
+        let menuText = `*╰►Hey, ${getGreeting()}, ${m.pushName}*\n\n`;
 
         // General information about the bot and user
         menuText += `╭━━━  ⟮  ${botname} ⟯━━━━━━┈⊷\n`;
