@@ -22,10 +22,10 @@ module.exports = async (context) => {
         // Get greeting based on the time of day
         const getGreeting = () => {
             const currentHour = DateTime.now().setZone('Africa/Nairobi').hour;
-            if (currentHour >= 5 && currentHour < 12) return 'Good morning 🌄';
-            if (currentHour >= 12 && currentHour < 18) return 'Good afternoon ☀️';
-            if (currentHour >= 18 && currentHour < 22) return 'Good evening 🌆';
-            return 'Good night 😴';
+            if (currentHour >= 5 && currentHour < 12) return 'Hello,,Good morning 🌅 hope you slept tight😁';
+            if (currentHour >= 12 && currentHour < 18) return 'Good afternoon ☀️,,how is your day?';
+            if (currentHour >= 18 && currentHour < 22) return 'Good evening 🌆,,hope you are fairing well gee😁';
+            return 'Good night and have wonderful dreams 😴';
         };
 
         // Get current time in Nairobi
