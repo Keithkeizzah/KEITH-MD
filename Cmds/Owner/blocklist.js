@@ -1,21 +1,21 @@
-const middleware = require('../../utility/botUtil/Ownermiddleware');
+const ownerMiddleware = require('../../utility/botUtil/Ownermiddleware'); 
 
 module.exports = async (context) => {
-    await middleware(context, async () => {
+    await ownerMiddleware(context, async () => {
         const { client, m } = context;
 
-        try {
-            const blocklist = await client.fetchBlocklist();
-            if (blocklist.length > 0) {
-                const mentions = blocklist.map(number => `${number}`);
-                const formattedList = blocklist.map(number => `• @${number.split('@')[0]}`).join('\n');
-                await m.reply(`*_Blocked contacts:_*\n\n${formattedList}`, { mentions });
-            } else {
-                await m.reply('_No blocked Numbers!_');
-            }
-        } catch (error) {
-            console.error('Error fetching blocklist:', error);
-            await m.reply('_An error occurred while fetching the blocklist._');
+        // Get the list of blocked users
+        const blockedUsers = await client.getBlockedIds();  // Ensure this method is available and returns an array of blocked JIDs
+
+        // Check if there are no blocked users
+        if (blockedUsers.length === 0) {
+            return m.reply("There are no blocked users.");
         }
+
+        // Format the response by tagging blocked users
+        const tags = blockedUsers.map(user => `@${user.split('@')[0]}`).join(' '); // Create the tags without @s.whatsapp.net
+        m.reply(`Here are all the blocked users: ${tags}`, {
+            mentions: blockedUsers // This should be an array of JIDs for proper mentions
+        });
     });
 };
