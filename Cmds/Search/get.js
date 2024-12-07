@@ -1,63 +1,72 @@
-const fetch = require('node-fetch'); // Import node-fetch
+const axios = require("axios");
+const { format } = require("util");
 
 module.exports = async (context) => {
-  const { client, m, url } = context; // Ensure URL is part of the context
+    const { client, m, text } = context;
 
-  // Check if the URL exists and is a string
-  if (!url || typeof url !== 'string') {
-    return m.reply("No URL provided.");
-  }
-
-  // Debug: Log the URL to verify it's passed correctly
-  console.log("Received URL:", url);
-
-  // Ensure URL starts with 'http://' or 'https://'
-  if (!/^https?:\/\//.test(url)) {
-    return m.reply("Start the *URL* with http:// or https://");
-  }
-
-  try {
-    // Parse the URL
-    const parsedUrl = new URL(url);
-    const fullUrl = `${parsedUrl.origin}${parsedUrl.pathname}?${parsedUrl.searchParams.toString()}`;
-
-    // Debug: Log the full URL to be fetched
-    console.log("Fetching data from:", fullUrl);
-
-    // Fetch data from the URL
-    const response = await fetch(fullUrl);
-
-    // Check content length (file size limit)
-    const contentLength = response.headers.get("content-length");
-    if (contentLength && contentLength > 107374182400) { // 100GB limit
-      return m.reply("Content-Length exceeds the limit: " + contentLength);
+    // Check if text is provided
+    if (!text) {
+        return m.reply(" Please provide some link.");
     }
 
-    // Check content type (only allow text or JSON)
-    const contentType = response.headers.get("content-type");
-    if (!/text|json/.test(contentType)) {
-      // Send media if the content type is not text or JSON
-      await client.sendMedia(m.chat, fullUrl, "file", "> > *Regards Alpha Md*", m);
-      return;
+    // Validate the URL properly
+    const urlRegex = /^(https?:\/\/[^\s/$.?#].[^\s]*)$/i;
+    if (!urlRegex.test(text)) {
+        return m.reply("Invalid URL.");
     }
 
-    // Convert response to buffer and attempt to parse as JSON
-    let dataBuffer = Buffer.from(await response.arrayBuffer());
+    m.reply("Please wait...");
+
     try {
-      const jsonData = JSON.parse(dataBuffer.toString());
-      console.log("Parsed JSON:", jsonData);
-      dataBuffer = Buffer.from(JSON.stringify(jsonData)); // Reassign dataBuffer as a stringified JSON object
-    } catch (err) {
-      console.error("Error parsing JSON:", err);
-      // If not JSON, convert buffer to string
-      dataBuffer = dataBuffer.toString();
-    } finally {
-      // Reply with the first 16,384 characters of the data (limit based on your platform's message size)
-      m.reply(dataBuffer.slice(0, 16000)); // Adjust message length if necessary
-    }
+        // Extract URL from the message text
+        const url = text;
 
-  } catch (err) {
-    console.error("Error fetching data:", err.message);
-    m.reply("Error fetching data.");
-  }
+        // Fetch data from the URL
+        const res = await axios.get(url);
+
+        // Check if content is neither text nor json
+        if (!/text|json/.test(res?.headers?.["content-type"])) {
+            const { size, data, ext, mime } = await Func.getFile(url);
+
+            // Check file size limits
+            if (size >= config.limit.download.free && !m.isPremium) {
+                return m.reply("File size exceeds free download limit.");
+            }
+            if (size >= config.limit.download.premium && !m.isVIP) {
+                return m.reply("File size exceeds premium download limit.");
+            }
+            if (size >= config.limit.download.VIP) {
+                return m.reply("File size exceeds VIP download limit.");
+            }
+
+            // Generate filename based on URL or random filename
+            const fileName = text.toLowerCase().includes("filename=")
+                ? text.split("filename=")[1] + "." + ext
+                : Func.getRandom(ext, 20);
+
+            // Check if there's a caption in the URL
+            const caption = text.toLowerCase().includes("caption=")
+                ? text.split("caption=")[1]
+                : "";
+
+            // Send the file
+            return client.sendMessage(m.chat, url, {
+                mimetype: mime,
+                fileName,
+                caption,
+                quoted: m,
+            });
+        }
+
+        // If content is text or JSON, format and reply
+        const responseText = res?.data;
+        try {
+            m.reply(format(responseText));
+        } catch (e) {
+            m.reply("Error formatting the response: " + format(e));
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        m.reply("An error occurred while processing your request.");
+    }
 };
