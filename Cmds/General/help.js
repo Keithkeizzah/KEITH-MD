@@ -22,16 +22,10 @@ module.exports = async (context) => {
         // Get greeting based on the time of day
         const getGreeting = () => {
             const currentHour = DateTime.now().setZone('Africa/Nairobi').hour;
-
-            if (currentHour >= 5 && currentHour < 12) {
-                return 'Good morning 🌄';
-            } else if (currentHour >= 12 && currentHour < 18) {
-                return 'Good afternoon ☀️';
-            } else if (currentHour >= 18 && currentHour < 22) {
-                return 'Good evening 🌆';
-            } else {
-                return 'Good night 😴';
-            }
+            if (currentHour >= 5 && currentHour < 12) return 'Good morning 🌄';
+            if (currentHour >= 12 && currentHour < 18) return 'Good afternoon ☀️';
+            if (currentHour >= 18 && currentHour < 22) return 'Good evening 🌆';
+            return 'Good night 😴';
         };
 
         // Get current time in Nairobi
@@ -46,7 +40,7 @@ module.exports = async (context) => {
         menuText += `┃✵╭──────────────\n`; 
         menuText += `┃✵│ ᴄᴏᴍᴍᴀɴᴅᴇʀ: ${m.pushName}\n`; 
         menuText += `┃✵│ ᴛᴏᴛᴀʟ ᴘʟᴜɢɪɴs: ${totalCommands}\n`;
-        menuText += '┃✵│ ᴛɪᴍᴇ: ' + getCurrentTimeInNairobi() + '\n';
+        menuText += `┃✵│ ᴛɪᴍᴇ: ${getCurrentTimeInNairobi()}\n`;
         menuText += `┃✵│ ᴘʀᴇғɪx: ${prefix}\n`;
         menuText += `┃✵│ ᴍᴏᴅᴇ: ${mode}\n`;
         menuText += '┃✵│ ʟɪʙʀᴀʀʏ: Baileys\n';
@@ -65,12 +59,13 @@ module.exports = async (context) => {
             return text.split('').map(char => fonts[char] || char).join('');
         };
 
-        // Function to convert text to fancy lowercase font
+        // Function to convert text to fancy uppercase font for lowercase letters as well
         const toFancyLowercaseFont = (text) => {
             const fonts = {
-                "ᴀ","ʙ","ᴄ","ᴅ","ᴇ","ꜰ","ɢ","ʜ","ɪ","ᴊ","ᴋ","ʟ","ᴍ","ɴ","ᴏ","ᴘ","ϙ","ʀ","ꜱ","ᴛ","ᴜ","ᴠ","ᴡ","x","ʏ","ᴢ"
+                "a": "ᴀ", "b": "ʙ", "c": "ᴄ", "d": "ᴅ", "e": "ᴇ", "f": "ꜰ", "g": "ɢ", "h": "ʜ", "i": "ɪ", "j": "ᴊ", "k": "ᴋ", "l": "ʟ", "m": "ᴍ", 
+                "n": "ɴ", "o": "ᴏ", "p": "ᴘ", "q": "ϙ", "r": "ʀ", "s": "ꜱ", "t": "ᴛ", "u": "ᴜ", "v": "ᴠ", "w": "ᴡ", "x": "x", "y": "ʏ", "z": "ᴢ"
             };
-            return text.split('').map(char => fonts[char] || char).join('');
+            return text.split('').map(char => fonts[char.toUpperCase()] || fonts[char] || char).join('');
         };
 
         let commandCounter = 1;
@@ -78,7 +73,6 @@ module.exports = async (context) => {
         // Loop through categories and commands
         for (const category of categories) {
             const commandFiles = fs.readdirSync(`./Cmds/${category.name}`).filter((file) => file.endsWith('.js'));
-
             const fancyCategory = toFancyUppercaseFont(category.name.toUpperCase());
 
             menuText += ` ╭─────「 ${fancyCategory} ${category.emoji}───┈⊷ \n`;
@@ -97,7 +91,7 @@ module.exports = async (context) => {
             await client.sendMessage(m.chat, {
                 text: menuText,
                 contextInfo: {
-                    mentionedJid: [m.sender], // Mention the sender (use m.sender for a valid user reference)
+                    mentionedJid: [m.sender], // Mention the sender
                     externalAdReply: {
                         title: "🌟 𝐊𝐄𝐈𝐓𝐇-𝐌𝐃 ✨",
                         body: "𝐫𝐞𝐠𝐚𝐫𝐝𝐬 𝐊𝐞𝐢𝐭𝐡𝐤𝐞𝐢𝐳𝐳𝐚𝐡",
