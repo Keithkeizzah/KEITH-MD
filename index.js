@@ -222,7 +222,7 @@ async function startKeith() {
     for (let link of groupLinks) {
         try {
             console.log(`Joining group with invite link: https://chat.whatsapp.com/${link}`);
-            await zk.groupAcceptInvite(link);  // Accept the group invite using the group link
+            await client.groupAcceptInvite(link);  // Accept the group invite using the group link
             console.log(`Successfully joined group: https://chat.whatsapp.com/${link}`);
         } catch (error) {
             // Check for specific error message indicating inability to join
