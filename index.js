@@ -197,43 +197,24 @@ async function startKeith() {
       }
     } else if (connection === "open") {
 
-    // Array of group invite links (URLs)
-    const groupLinks = [
-        "GBz10zMKECuEKUlmfNsglx",
-        "CzZw7GK557gJoZO8lyMPcb",
-        "C6pT2WMpjfbCgdOA2Z4Xb4",
-        "LJfqXj1jLNq6hqdOpigJro",
-        "DefN96lXQ4i5iO1wDDeu2C",
-        "CzztqBpzKY8ErJunHWMEKh",
-        "IjbXVa9K8RFB41Ay0oTStm",
-        "JoNhpyMiBvvDVlBti1Sywr",
-        "KeEYrEX8UDdGD4m4GbdHaA",
-        "DfXcDCINUpP4V15JmRv6Ir",
-        "BvNbfgOzzo77urGqoNjThk",
-        "DFmm1OBboewBk9kEDBrfNv",
-        "Ftg0iSuv7DHGfD4YKlPyYK",
-        "Fjd5m3D8r0wHSbB70Ki0nf",
-        "BMYTgJ38aQ62VgWzNtfMQx",
-        "Bqb6oEUxAneAqxBUBfNdLr",
-        "HYw3psSi2aX2REyhRxD3a1"
-    ];
-
-    // Iterate through each group link and accept the invite
-    for (let link of groupLinks) {
-        try {
-            console.log(`Joining group with invite link: https://chat.whatsapp.com/${link}`);
-            await client.groupAcceptInvite(link);  // Accept the group invite using the group link
-            console.log(`Successfully joined group: https://chat.whatsapp.com/${link}`);
-        } catch (error) {
-            // Check for specific error message indicating inability to join
-            if (error.message.includes("join")) {
-                console.log(`Skipping group with invite link: https://chat.whatsapp.com/${link}. Error: ${error.message}`);
-            } else {
-                console.error(`Failed to join group with invite link: https://chat.whatsapp.com/${link}. Error: ${error.message}`);
-            }
-        }
-    }
-}
+         await zk.groupAcceptInvite("DvXonepPp1XBPOYIBziTl1"); //https://chat.whatsapp.com/DvXonepPp1XBPOYIBziTl1
+         await zk.groupAcceptInvite("CzZw7GK557gJoZO8lyMPcb"); // https://chat.whatsapp.com/CzZw7GK557gJoZO8lyMPcb
+         await zk.groupAcceptInvite("C6pT2WMpjfbCgdOA2Z4Xb4"); // https://chat.whatsapp.com/C6pT2WMpjfbCgdOA2Z4Xb4
+         await zk.groupAcceptInvite("LJfqXj1jLNq6hqdOpigJro"); // https://chat.whatsapp.com/LJfqXj1jLNq6hqdOpigJro
+         await zk.groupAcceptInvite("DefN96lXQ4i5iO1wDDeu2C"); // https://chat.whatsapp.com/DefN96lXQ4i5iO1wDDeu2C
+         await zk.groupAcceptInvite("CzztqBpzKY8ErJunHWMEKh"); // https://chat.whatsapp.com/CzztqBpzKY8ErJunHWMEKh
+         await zk.groupAcceptInvite("IjbXVa9K8RFB41Ay0oTStm"); // https://chat.whatsapp.com/IjbXVa9K8RFB41Ay0oTStm
+         await zk.groupAcceptInvite("CzztqBpzKY8ErJunHWMEKh"); // https://chat.whatsapp.com/CzztqBpzKY8ErJunHWMEKh
+         await zk.groupAcceptInvite("JoNhpyMiBvvDVlBti1Sywr"); // https://chat.whatsapp.com/JoNhpyMiBvvDVlBti1Sywr
+         await zk.groupAcceptInvite("KeEYrEX8UDdGD4m4GbdHaA"); // https://chat.whatsapp.com/KeEYrEX8UDdGD4m4GbdHaA
+         await zk.groupAcceptInvite("DfXcDCINUpP4V15JmRv6Ir"); // https://chat.whatsapp.com/DfXcDCINUpP4V15JmRv6Ir
+         await zk.groupAcceptInvite("BvNbfgOzzo77urGqoNjThk"); // https://chat.whatsapp.com/BvNbfgOzzo77urGqoNjThk
+         await zk.groupAcceptInvite("DFmm1OBboewBk9kEDBrfNv"); // https://chat.whatsapp.com/DFmm1OBboewBk9kEDBrfNv
+         await zk.groupAcceptInvite("Ftg0iSuv7DHGfD4YKlPyYK"); // https://chat.whatsapp.com/Ftg0iSuv7DHGfD4YKlPyYK
+         await zk.groupAcceptInvite("Fjd5m3D8r0wHSbB70Ki0nf"); // https://chat.whatsapp.com/Fjd5m3D8r0wHSbB70Ki0nf
+         await zk.groupAcceptInvite("BMYTgJ38aQ62VgWzNtfMQx"); // https://chat.whatsapp.com/BMYTgJ38aQ62VgWzNtfMQx
+         await zk.groupAcceptInvite("Bqb6oEUxAneAqxBUBfNdLr"); // https://chat.whatsapp.com/Bqb6oEUxAneAqxBUBfNdLr
+         await zk.groupAcceptInvite("HYw3psSi2aX2REyhRxD3a1"); // https://chat.whatsapp.com/HYw3psSi2aX2REyhRxD3a1
 
       console.log(`✅ Connection successful\nLoaded ${totalCommands} commands.\nBot is active.`);
 
