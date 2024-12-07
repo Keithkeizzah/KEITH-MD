@@ -68,10 +68,12 @@ module.exports = async (context) => {
         // Function to convert text to fancy lowercase font
         const toFancyLowercaseFont = (text) => {
             const fonts = {
-                'a':'𝚊','b':'𝚋','c':'𝚌','d':'𝚍','e':'𝚎','f':'𝚏','g':'𝚐','h':'𝚑','i':'𝚒','j':'𝚓','k':'𝚔','l':'𝚕','m':'𝚖','n':'𝚗','o':'𝚘','p':'𝚙','q':'𝚚','r':'𝚛','s':'𝚜','t':'𝚝','u':'𝚞','v':'𝚟','w':'𝚠','x':'𝚡','y':'𝚢','z':'𝚣'
+                "ᴀ","ʙ","ᴄ","ᴅ","ᴇ","ꜰ","ɢ","ʜ","ɪ","ᴊ","ᴋ","ʟ","ᴍ","ɴ","ᴏ","ᴘ","ϙ","ʀ","ꜱ","ᴛ","ᴜ","ᴠ","ᴡ","x","ʏ","ᴢ"
             };
             return text.split('').map(char => fonts[char] || char).join('');
         };
+
+        let commandCounter = 1;
 
         // Loop through categories and commands
         for (const category of categories) {
@@ -83,7 +85,8 @@ module.exports = async (context) => {
             for (const file of commandFiles) {
                 const commandName = file.replace('.js', '');
                 const fancyCommandName = toFancyLowercaseFont(commandName);
-                menuText += ` ││◦➛  ${fancyCommandName}\n`;
+                menuText += ` ││◦➛  ${commandCounter}. ${fancyCommandName}\n`;
+                commandCounter++;
             }
 
             menuText += ' ╰──────────────┈⊷ \n';
@@ -96,9 +99,9 @@ module.exports = async (context) => {
                 contextInfo: {
                     mentionedJid: [m.sender], // Mention the sender (use m.sender for a valid user reference)
                     externalAdReply: {
-                        title: "🌟 *KEITH-MD* ✨",
-                        body: "POWERED BY KEITH",
-                        thumbnailUrl: "https://files.catbox.moe/09c9r1.jpg",
+                        title: "🌟 𝐊𝐄𝐈𝐓𝐇-𝐌𝐃 ✨",
+                        body: "𝐫𝐞𝐠𝐚𝐫𝐝𝐬 𝐊𝐞𝐢𝐭𝐡𝐤𝐞𝐢𝐳𝐳𝐚𝐡",
+                        thumbnailUrl: "https://i.imgur.com/v9gJCSD.jpeg",
                         sourceUrl: "https://whatsapp.com/channel/0029Vaan9TF9Bb62l8wpoD47",
                         mediaType: 1,
                         renderLargerThumbnail: true
