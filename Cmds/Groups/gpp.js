@@ -4,8 +4,8 @@ module.exports = async (context) => {
     await middleware(context, async () => {
         const { client, m } = context;
 
-        // Check if the message has a reply with an image
-        if (!m.reply_message?.image) {
+        // Check if the message has a reply and if the reply contains an image
+        if (!m.reply_message || !m.reply_message.media || !m.reply_message.media.mime.startsWith('image/')) {
             return m.reply('_Please reply with an image!_');
         }
 
