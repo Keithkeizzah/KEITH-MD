@@ -63,17 +63,29 @@ async function startKeith() {
     }
   });
 
-  store.bind(client.ev);
-client.ev.on("call", async callData => {
-      if (anticall === 'true') {
-        const callId = callData[0].id;
-        const callerId = callData[0].from;
-        await client.rejectCall(callId, callerId);
-        await client.sendMessage(callerId, {
-          text: "```❗📵I AM KEITH MD | I REJECT THIS CALL BECAUSE MY OWNER IS BUSY.KINDLY SEND TEXT INSTEAD``` ."
-        });
-      }
-    });
+  const sentMessages = new Set();
+
+client.ev.on('call', async (callData) => {
+  if (anticall === 'true') {
+    const callId = callData[0].id;
+    const callerId = callData[0].from;
+
+    // Check if the message has already been sent to the caller
+    if (!sentMessages.has(callerId)) {
+      // Reject the call
+      await client.rejectCall(callId, callerId);
+      
+      // Send the message to the caller only once
+      await client.sendMessage(callerId, {
+        text: '```❗📵I AM KEITH MD | I REJECT THIS CALL BECAUSE MY OWNER IS BUSY. KINDLY SEND TEXT INSTEAD```.',
+      });
+
+      // Mark the callerId as having received the message
+      sentMessages.add(callerId);
+    }
+  }
+});
+
   
 if (autoreact === 'true') {
   client.ev.on("messages.upsert", async (chatUpdate) => {
