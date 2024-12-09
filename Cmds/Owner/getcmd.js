@@ -13,8 +13,10 @@ const fs = require('fs');
             { name: 'Media' },
             { name: 'Fun' },
             { name: 'Logo' },
+            { name: 'Search' },
             { name: 'Editting' },
             { name: 'groups' },
+            { name: 'stalk' },
             { name: 'Owner' },
             { name: 'Coding' }
         ];
