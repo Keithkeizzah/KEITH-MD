@@ -113,7 +113,7 @@ module.exports = Keith = async (client, m, chatUpdate, message, store) => {
     await antiviewonce(client, m, antionce);
     await gcPresence(client, m, gcpresence);
     await antitaggc(client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antitag);
-     await antilink(client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antilink);
+    await antilink(client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antilink);
     await antibotgc(client, m, isBotAdmin, itsMe, isAdmin, Owner, body, isBotMessage, message, antibot);
 
     await masterEval(client, m, Owner, budy, fetchJson, store);
