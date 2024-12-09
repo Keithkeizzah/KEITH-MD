@@ -27,6 +27,12 @@
     "DEV": {
       "description": "Put any phone numbers you want to be bot owner without + or spaces \",\" Ex: 254748387615, 254796299159 ",
       "required": false
+
+        },
+    "ANTICALL": {
+      "description": "Type true if you want the bot to decline unnecessary calls ",
+      "required": false
+   
     },
     "CODE": {
       "description": "Enter your country code without +. Example: 254 for Kenya. This will allow bot to detect and remove foreigners if commanded",
