@@ -19,6 +19,7 @@ const sessionName = "session";
 const presence = process.env.WA_PRESENCE || 'online';
 
 const antitag = process.env.ANTITAG || 'true';
+const antilink = process.env.ANTILINK || 'true';
 const autoreact = process.env.AUTOREACT || 'true';
 const antibot = process.env.ANTIBOT || 'true';
 const anticall = process.env.ANTICALL || 'true';
@@ -37,6 +38,7 @@ module.exports = {
   autobio,
   autoreact,
   mode,
+  antilink,
   prefix,
   anticall,
   autolike,
