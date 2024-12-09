@@ -62,19 +62,37 @@ async function startKeith() {
       return { conversation: "HERE" };
     }
   });
+  
+ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-  const sentMessages = new Set();
+// Track the last text time to prevent overflow
+let lastTextTime = 0;
+const messageDelay = 5000; // Set the minimum delay between messages (in milliseconds)
+
 client.ev.on('call', async (callData) => {
-    if (anticall === 'true') {
-      const callId = callData[0].id;
-      const callerId = callData[0].from;
-      await client.rejectCall(callId, callerId);
+  if (anticall === 'true') {
+    const callId = callData[0].id;
+    const callerId = callData[0].from;
+    
+    // Reject the call
+    await client.rejectCall(callId, callerId);
+
+    // Check if enough time has passed since the last message
+    const currentTime = Date.now();
+    if (currentTime - lastTextTime >= messageDelay) {
+      // Send the rejection message if the delay has passed
       await client.sendMessage(callerId, {
         text: '```❗📵I AM KEITH MD | I REJECT THIS CALL BECAUSE MY OWNER IS BUSY. KINDLY SEND TEXT INSTEAD```.',
       });
+
+      // Update the last text time
+      lastTextTime = currentTime;
+    } else {
+      console.log('Message skipped to prevent overflow');
     }
-  });
- 
+  }
+});
+
 if (autoreact === 'true') {
   client.ev.on("messages.upsert", async (chatUpdate) => {
     try {
