@@ -31,7 +31,7 @@ const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream
 const authenticationn = require('./auth.js');
 const { smsg } = require('./smsg');
 
-const { autoview, autoread, botname, autobio, mode, prefix, presence, autolike, anticall } = require('./settings');
+const { autoview, autoread, botname, autobio, mode, prefix, autoreact, presence, autolike, anticall } = require('./settings');
 const { DateTime } = require('luxon');
 const { commands, totalCommands } = require('./commandHandler');
 authenticationn();
@@ -74,7 +74,39 @@ client.ev.on("call", async callData => {
         });
       }
     });
+  if (autoreact === "true") {
+  client.ev.on("messages.upsert", async m => {
+    const { messages } = m;
 
+    // Load emojis from the JSON file
+    const emojiFilePath = path.resolve(__dirname, 'database', 'emojis.json');
+    let emojis = [];
+    
+    try {
+      // Read the emojis from the file
+      const data = fs.readFileSync(emojiFilePath, 'utf8');
+      emojis = JSON.parse(data); // Parse the JSON data into an array
+    } catch (error) {
+      console.error('Error reading emojis file:', error);
+      return;
+    }
+
+    // Process each message
+    for (const message of messages) {
+      if (!message.key.fromMe) {
+        const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+        
+        // React to the message with a random emoji
+        await client.sendMessage(message.key.remoteJid, {
+          react: {
+            text: randomEmoji,
+            key: message.key
+          }
+        });
+      }
+    }
+  });
+}
   if (autobio === 'true') {
     setInterval(() => {
       const date = new Date();
