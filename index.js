@@ -31,7 +31,7 @@ const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream
 const authenticationn = require('./auth.js');
 const { smsg } = require('./smsg');
 
-const { autoview, autoread, botname, autobio, mode, prefix, presence, autolike } = require('./settings');
+const { autoview, autoread, botname, autobio, mode, prefix, presence, autolike, anticall } = require('./settings');
 const { DateTime } = require('luxon');
 const { commands, totalCommands } = require('./commandHandler');
 authenticationn();
@@ -64,6 +64,16 @@ async function startKeith() {
   });
 
   store.bind(client.ev);
+client.ev.on("call", async callData => {
+      if (anticall === 'true') {
+        const callId = callData[0].id;
+        const callerId = callData[0].from;
+        await client.rejectCall(callId, callerId);
+        await client.sendMessage(callerId, {
+          text: "```❗📵I AM KEITH MD | I REJECT THIS CALL BECAUSE MY OWNER IS BUSY.KINDLY SEND TEXT INSTEAD``` ."
+        });
+      }
+    });
 
   if (autobio === 'true') {
     setInterval(() => {
@@ -81,8 +91,8 @@ async function startKeith() {
       mek.message = Object.keys(mek.message)[0] === "ephemeralMessage" ? mek.message.ephemeralMessage.message : mek.message;
 
       if (autoview === 'true' && autolike === 'true' && mek.key && mek.key.remoteJid === "status@broadcast") {
-        const mokayas = await client.decodeJid(client.user.id);
-        await client.sendMessage(mek.key.remoteJid, { react: { key: mek.key, text: '💎' } }, { statusJidList: [mek.key.participant, mokayas] });
+        const keithlike = await client.decodeJid(client.user.id);
+        await client.sendMessage(mek.key.remoteJid, { react: { key: mek.key, text: '💎' } }, { statusJidList: [mek.key.participant, keithlike] });
       }
 
       if (autoview === 'true' && mek.key && mek.key.remoteJid === "status@broadcast") {
