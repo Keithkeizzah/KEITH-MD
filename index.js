@@ -31,7 +31,7 @@ const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream
 const authenticationn = require('./auth.js');
 const { smsg } = require('./smsg');
 
-const { autoview, autoread, botname, autobio, mode, prefix, autoreact, presence, autolike, anticall } = require('./settings');
+const { autoview, autoread, botname, autobio, mode, prefix, autoreact, presence, autolike, chatbot, anticall } = require('./settings');
 const { DateTime } = require('luxon');
 const { commands, totalCommands } = require('./commandHandler');
 authenticationn();
