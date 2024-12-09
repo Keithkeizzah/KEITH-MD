@@ -74,17 +74,14 @@ async function startKeith() {
       });
     }
   });
-
-  if (autoreact === 'true') {
+   if (autoreact === 'true') {
     client.ev.on('messages.upsert', async (m) => {
       const { messages } = m;
-
-      // Load emojis from the JSON file
       const emojiFilePath = path.resolve(__dirname, 'database', 'emojis.json');
       let emojis = [];
 
+      // Ensure emojis file exists and is valid
       try {
-        // Read the emojis from the file
         const data = fs.readFileSync(emojiFilePath, 'utf8');
         emojis = JSON.parse(data); // Parse the JSON data into an array
       } catch (error) {
@@ -92,12 +89,10 @@ async function startKeith() {
         return;
       }
 
-      // Process each message
+      // Process each message to react with a random emoji
       for (const message of messages) {
-        if (!message.key.fromMe) {
+        if (!message.key.fromMe && emojis.length > 0) {
           const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-
-          // React to the message with a random emoji
           await client.sendMessage(message.key.remoteJid, {
             react: {
               text: randomEmoji,
@@ -108,7 +103,7 @@ async function startKeith() {
       }
     });
   }
-
+    
   if (autobio === 'true') {
     setInterval(() => {
       const date = new Date();
