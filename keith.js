@@ -109,7 +109,6 @@ module.exports = Keith = async (client, m, chatUpdate, message, store) => {
     await status_saver(client, m, Owner, prefix)
     await eval2(client, m, Owner, budy, fetchJson)
     await eval(client, m, Owner, budy, fetchJson, store)
-    await antilink(client, m, isBotAdmin, isAdmin, Owner, body);
     await antiviewonce(client, m, antionce);
     await gcPresence(client, m, gcpresence);
     await antitaggc(client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antitag);
