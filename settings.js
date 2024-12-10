@@ -24,6 +24,7 @@ const antilink = process.env.ANTILINK || 'true';
 const autoreact = process.env.AUTOREACT || 'true';
 const antibot = process.env.ANTIBOT || 'true';
 const anticall = process.env.ANTICALL || 'true';
+const antibad = process.env.ANTI_BAD_WORD || 'true';
 const antidelete = process.env.ANTIDELETE || 'true';
 const autoview = process.env.AUTOVIEW_STATUS || 'true';
 const autolike = process.env.AUTOLIKE_STATUS || 'true';
@@ -39,6 +40,7 @@ module.exports = {
   autobio,
   autoreact,
   mode,
+  antibad,
   antilink,
   prefix,
   anticall,
