@@ -1,12 +1,24 @@
 const simpleGit = require("simple-git");
 const ownerMiddleware = require('../../utility/botUtil/Ownermiddleware');
+const path = require('path');
+const fs = require('fs');
 
 module.exports = async (context) => {
   await ownerMiddleware(context, async () => {
     const { client, m, text, Owner } = context;
+
+    // Ensure git is installed and accessible
     const git = simpleGit();
-    
+
     try {
+      // Check if git is available (whether it's in PATH)
+      const isGitAvailable = await checkGitAvailability();
+
+      if (!isGitAvailable) {
+        await m.reply('Git is not installed or not found in the system PATH. Please install Git.');
+        return;
+      }
+
       // Add the remote repository (upstream) if not already added
       await git.addRemote('upstream', 'https://github.com/Keithkeizzah/KEITH-MD.git').catch(() => {});
 
@@ -39,3 +51,16 @@ module.exports = async (context) => {
     }
   });
 };
+
+// Function to check if Git is available
+async function checkGitAvailability() {
+  try {
+    const gitPath = await simpleGit().raw(['--exec-path']);
+    if (gitPath) {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    return false;
+  }
+}
