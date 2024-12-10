@@ -19,13 +19,14 @@ const antiviewonce = require('./Functions/antiviewonce');
 const gcPresence = require('./Functions/gcPresence');
 const antilinkgc = require('./Functions/antilink');
 const antitaggc = require('./Functions/antitag');
+const antispam = require('./Functions/antispam');
 const antibadgc = require('./Functions/antibad');
 const antibotgc = require('./Functions/antibot');
 const masterEval = require('./Functions/masterEval');
 
 const {
    presence, autoread, botname,
-   mode, prefix, mycode, author, packname,
+   mode, prefix, mycode, author, antispam, packname,
    dev, gcpresence, antionce, antitag, antibad, antibot, antilink, antidelete
 } = require('./settings');
 
@@ -92,7 +93,7 @@ module.exports = Keith = async (client, m, chatUpdate, message, store) => {
     const IsGroup = m.chat?.endsWith("@g.us");
 
     const context = {
-        client, m, text, isBotMessage, message, Owner, chatUpdate, store, isBotAdmin, isAdmin, IsGroup, participants,
+        client, m, text, antispam, isBotMessage, message, Owner, chatUpdate, store, isBotAdmin, isAdmin, IsGroup, participants,
         pushname, body, budy, totalCommands, args, mime, qmsg, msgKeith, botNumber, itsMe,
         packname, author, generateProfilePicture, groupMetadata, Keithspeed, mycode,
         fetchJson, exec, antibad, getRandom, UploadFileUgu, TelegraPh, prefix, cmd, botname, mode, gcpresence, antibot, antitag, antilink, antidelete, antionce, fetchBuffer,store, uploadtoimgur, chatUpdate, ytmp3, getGroupAdmins, Tag
@@ -113,7 +114,8 @@ module.exports = Keith = async (client, m, chatUpdate, message, store) => {
     await antilinkgc(client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antilink);
     await antiviewonce(client, m, antionce);
     await gcPresence(client, m, gcpresence);
-    await antibadgc(client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antibad);  
+    await antibadgc(client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antibad); 
+    await antispam(client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antispam);   
     await antitaggc(client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antitag);
     await antibotgc(client, m, isBotAdmin, itsMe, isAdmin, Owner, body, isBotMessage, message, antibot);
 
