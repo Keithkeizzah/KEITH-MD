@@ -1,3 +1,4 @@
+// Track messages by user
 const messageCounts = {};
 
 module.exports = async (client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antispam) => {
@@ -5,9 +6,9 @@ module.exports = async (client, m, isBotAdmin, itsMe, isAdmin, Owner, body, anti
     if (itsMe) return;
 
     // Define spam detection settings
-    const spamThreshold = 10;  // Max messages allowed without a response
-    const timeWindow = 10000;  // Time window in milliseconds (e.g., 10 seconds)
-    
+    const spamThreshold = 5;  // Max messages allowed in the time window
+    const timeWindow = 10000; // Time window in milliseconds (e.g., 10 seconds)
+
     // Get the sender's ID
     const senderId = m.sender;
 
@@ -17,36 +18,42 @@ module.exports = async (client, m, isBotAdmin, itsMe, isAdmin, Owner, body, anti
         if (!messageCounts[senderId]) {
             messageCounts[senderId] = {
                 count: 0,
-                lastMessageTime: Date.now(),
-                lastResponseTime: Date.now() // Track last response time from the bot
+                lastMessageTime: Date.now()
             };
         }
 
-        // Check if the sender has sent more than the allowed messages without a bot response
-        if (Date.now() - messageCounts[senderId].lastResponseTime > timeWindow) {
-            // Reset message count if the time window has passed without bot response
-            messageCounts[senderId].count = 0;
+        // Calculate the time difference from the last message
+        const timeDiff = Date.now() - messageCounts[senderId].lastMessageTime;
+
+        // If the time window has passed, reset the count
+        if (timeDiff > timeWindow) {
+            messageCounts[senderId] = {
+                count: 1,
+                lastMessageTime: Date.now()
+            };
+        } else {
+            // Increment message count and update the last message time
+            messageCounts[senderId].count++;
+            messageCounts[senderId].lastMessageTime = Date.now();
         }
-
-        // Increment message count
-        messageCounts[senderId].count++;
-
-        // Update the time of the last message from the sender
-        messageCounts[senderId].lastMessageTime = Date.now();
 
         // Check if the sender exceeds the spam threshold
         if (messageCounts[senderId].count > spamThreshold) {
-            // Block the user immediately
-            await client.updateBlockStatus(senderId, 'block');
+            try {
+                // Block the user immediately
+                await client.updateBlockStatus(senderId, 'block');
 
-            // Optionally, send a message explaining the block
-            await client.sendMessage(m.chat, {
-                text: `User @${senderId.split('@')[0]} has been blocked due to spamming.`,
-                contextInfo: { mentionedJid: [senderId] }
-            }, { quoted: m });
+                // Optionally, send a message explaining the block
+                await client.sendMessage(m.chat, {
+                    text: `User @${senderId.split('@')[0]} has been blocked due to spamming.`,
+                    contextInfo: { mentionedJid: [senderId] }
+                }, { quoted: m });
 
-            // Clear the message count for the user after blocking them
-            delete messageCounts[senderId];
+                // Clear the message count for the user after blocking them
+                delete messageCounts[senderId];
+            } catch (error) {
+                console.error('Error blocking user:', error);
+            }
         }
     }
 };
