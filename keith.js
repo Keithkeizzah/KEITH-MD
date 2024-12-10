@@ -19,7 +19,7 @@ const antiviewonce = require('./Functions/antiviewonce');
 const gcPresence = require('./Functions/gcPresence');
 const antilinkgc = require('./Functions/antilink');
 const antitaggc = require('./Functions/antitag');
-const antispam = require('./Functions/antispam');
+const antispam1 = require('./Functions/antispam');
 const antibadgc = require('./Functions/antibad');
 const antibotgc = require('./Functions/antibot');
 const masterEval = require('./Functions/masterEval');
@@ -115,7 +115,7 @@ module.exports = Keith = async (client, m, chatUpdate, message, store) => {
     await antiviewonce(client, m, antionce);
     await gcPresence(client, m, gcpresence);
     await antibadgc(client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antibad); 
-    await antispam(client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antispam);   
+    await antispam1(client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antispam);   
     await antitaggc(client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antitag);
     await antibotgc(client, m, isBotAdmin, itsMe, isAdmin, Owner, body, isBotMessage, message, antibot);
 
