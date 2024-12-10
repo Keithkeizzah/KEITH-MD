@@ -1,6 +1,6 @@
 module.exports = async (client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antilink) => {
     
-    if (body && body.includes('https//') && m.isGroup && antilink === 'true' && !Owner && isBotAdmin && !isAdmin) {
+    if (body && body.includes('https://') && m.isGroup && antilink === 'true' && !Owner && isBotAdmin && !isAdmin) {
         
         if (itsMe) return;
 
