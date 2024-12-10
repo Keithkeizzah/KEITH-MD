@@ -1,4 +1,3 @@
-// Track messages by user
 const messageCounts = {};
 
 module.exports = async (client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antispam) => {
@@ -6,9 +5,9 @@ module.exports = async (client, m, isBotAdmin, itsMe, isAdmin, Owner, body, anti
     if (itsMe) return;
 
     // Define spam detection settings
-    const spamThreshold = 5;  // Max messages allowed in the time window
-    const timeWindow = 10000; // Time window in milliseconds (e.g., 10 seconds)
-
+    const spamThreshold = 10;  // Max messages allowed without a response
+    const timeWindow = 10000;  // Time window in milliseconds (e.g., 10 seconds)
+    
     // Get the sender's ID
     const senderId = m.sender;
 
@@ -18,20 +17,22 @@ module.exports = async (client, m, isBotAdmin, itsMe, isAdmin, Owner, body, anti
         if (!messageCounts[senderId]) {
             messageCounts[senderId] = {
                 count: 0,
-                lastMessageTime: Date.now()
+                lastMessageTime: Date.now(),
+                lastResponseTime: Date.now() // Track last response time from the bot
             };
         }
 
-        // Reset message count if the time window has passed
-        if (Date.now() - messageCounts[senderId].lastMessageTime > timeWindow) {
-            messageCounts[senderId] = {
-                count: 1,
-                lastMessageTime: Date.now()
-            };
-        } else {
-            // Increment message count
-            messageCounts[senderId].count++;
+        // Check if the sender has sent more than the allowed messages without a bot response
+        if (Date.now() - messageCounts[senderId].lastResponseTime > timeWindow) {
+            // Reset message count if the time window has passed without bot response
+            messageCounts[senderId].count = 0;
         }
+
+        // Increment message count
+        messageCounts[senderId].count++;
+
+        // Update the time of the last message from the sender
+        messageCounts[senderId].lastMessageTime = Date.now();
 
         // Check if the sender exceeds the spam threshold
         if (messageCounts[senderId].count > spamThreshold) {
