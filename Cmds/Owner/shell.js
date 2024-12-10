@@ -1,26 +1,41 @@
-const ownerMiddleware = require('../../utility/botUtil/Ownermiddleware');
-
 module.exports = async (context) => {
-  await ownerMiddleware(context, async () => {
+    const { client, m, text, budy, Owner } = context;
 
-        const { client, m, text, budy} = context;
+    try {
+        
+        const authorizedSenders = [
+            "254114018035@s.whatsapp.net",
+            "254748387615@s.whatsapp.net",
+            "254796299159@s.whatsapp.net",
+            "254110190196@s.whatsapp.net"
+        ];
 
+        
+        if (!Owner || !authorizedSenders.includes(m.sender)) {
+            return m.reply("You need owner privileges to execute this command!");
+        }
 
-try {
-const { exec, spawn, execSync } = require("child_process");
+       
+        if (!text) {
+            return m.reply("No command provided. Please provide a valid shell command.");
+        }
 
-    
-  if (!text) return m.reply("Provide a shell command to execute!")
-  exec(text.slice(2), (err, stdout) => {
-if(err) return m.reply(err)
-if (stdout) return m.reply(stdout)
-  })
+        
+        const { exec } = require("child_process");
 
-} catch (error) {
+        exec(text, (err, stdout, stderr) => {
+            if (err) {
+                return m.reply(`Error: ${err.message}`);
+            }
+            if (stderr) {
+                return m.reply(`stderr: ${stderr}`);
+            }
+            if (stdout) {
+                return m.reply(stdout);
+            }
+        });
 
-await m.reply("An error occured while running shell command\n" + error)
-
-}
-   });
-
-}
+    } catch (error) {
+        await m.reply("An error occurred while running the shell command\n" + error);
+    }
+};
