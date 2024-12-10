@@ -17,7 +17,7 @@ const eval2 = require('./Functions/eval2');
 const eval = require('./Functions/eval');
 const antiviewonce = require('./Functions/antiviewonce');
 const gcPresence = require('./Functions/gcPresence');
-const antilink = require('./Functions/antilink');
+const antilinkgc = require('./Functions/antilink');
 const antitaggc = require('./Functions/antitag');
 const antibotgc = require('./Functions/antibot');
 const masterEval = require('./Functions/masterEval');
@@ -25,7 +25,7 @@ const masterEval = require('./Functions/masterEval');
 const {
    presence, autoread, botname,
    mode, prefix, mycode, author, packname,
-   dev, gcpresence, antionce, antitag, antibot, antidelete
+   dev, gcpresence, antionce, antitag, antibot, antilink, antidelete
 } = require('./settings');
 
 module.exports = Keith = async (client, m, chatUpdate, message, store) => {
@@ -94,7 +94,7 @@ module.exports = Keith = async (client, m, chatUpdate, message, store) => {
         client, m, text, isBotMessage, message, Owner, chatUpdate, store, isBotAdmin, isAdmin, IsGroup, participants,
         pushname, body, budy, totalCommands, args, mime, qmsg, msgKeith, botNumber, itsMe,
         packname, author, generateProfilePicture, groupMetadata, Keithspeed, mycode,
-        fetchJson, exec, getRandom, UploadFileUgu, TelegraPh, prefix, cmd, botname, mode, gcpresence, antibot, antitag, antidelete, antionce, fetchBuffer,store, uploadtoimgur, chatUpdate, ytmp3, getGroupAdmins, Tag
+        fetchJson, exec, getRandom, UploadFileUgu, TelegraPh, prefix, cmd, botname, mode, gcpresence, antibot, antitag, antilink, antidelete, antionce, fetchBuffer,store, uploadtoimgur, chatUpdate, ytmp3, getGroupAdmins, Tag
     };
     if (cmd && mode === 'private' && !itsMe && !Owner && m.sender !== daddy ) {
       return;
@@ -109,7 +109,7 @@ module.exports = Keith = async (client, m, chatUpdate, message, store) => {
     await status_saver(client, m, Owner, prefix)
     await eval2(client, m, Owner, budy, fetchJson)
     await eval(client, m, Owner, budy, fetchJson, store)
-    await antilink(client, m, isBotAdmin, isAdmin, Owner, body);
+    await antilinkgc(client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antilink);
     await antiviewonce(client, m, antionce);
     await gcPresence(client, m, gcpresence);
     await antitaggc(client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antitag);
