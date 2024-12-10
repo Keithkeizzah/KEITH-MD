@@ -31,7 +31,7 @@ const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream
 const authenticationn = require('./auth.js');
 const { smsg } = require('./smsg');
 
-const { autoview, autoread, botname, autobio, mode, prefix, autoreact, presence, autolike, chatbot, anticall } = require('./settings');
+const { autoview, autoread, botname, autobio, mode, prefix, autoreact, presence, autolike, anticall } = require('./settings');
 const { DateTime } = require('luxon');
 const { commands, totalCommands } = require('./commandHandler');
 authenticationn();
@@ -92,110 +92,6 @@ client.ev.on('call', async (callData) => {
     }
   }
 });
-const MIN_REPLY_DELAY = 5000;  // Minimum time between replies (in milliseconds)
-let lastReplyTime = 0;         // Track the time of the last reply
-
-// Ensure axios is imported
-const axios = require('axios');
-
-// Define the system prompt that provides context to the model
-const systemPrompt = {
-  role: "system",
-  content: "You are a helpful assistant with various features. Please assist with any questions or tasks the user requests."
-};
-
-// Function to fetch a reply from the external API
-const fetchReplyFromAPI = async (messageText) => {
-  try {
-    if (!messageText) {
-      throw new Error('No message text provided');
-    }
-
-    // Define the user prompt using the message text from the user
-    const userPrompt = {
-      role: "user",
-      content: messageText
-    };
-
-    // Create the conversation context
-    const conversation = [systemPrompt, userPrompt];
-
-    // Make the API request with the conversation context
-    const response = await axios.post('https://api.yanzbotz.live/api/ai/gpt3', {
-      prompt: conversation, // Send the full conversation context
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    });
-
-    // Ensure that the API response contains a reply
-    if (response.data && response.data.reply) {
-      return response.data.reply;
-    } else {
-      console.error('API returned an empty reply.');
-      return 'Sorry, I could not understand that.';
-    }
-  } catch (error) {
-    console.error('Error fetching reply from the API:', error.message);
-    return 'Sorry, there was an error processing your request.';
-  }
-};
-
-if (chatbot === 'yes') {
-  console.log('CHATBOT is enabled. Listening for messages...');
-  
-  client.ev.on('messages.upsert', async (chatUpdate) => {
-    try {
-      // Make sure there are messages in the update
-      const messages = chatUpdate.messages || [];
-      if (!messages.length) return;
-
-      // Iterate over the incoming messages
-      for (const mek of messages) {
-        if (!mek.message) continue;
-
-        const messageText = mek.message?.conversation || mek.message?.extendedTextMessage?.text || '';
-
-        // Ensure we don't send replies too frequently
-        const currentTime = Date.now();
-        if (currentTime - lastReplyTime < MIN_REPLY_DELAY) {
-          console.log('Rate limit applied. Skipping reply.');
-          continue; // Skip if the delay hasn't passed
-        }
-
-        if (messageText) {
-          // Fetch the reply from the external API
-          const replyMessage = await fetchReplyFromAPI(messageText);
-
-          if (replyMessage) {
-            try {
-              // Send the corresponding text reply
-              await client.sendMessage(mek.key.remoteJid, {
-                text: replyMessage,
-              });
-              console.log(`Text reply sent: ${replyMessage}`);
-
-              // Update the last reply time
-              lastReplyTime = currentTime;
-            } catch (error) {
-              console.error(`Error sending text reply: ${error.message}`);
-            }
-          } else {
-            console.log('No reply received from the API. Skipping message.');
-          }
-        } else {
-          console.log('No valid message text found.');
-        }
-
-        // Wait for a brief moment before processing the next message (to avoid excessive load)
-        await new Promise(resolve => setTimeout(resolve, 3000));
-      }
-    } catch (error) {
-      console.error('Error in message processing:', error.message);
-    }
-  });
-}
 
 if (autoreact === 'true') {
   client.ev.on("messages.upsert", async (chatUpdate) => {
