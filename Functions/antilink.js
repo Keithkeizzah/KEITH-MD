@@ -1,8 +1,18 @@
-module.exports = async (client, m, isBotAdmin, isAdmin, Owner, body) => {
-    if (body && body.includes('chat.whatsapp.com') && !Owner && isBotAdmin && !isAdmin && m.isGroup) {
+module.exports = async (client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antilink) => {
+    // Check if the message contains a link and the group has anti-link enabled
+    if (body && body.includes('chat.whatsapp.com') && m.isGroup && antilink === 'true' && !Owner && isBotAdmin && !isAdmin) {
+        // Prevent the bot from acting if the message is sent by the bot itself
+        if (itsMe) return;
 
-m.reply("Group link detected");
-        const kid = m.sender;
+        const kid = m.sender; // Get the sender of the message
+
+        // Send a warning message to the user who sent the link
+        await client.sendMessage(m.chat, {
+            text: `@${kid.split("@")[0]}, do not send links!`,
+            contextInfo: { mentionedJid: [kid] }
+        }, { quoted: m });
+
+        // Delete the message with the invite link
         await client.sendMessage(m.chat, {
             delete: {
                 remoteJid: m.chat,
@@ -11,12 +21,8 @@ m.reply("Group link detected");
                 participant: kid
             }
         });
+
+        // Remove the participant who sent the link from the group
         await client.groupParticipantsUpdate(m.chat, [kid], 'remove');
-        await client.sendMessage(m.chat, {
-            text: `Removed!\n\n@${kid.split("@")[0]} sending group links is prohibited!`,
-            contextInfo: {
-                mentionedJid: [kid]
-            }
-        }, { quoted: m });
     }
 };
