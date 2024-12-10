@@ -8,7 +8,7 @@ module.exports = async (context) => {
 try {
 const fs = require("fs");
 
-if(!msgDreaded) { m.reply('Quote an image...') ; return } ;
+if(!msgKeith) { m.reply('Quote an image...') ; return } ;
 
 
 let media;
