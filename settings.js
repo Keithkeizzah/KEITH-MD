@@ -19,6 +19,7 @@ const sessionName = "session";
 const presence = process.env.WA_PRESENCE || 'online';
 
 const antitag = process.env.ANTITAG || 'true';
+const antispam = process.env.ANTISPAM || 'true';
 const chatbot = process.env.CHAT_BOT || 'true';
 const antilink = process.env.ANTILINK || 'true';
 const autoreact = process.env.AUTOREACT || 'true';
