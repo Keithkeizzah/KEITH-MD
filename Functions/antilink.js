@@ -1,18 +1,24 @@
 module.exports = async (client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antilink) => {
-    
-    if (body && body.includes('https://') && m.isGroup && antilink === 'true' && !Owner && isBotAdmin && !isAdmin) {
-        
-        if (itsMe) return;
+    // Define an array of URLs to check for
+    const forbiddenLinks = [
+        'https://chat.whatsapp.com/',
+        'https://t.me/',
+        'https://whatsapp.com/'
+    ];
 
-        const kid = m.sender; 
+    // Check if the message contains any forbidden link and the group settings allow link removal
+    if (body && forbiddenLinks.some(link => body.includes(link)) && m.isGroup && antilink === 'true' && !Owner && isBotAdmin && !isAdmin) {
+        if (itsMe) return;  // Skip if the message is from the bot
 
-        
+        const kid = m.sender;
+
+        // Notify the user that they are not allowed to send links
         await client.sendMessage(m.chat, {
             text: `@${kid.split("@")[0]}, do not send links!`,
             contextInfo: { mentionedJid: [kid] }
         }, { quoted: m });
 
-        
+        // Delete the offending message
         await client.sendMessage(m.chat, {
             delete: {
                 remoteJid: m.chat,
@@ -22,7 +28,7 @@ module.exports = async (client, m, isBotAdmin, itsMe, isAdmin, Owner, body, anti
             }
         });
 
-        
+        // Remove the user from the group
         await client.groupParticipantsUpdate(m.chat, [kid], 'remove');
     }
 };
