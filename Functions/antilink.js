@@ -1,9 +1,8 @@
 module.exports = async (client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antilink) => {
     // Define an array of URLs to check for
     const forbiddenLinks = [
-        'https://chat.whatsapp.com/',
-        'https://t.me/',
-        'https://whatsapp.com/'
+        't.me',
+        'whatsapp.com'
     ];
 
     // Check if the message contains any forbidden link and the group settings allow link removal
