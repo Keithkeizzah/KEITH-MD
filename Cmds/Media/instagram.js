@@ -16,10 +16,26 @@ module.exports = async (context) => {
   try {
     // Download Instagram video data
     let downloadData = await igdl(text);
+
+    // If no data is returned or data is undefined
+    if (!downloadData || !downloadData.data) {
+      return m.reply("No data found for the provided link.");
+    }
+
     let videoData = downloadData.data;
 
-    // Extract the video URL (assuming it's in videoData.result.url)
-    const videoUrl = videoData.result.url;
+    // If no video data is found
+    if (videoData.length === 0) {
+      return m.reply("No video found at the provided link.");
+    }
+
+    // Process the first video entry (or more if needed)
+    const video = videoData[0]; // Get the first video
+    if (!video || !video.url) {
+      return m.reply("No valid video URL found.");
+    }
+
+    const videoUrl = video.url;
 
     // Caption without title and duration
     const caption = `
@@ -39,7 +55,7 @@ module.exports = async (context) => {
     |__________________________|
     `;
 
-    // Send caption
+    // Send caption with instructions
     const message = await client.sendMessage(m.chat, { caption });
 
     const messageId = message.key.id;
@@ -67,48 +83,50 @@ module.exports = async (context) => {
         });
 
         // Send the requested media based on the user's response
-        if (responseText === '1') {
-          await client.sendMessage(m.chat, {
-            video: { url: videoUrl },
-            caption: `*𝐊𝐄𝐈𝐓𝐇 𝐌𝐃*`,
-          }, { quoted: messageContent });
+        switch (responseText) {
+          case '1': // Plain Video
+          case '2': // Documented Video
+            await client.sendMessage(m.chat, {
+              video: { url: videoUrl },
+              caption: `*𝐊𝐄𝐈𝐓𝐇 𝐌𝐃*`,
+            }, { quoted: messageContent });
+            break;
 
-        } else if (responseText === '2') {
-          await client.sendMessage(m.chat, {
-            video: { url: videoUrl },
-            caption: `*𝐊𝐄𝐈𝐓𝐇 𝐌𝐃*`,
-          }, { quoted: messageContent });
+          case '3': // Audio
+            await client.sendMessage(m.chat, {
+              audio: { url: videoUrl },
+              mimetype: "audio/mpeg",
+              caption: `*𝐊𝐄𝐈𝐓𝐇 𝐌𝐃*`,
+            }, { quoted: messageContent });
+            break;
 
-        } else if (responseText === '3') {
-          await client.sendMessage(m.chat, {
-            audio: { url: videoUrl },
-            mimetype: "audio/mpeg",
-            caption: `*𝐊𝐄𝐈𝐓𝐇 𝐌𝐃*`,
-          }, { quoted: messageContent });
+          case '4': // Document
+            await client.sendMessage(m.chat, {
+              document: {
+                url: videoUrl
+              },
+              mimetype: "audio/mpeg",
+              fileName: `audio.mp3`,
+              caption: `*KEITH MD*`
+            }, {
+              quoted: messageContent
+            });
+            break;
 
-        } else if (responseText === '4') {
-          await client.sendMessage(m.chat, {
-            document: {
-              url: videoUrl
-            },
-            mimetype: "audio/mpeg",
-            fileName: `audio.mp3`,
-            caption: `*KEITH MD*`
-          }, {
-            quoted: messageContent
-          });
+          case '5': // Voice Note (PTT)
+            await client.sendMessage(m.chat, {
+              audio: { url: videoUrl },
+              mimetype: 'audio/mp4',
+              ptt: true,
+              caption: `*KEITH MD*`
+            }, {
+              quoted: messageContent
+            });
+            break;
 
-        } else if (responseText === '5') {
-          await client.sendMessage(m.chat, {
-            audio: {
-              url: videoUrl
-            },
-            mimetype: 'audio/mp4',
-            ptt: true,
-            caption: `*KEITH MD*`
-          }, {
-            quoted: messageContent
-          });
+          default:
+            m.reply("Invalid option. Please reply with one of the numbers listed.");
+            break;
         }
       }
     });
