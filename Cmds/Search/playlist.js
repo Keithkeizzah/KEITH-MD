@@ -24,11 +24,11 @@ module.exports = async (context) => {
     // Loop through search results and construct track info with numbers
     searchData.forEach((track, index) => {
       const trackNumber = index + 1; // Number tracks starting from 1
-      playlistMessage += `*${trackNumber}.* ${track.title}\n`;
-      playlistMessage += `*Artist*: ${track.artist || "Unknown"}\n`;
-      playlistMessage += `*Album*: ${track.album || "Unknown"}\n`;
-      playlistMessage += `*URL*: ${track.url}\n\n
-playlistMessage += `───────────────────◆\n\n`;
+      playlistMessage += `*┃${trackNumber}.* ${track.title}\n`;
+      playlistMessage += `*┃Artist*: ${track.artist || "Unknown"}\n`;
+      playlistMessage += `*┃Album*: ${track.album || "Unknown"}\n`;
+      playlistMessage += `*┃URL*: ${track.url}\n\n`;
+      playlistMessage += `───────────────────◆\n\n`;
     });
 
     // Send the playlist message
