@@ -27,7 +27,8 @@ module.exports = async (context) => {
       playlistMessage += `*${trackNumber}.* ${track.title}\n`;
       playlistMessage += `*Artist*: ${track.artist || "Unknown"}\n`;
       playlistMessage += `*Album*: ${track.album || "Unknown"}\n`;
-      playlistMessage += `*URL*: ${track.url}\n\n`;
+      playlistMessage += `*URL*: ${track.url}\n\n
+playlistMessage += `───────────────────◆\n\n`;
     });
 
     // Send the playlist message
