@@ -28,7 +28,7 @@ module.exports = async ( context) => {
       await m.react('⬆️');
 
       // Send video to the chat
-      await fetchJson.sendMessage(from, {
+      await fetchJson.sendMessage(m.chat, {
         video: {
           url: videoUrl
         },
