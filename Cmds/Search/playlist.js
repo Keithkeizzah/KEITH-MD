@@ -42,7 +42,7 @@ module.exports = async (context) => {
             body: "Powered by KeithKeizzah",
             sourceUrl: "https://whatsapp.com/channel/0029Vaan9TF9Bb62l8wpoD47",
             mediaType: 1,
-            renderLargerThumbnail: true,
+            renderLargerThumbnail: false,
           },
         },
       },
