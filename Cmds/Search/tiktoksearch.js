@@ -1,42 +1,60 @@
+const axios = require("axios");
+
 module.exports = async (context) => {
-    const { client, m, text, fetchJson } = context;
+  const { client, m, text } = context;
 
-    try {
-        if (!text) {
-            return m.reply('Provide TikTok username.');
-        }
+  // Check if the input text is provided
+  if (!text) {
+    return m.reply("Please provide a query.");
+  }
 
-        const query = encodeURIComponent(text);
-        const response = await fetchJson(`https://apis-starlights-team.koyeb.app/starlight/tiktoksearch?text=${query}`);
+  try {
+    // Spotify search API (Adjust the endpoint if necessary)
+    const searchApiUrl = `https://apis-starlights-team.koyeb.app/starlight/tiktoksearch?text=${encodeURIComponent(text)}`;
+    const response = await axios.get(searchApiUrl);
+    const searchData = response.data;
 
-        if (!response.ok) {
-            return m.reply('Error fetching data from API.');
-        }
-
-        const results = response.data; // Adjust according to actual response structure
-
-        if (!results || results.length < 1 || !results[0].nowm) {
-            return m.reply('Invalid username or no results found.');
-        }
-
-        const item = results[0]; 
-        const title = item.title || 'N/A';
-        const info = item.url || 'N/A';
-        const region = item.region || 'N/A';
-        const creator = item.creator || 'N/A';
-        const id = item.nowm; 
-        const imageUrl = item.imageUrl || ''; 
-
-        const message = `*KEITH-MD TIKTOK SEARCH*\n\nTitle: ${title}\nInfo: ${info}\nRegion: ${region}\nCreator: ${creator}\nId: ${id}`;
-
-        const options = { quoted: m };
-        if (imageUrl) {
-            await client.sendMessage(m.chat, { image: { url: imageUrl }, caption: message }, options);
-        } else {
-            await client.sendMessage(m.chat, { text: message }, options);
-        }
-    } catch (error) {
-        console.error("Error occurred:", error);
-        return m.reply('An error occurred while processing your request. Please try again later.');
+    // Check if searchData contains tracks
+    if (!searchData || searchData.length === 0) {
+      return m.reply("No TikTok search results found.");
     }
+
+    // Construct playlist message
+    let playlistMessage = `𝐊𝐄𝐈𝐓𝐇 𝐌𝐃 𝐓𝐈𝐊𝐓𝐎𝐊 𝐒𝐄𝐀𝐑𝐂𝐇\n\n`;
+
+    // Loop through search results and construct track info with numbers
+    searchData.forEach((track, index) => {
+      const trackNumber = index + 1; // Number tracks starting from 1
+      playlistMessage += `*┃${trackNumber}.* ${track.title}\n`;
+      playlistMessage += `*┃Region*: ${track.region || "Unknown"}\n`;
+      playlistMessage += `*┃Creator*: ${track.creator || "Unknown"}\n`;
+      playlistMessage += `*┃ID*: ${track.nowm}\n`;
+      playlistMessage += `*┃Creator Image*: ${track.imageUrl || "Unknown"}\n`; // Fixed the key for creator's image URL
+      playlistMessage += `───────────────────◆\n\n`;
+    });
+
+    // Send the playlist message
+    await client.sendMessage(
+      m.chat,
+      {
+        text: playlistMessage,
+        contextInfo: {
+          mentionedJid: [m.sender],
+          externalAdReply: {
+            showAdAttribution: true,
+            title: "KEITH MD SPOTIFY LIST",
+            body: "Powered by KeithKeizzah",
+            sourceUrl: "https://whatsapp.com/channel/0029Vaan9TF9Bb62l8wpoD47",
+            mediaType: 1,
+            renderLargerThumbnail: false,
+          },
+        },
+      },
+      { quoted: m }
+    );
+  } catch (error) {
+    // Send error message
+    console.error(error);  // Log the error to the console
+    m.reply(`Error: ${error.message || 'Something went wrong.'}`);
+  }
 };
