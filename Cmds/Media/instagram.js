@@ -18,28 +18,108 @@ module.exports = async (context) => {
     let downloadData = await igdl(text);
     let videoData = downloadData.data;
 
-    // If no video data is returned
-    if (!videoData || videoData.length === 0) {
-      return m.reply("No video found at the provided link.");
-    }
+    // Extract video metadata (title, duration, thumbnail, etc.)
+    const videoTitle = videoData.result.title || 'Instagram Video';
+    const videoDuration = videoData.result.duration || 'Unknown duration';
+    const videoUrl = videoData.result.url;
+    const thumbnailUrl = videoData.result.thumbnail;
 
-    // Process the first video entry (or more if needed)
-    for (let i = 0; i < Math.min(20, videoData.length); i++) {
-      let video = videoData[i];
-      let videoUrl = video.url;
+    // Caption with the video metadata
+    const caption = `
+     *𝐊𝐄𝐈𝐓𝐇 𝐌𝐃 𝐈𝐍𝐒𝐓𝐀 𝐃𝐋*
+    |__________________________|
+    |  
+    | *Title*: ${videoTitle}
+    | *Duration*: ${videoDuration}
+    |_________________________
+    | *REPLY WITH BELOW NUMBERS*
+    |_________________________
+    |____  *ɪɴsᴛᴀɢʀᴀᴍ ᴠɪᴅᴇᴏ ᴅʟ*  ____
+    |-᳆  1 ᴘʟᴀɪɴ ᴠɪᴅᴇᴏ
+    |-᳆  2 ᴅᴏᴄᴜᴍᴇɴᴛᴇᴅ ᴠɪᴅᴇᴏ
+    |_________________________
+    |____  *ɪɴsᴛᴀɢʀᴀᴍ ᴀᴜᴅɪᴏ ᴅʟ*  ____
+    |-᳆  3 ᴀᴜᴅɪᴏ 
+    |-᳆  4 ᴅᴏᴄᴜᴍᴇɴᴛ
+    |-᳆  5 ᴘᴛᴛ(ᴠᴏɪᴄᴇ)
+    |__________________________|
+    `;
 
-      // Send video to the chat
-      await client.sendMessage(m.chat, {
-        video: { url: videoUrl },
-        mimetype: "video/mp4",
-        caption: "*Instagram Video Downloaded*"
-      });
+    // Send the image (thumbnail) and caption with a reply
+    const message = await client.sendMessage(m.chat, {
+      image: { url: thumbnailUrl },
+      caption: caption,
+    });
 
-      // React with a checkmark emoji after sending the video
-      await m.react('✅');
-    }
+    const messageId = message.key.id;
+
+    // Event listener for reply messages
+    client.ev.on("messages.upsert", async (update) => {
+      const messageContent = update.messages[0];
+      if (!messageContent.message) return;
+
+      // Get the response text (from the conversation or extended message)
+      const responseText = messageContent.message.conversation || messageContent.message.extendedTextMessage?.text;
+
+      // Check if the message is a reply to the initial message
+      const isReplyToMessage = messageContent.message.extendedTextMessage?.contextInfo.stanzaId === messageId;
+
+      if (isReplyToMessage) {
+        // React to the message
+        await client.sendMessage(m.chat, {
+          react: { text: '⬇️', key: messageContent.key },
+        });
+
+        // React with an upward arrow
+        await client.sendMessage(m.chat, {
+          react: { text: '⬆️', key: messageContent.key },
+        });
+
+        // Send the requested media based on the user's response
+        if (responseText === '1') {
+          await client.sendMessage(m.chat, {
+            video: { url: videoUrl },
+            caption: `*𝐊𝐄𝐈𝐓𝐇 𝐌𝐃*\n\n*Title*: ${videoTitle}\n*Duration*: ${videoDuration}`,
+          }, { quoted: messageContent });
+      
+        } else if (responseText === '2') {
+          await client.sendMessage(m.chat, {
+            video: { url: videoUrl },
+            caption: `*𝐊𝐄𝐈𝐓𝐇 𝐌𝐃*\n\n*Title*: ${videoTitle}\n*Duration*: ${videoDuration}`,
+          }, { quoted: messageContent });
+        } else if (responseText === '3') {
+          await client.sendMessage(m.chat, {
+            audio: { url: videoUrl },
+            mimetype: "audio/mpeg",
+            caption: `*𝐊𝐄𝐈𝐓𝐇 𝐌𝐃*\n\n*Title*: ${videoTitle}\n*Duration*: ${videoDuration}`,
+          }, { quoted: messageContent });
+        } else if (responseText === '4') {
+          await client.sendMessage(m.chat, {
+            document: {
+              url: videoUrl
+            },
+            mimetype: "audio/mpeg",
+            fileName: `${videoTitle}.mp3`,
+            caption: `*KEITH MD*\n\n*Title*: ${videoTitle}\n*Duration*: ${videoDuration}`
+          }, {
+            quoted: messageContent
+          });
+        } else if (responseText === '5') {
+          await client.sendMessage(m.chat, {
+            audio: {
+              url: videoUrl
+            },
+            mimetype: 'audio/mp4',
+            ptt: true,
+            caption: `*KEITH MD*\n\n*Title*: ${videoTitle}\n*Duration*: ${videoDuration}`
+          }, {
+            quoted: messageContent
+          });
+        }
+      }
+    });
   } catch (error) {
-    console.log("Error:", error);
-    return m.reply("An error occurred while fetching the video. Please try again later.");
+    console.error(error);
+    m.reply('An error occurred: ' + error.message);
   }
 };
