@@ -22,9 +22,9 @@ module.exports = async (context) => {
      *𝐊𝐄𝐈𝐓𝐇 𝐌𝐃 𝐓𝐈𝐊𝐓𝐎𝐊 𝐃𝐋*
     |__________________________|
     |-᳆        *ᴅᴜʀᴀᴛɪᴏɴ*  
-     ${videoData.result.duration}
+         ${videoData.result.duration}
     |_________________________
-    | REPLY WITH BELOW NUMBERS
+    | *REPLY WITH BELOW NUMBERS*
     |_________________________
     |____  *ғᴀᴄᴇʙᴏᴋ ᴠᴅᴇᴏ ᴅʟ*  ____
     |-᳆  1 sᴅ ǫᴜᴀʟɪᴛʏ
@@ -92,7 +92,7 @@ module.exports = async (context) => {
               url: videoDetails.links.SD
             },
             mimetype: "audio/mpeg",
-            fileName: "Keith/fb.mp3",
+            fileName: "Keith.mp3",
             caption: "*KEITH MD*"
           }, {
             quoted: messageContent
