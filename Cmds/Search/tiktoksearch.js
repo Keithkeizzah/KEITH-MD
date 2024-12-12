@@ -27,7 +27,6 @@ module.exports = async (context) => {
       const trackNumber = index + 1; // Number tracks starting from 1
       searchMessage += `*┃${trackNumber}.* ${track.title}\n`;
       searchMessage += `*┃Region*: ${track.region || "Unknown"}\n`;
-      searchMessage += `*┃Creator*: ${track.creator || "Unknown"}\n`;
       searchMessage += `*┃ID*: ${track.id}\n`;  // `id` is the video ID
       searchMessage += `*┃Video URL*: ${track.url}\n`;
       searchMessage += `*┃Cover Image*: ${track.cover}\n`;
