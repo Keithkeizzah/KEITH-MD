@@ -18,6 +18,9 @@ module.exports = async (context) => {
     let downloadData = await igdl(text);
     let videoData = downloadData.data;
 
+    // Extract the video URL (assuming it's in videoData.result.url)
+    const videoUrl = videoData.result.url;
+
     // Caption without title and duration
     const caption = `
      *𝐊𝐄𝐈𝐓𝐇 𝐌𝐃 𝐈𝐍𝐒𝐓𝐀 𝐃𝐋*
@@ -66,19 +69,19 @@ module.exports = async (context) => {
         // Send the requested media based on the user's response
         if (responseText === '1') {
           await client.sendMessage(m.chat, {
-            video: { url: videoData.result.url },
+            video: { url: videoUrl },
             caption: `*𝐊𝐄𝐈𝐓𝐇 𝐌𝐃*`,
           }, { quoted: messageContent });
 
         } else if (responseText === '2') {
           await client.sendMessage(m.chat, {
-            video: { url: videoData.result.url },
+            video: { url: videoUrl },
             caption: `*𝐊𝐄𝐈𝐓𝐇 𝐌𝐃*`,
           }, { quoted: messageContent });
 
         } else if (responseText === '3') {
           await client.sendMessage(m.chat, {
-            audio: { url: videoData.result.url },
+            audio: { url: videoUrl },
             mimetype: "audio/mpeg",
             caption: `*𝐊𝐄𝐈𝐓𝐇 𝐌𝐃*`,
           }, { quoted: messageContent });
@@ -86,7 +89,7 @@ module.exports = async (context) => {
         } else if (responseText === '4') {
           await client.sendMessage(m.chat, {
             document: {
-              url: videoData.result.url
+              url: videoUrl
             },
             mimetype: "audio/mpeg",
             fileName: `audio.mp3`,
@@ -98,7 +101,7 @@ module.exports = async (context) => {
         } else if (responseText === '5') {
           await client.sendMessage(m.chat, {
             audio: {
-              url: videoData.result.url
+              url: videoUrl
             },
             mimetype: 'audio/mp4',
             ptt: true,
