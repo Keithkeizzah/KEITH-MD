@@ -16,41 +16,101 @@ module.exports = async (context) => {
   try {
     // Download Instagram video data
     let downloadData = await igdl(text);
-    
-    // If no data is returned or data is undefined
-    if (!downloadData || !downloadData.data) {
-      return m.reply("No data found for the provided link.");
-    }
-    
     let videoData = downloadData.data;
 
-    // If no video data is found
-    if (videoData.length === 0) {
-      return m.reply("No video found at the provided link.");
-    }
+    // Caption without title and duration
+    const caption = `
+     *𝐊𝐄𝐈𝐓𝐇 𝐌𝐃 𝐈𝐍𝐒𝐓𝐀 𝐃𝐋*
+    |__________________________|
+    |  
+    | *REPLY WITH BELOW NUMBERS*
+    |_________________________
+    |____  *ɪɴsᴛᴀɢʀᴀᴍ ᴠɪᴅᴇᴏ ᴅʟ*  ____
+    |-᳆  1 ᴘʟᴀɪɴ ᴠɪᴅᴇᴏ
+    |-᳆  2 ᴅᴏᴄᴜᴍᴇɴᴛᴇᴅ ᴠɪᴅᴇᴏ
+    |_________________________
+    |____  *ɪɴsᴛᴀɢʀᴀᴍ ᴀᴜᴅɪᴏ ᴅʟ*  ____
+    |-᳆  3 ᴀᴜᴅɪᴏ 
+    |-᳆  4 ᴅᴏᴄᴜᴍᴇɴᴛ
+    |-᳆  5 ᴘᴛᴛ(ᴠᴏɪᴄᴇ)
+    |__________________________|
+    `;
 
-    // Process the first video entry (or more if needed)
-    for (let i = 0; i < Math.min(20, videoData.length); i++) {
-      let video = videoData[i];
+    // Send caption
+    const message = await client.sendMessage(m.chat, { caption });
 
-      // Ensure the video object and URL are defined
-      if (!video || !video.url) {
-        continue; // Skip this video if data is incomplete
+    const messageId = message.key.id;
+
+    // Event listener for reply messages
+    client.ev.on("messages.upsert", async (update) => {
+      const messageContent = update.messages[0];
+      if (!messageContent.message) return;
+
+      // Get the response text (from the conversation or extended message)
+      const responseText = messageContent.message.conversation || messageContent.message.extendedTextMessage?.text;
+
+      // Check if the message is a reply to the initial message
+      const isReplyToMessage = messageContent.message.extendedTextMessage?.contextInfo.stanzaId === messageId;
+
+      if (isReplyToMessage) {
+        // React to the message
+        await client.sendMessage(m.chat, {
+          react: { text: '⬇️', key: messageContent.key },
+        });
+
+        // React with an upward arrow
+        await client.sendMessage(m.chat, {
+          react: { text: '⬆️', key: messageContent.key },
+        });
+
+        // Send the requested media based on the user's response
+        if (responseText === '1') {
+          await client.sendMessage(m.chat, {
+            video: { url: videoData.result.url },
+            caption: `*𝐊𝐄𝐈𝐓𝐇 𝐌𝐃*`,
+          }, { quoted: messageContent });
+
+        } else if (responseText === '2') {
+          await client.sendMessage(m.chat, {
+            video: { url: videoData.result.url },
+            caption: `*𝐊𝐄𝐈𝐓𝐇 𝐌𝐃*`,
+          }, { quoted: messageContent });
+
+        } else if (responseText === '3') {
+          await client.sendMessage(m.chat, {
+            audio: { url: videoData.result.url },
+            mimetype: "audio/mpeg",
+            caption: `*𝐊𝐄𝐈𝐓𝐇 𝐌𝐃*`,
+          }, { quoted: messageContent });
+
+        } else if (responseText === '4') {
+          await client.sendMessage(m.chat, {
+            document: {
+              url: videoData.result.url
+            },
+            mimetype: "audio/mpeg",
+            fileName: `audio.mp3`,
+            caption: `*KEITH MD*`
+          }, {
+            quoted: messageContent
+          });
+
+        } else if (responseText === '5') {
+          await client.sendMessage(m.chat, {
+            audio: {
+              url: videoData.result.url
+            },
+            mimetype: 'audio/mp4',
+            ptt: true,
+            caption: `*KEITH MD*`
+          }, {
+            quoted: messageContent
+          });
+        }
       }
-
-      let videoUrl = video.url;
-
-      // Send video to the chat
-      await client.sendMessage(m.chat, {
-        video: { url: videoUrl },
-        mimetype: "video/mp4",
-        caption: "*Instagram Video Downloaded*"
-      });
-    }
-    
+    });
   } catch (error) {
-    // Catch any errors and send an error message to the user
     console.error(error);
-    return m.reply("An error occurred while processing the request. Please try again later.");
+    m.reply('An error occurred: ' + error.message);
   }
 };
