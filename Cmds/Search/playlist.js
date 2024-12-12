@@ -21,9 +21,10 @@ module.exports = async (context) => {
     // Construct playlist message
     let playlistMessage = `𝐊𝐄𝐈𝐓𝐇 𝐌𝐃 𝐒𝐏𝐎𝐓𝐈𝐅𝐘 𝐏𝐋𝐀𝐘𝐋𝐈𝐒𝐓\n\n`;
 
-    // Loop through search results and construct track info
-    searchData.forEach((track) => {
-      playlistMessage += `*Title*: ${track.title}\n`;
+    // Loop through search results and construct track info with numbers
+    searchData.forEach((track, index) => {
+      const trackNumber = index + 1; // Number tracks starting from 1
+      playlistMessage += `*${trackNumber}.* ${track.title}\n`;
       playlistMessage += `*Artist*: ${track.artist || "Unknown"}\n`;
       playlistMessage += `*Album*: ${track.album || "Unknown"}\n`;
       playlistMessage += `*URL*: ${track.url}\n\n`;
