@@ -1,7 +1,7 @@
 const { igdl } = require("ruhend-scraper");
 const axios = require('axios');
 
-module.exports = async (fetchJson, context) => {
+module.exports = async ( context) => {
   const { client, m, text, from, quoted } = context;
 
   // Check if the input text is provided
