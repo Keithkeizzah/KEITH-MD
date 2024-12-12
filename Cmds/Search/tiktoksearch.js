@@ -47,7 +47,7 @@ module.exports = async (context) => {
           mentionedJid: [m.sender],
           externalAdReply: {
             showAdAttribution: true,
-            title: "KEITH MD SPOTIFY LIST",
+            title: "KEITH MD TIKTOK SEARCH",
             body: "Powered by KeithKeizzah",
             sourceUrl: "https://whatsapp.com/channel/0029Vaan9TF9Bb62l8wpoD47",
             mediaType: 1,
