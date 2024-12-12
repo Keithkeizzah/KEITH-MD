@@ -18,20 +18,15 @@ module.exports = async (context) => {
     let downloadData = await igdl(text);
     let videoData = downloadData.data;
 
-    // Extract video metadata (title, duration, thumbnail, etc.)
-    const videoTitle = videoData.result.title || 'Instagram Video';
-    const videoDuration = videoData.result.duration || 'Unknown duration';
+    // Extract video URL and thumbnail
     const videoUrl = videoData.result.url;
     const thumbnailUrl = videoData.result.thumbnail;
 
-    // Caption with the video metadata
+    // Caption without title and duration
     const caption = `
      *𝐊𝐄𝐈𝐓𝐇 𝐌𝐃 𝐈𝐍𝐒𝐓𝐀 𝐃𝐋*
     |__________________________|
     |  
-    | *Title*: ${videoTitle}
-    | *Duration*: ${videoDuration}
-    |_________________________
     | *REPLY WITH BELOW NUMBERS*
     |_________________________
     |____  *ɪɴsᴛᴀɢʀᴀᴍ ᴠɪᴅᴇᴏ ᴅʟ*  ____
@@ -79,19 +74,19 @@ module.exports = async (context) => {
         if (responseText === '1') {
           await client.sendMessage(m.chat, {
             video: { url: videoUrl },
-            caption: `*𝐊𝐄𝐈𝐓𝐇 𝐌𝐃*\n\n*Title*: ${videoTitle}\n*Duration*: ${videoDuration}`,
+            caption: `*𝐊𝐄𝐈𝐓𝐇 𝐌𝐃*`,
           }, { quoted: messageContent });
       
         } else if (responseText === '2') {
           await client.sendMessage(m.chat, {
             video: { url: videoUrl },
-            caption: `*𝐊𝐄𝐈𝐓𝐇 𝐌𝐃*\n\n*Title*: ${videoTitle}\n*Duration*: ${videoDuration}`,
+            caption: `*𝐊𝐄𝐈𝐓𝐇 𝐌𝐃*`,
           }, { quoted: messageContent });
         } else if (responseText === '3') {
           await client.sendMessage(m.chat, {
             audio: { url: videoUrl },
             mimetype: "audio/mpeg",
-            caption: `*𝐊𝐄𝐈𝐓𝐇 𝐌𝐃*\n\n*Title*: ${videoTitle}\n*Duration*: ${videoDuration}`,
+            caption: `*𝐊𝐄𝐈𝐓𝐇 𝐌𝐃*`,
           }, { quoted: messageContent });
         } else if (responseText === '4') {
           await client.sendMessage(m.chat, {
@@ -99,8 +94,8 @@ module.exports = async (context) => {
               url: videoUrl
             },
             mimetype: "audio/mpeg",
-            fileName: `${videoTitle}.mp3`,
-            caption: `*KEITH MD*\n\n*Title*: ${videoTitle}\n*Duration*: ${videoDuration}`
+            fileName: `audio.mp3`,
+            caption: `*KEITH MD*`
           }, {
             quoted: messageContent
           });
@@ -111,7 +106,7 @@ module.exports = async (context) => {
             },
             mimetype: 'audio/mp4',
             ptt: true,
-            caption: `*KEITH MD*\n\n*Title*: ${videoTitle}\n*Duration*: ${videoDuration}`
+            caption: `*KEITH MD*`
           }, {
             quoted: messageContent
           });
