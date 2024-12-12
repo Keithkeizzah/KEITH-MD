@@ -3,19 +3,26 @@ const { facebook } = require('@mrnima/facebook-downloader');
 module.exports = async (context) => {
   const { client, m, text } = context;
 
-  if (!text) return m.reply("Provide a tiktok link for the video");
+  if (!text) return m.reply("Provide a Facebook link for the video");
 
-  if (!text.includes('facebook.com')) return m.reply("That is not a facebook link.");
+  if (!text.includes('facebook.com')) return m.reply("That is not a Facebook link.");
 
   try {
-    // Download the tiktok video data
+    // Download the Facebook video data
     let fbData = await facebook(text);
+
+    if (!fbData || !fbData.result) {
+      return m.reply("Unable to fetch video data. Please check the link and try again.");
+    }
+
+    // Extract video details from fbData
+    const { title, image, dl_link } = fbData.result;
 
     const caption = `
      *𝐊𝐄𝐈𝐓𝐇 𝐌𝐃 𝐅𝐁 𝐃𝐋*
     |__________________________|
     |-᳆        *ᴛɪᴛʟᴇ*  
-     ${fbData.result.title}
+     ${title}
     |_________________________
     ʀᴇᴘʟʏ ᴡɪᴛʜ ʙᴇʟᴏᴡ ɴᴜᴍʙᴇʀs 
     |-᳆  1 sᴅ ǫᴜᴀʟɪᴛʏ
@@ -26,7 +33,7 @@ module.exports = async (context) => {
 
     // Send the image and caption with a reply
     const message = await client.sendMessage(m.chat, {
-      image: { url: fbData.result.image },
+      image: { url: image },
       caption: caption,
     });
 
@@ -49,29 +56,28 @@ module.exports = async (context) => {
           react: { text: '⬇️', key: messageContent.key },
         });
 
-        const fbLinks = fbData.result;
-
-        await client.sendMessage(keith, {
-          react: { text: '⬆️', key: messageContent.key },
-        });
-
-        // Send the requested media based on the user's response
+        // Handle the media request based on the user's response
         if (responseText === '1') {
           await client.sendMessage(keith, {
-            video: { url: fbLinks.dl_link.download_mp4_1 },
+            video: { url: dl_link.download_mp4_1 },
             caption: "*𝐊𝐄𝐈𝐓𝐇 𝐌𝐃*",
           }, { quoted: messageContent });
         } else if (responseText === '2') {
           await client.sendMessage(keith, {
-            video: { url: fbLinks.dl_link.download_mp4_2 },
+            video: { url: dl_link.download_mp4_2 },
             caption: "*𝐊𝐄𝐈𝐓𝐇 𝐌𝐃*",
           }, { quoted: messageContent });
         } else if (responseText === '3') {
           await client.sendMessage(keith, {
-            audio: { url: fbLinks.dl_link.download_mp3 },
+            audio: { url: dl_link.download_mp3 },
             mimetype: "audio/mpeg",
           }, { quoted: messageContent });
         }
+        
+        // React again after sending media
+        await client.sendMessage(keith, {
+          react: { text: '⬆️', key: messageContent.key },
+        });
       }
     });
   } catch (error) {
