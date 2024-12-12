@@ -16,16 +16,28 @@ module.exports = async (context) => {
   try {
     // Download Instagram video data
     let downloadData = await igdl(text);
+    
+    // If no data is returned or data is undefined
+    if (!downloadData || !downloadData.data) {
+      return m.reply("No data found for the provided link.");
+    }
+    
     let videoData = downloadData.data;
 
-    // If no video data is returned
-    if (!videoData || videoData.length === 0) {
+    // If no video data is found
+    if (videoData.length === 0) {
       return m.reply("No video found at the provided link.");
     }
 
     // Process the first video entry (or more if needed)
     for (let i = 0; i < Math.min(20, videoData.length); i++) {
       let video = videoData[i];
+
+      // Ensure the video object and URL are defined
+      if (!video || !video.url) {
+        continue; // Skip this video if data is incomplete
+      }
+
       let videoUrl = video.url;
 
       // Send video to the chat
@@ -34,5 +46,11 @@ module.exports = async (context) => {
         mimetype: "video/mp4",
         caption: "*Instagram Video Downloaded*"
       });
-
-      
+    }
+    
+  } catch (error) {
+    // Catch any errors and send an error message to the user
+    console.error(error);
+    return m.reply("An error occurred while processing the request. Please try again later.");
+  }
+};
