@@ -1,66 +1,43 @@
-const simpleGit = require("simple-git");
-const ownerMiddleware = require('../../utility/botUtil/Ownermiddleware');
-const path = require('path');
-const fs = require('fs');
+const { exec } = require("child_process");
 
 module.exports = async (context) => {
-  await ownerMiddleware(context, async () => {
-    const { client, m, text, Owner } = context;
+    const { client, m, budy, Owner } = context;
 
-    // Ensure git is installed and accessible
-    const git = simpleGit();
+    // Ensure that only the owner can execute this command
+    if (!Owner) {
+        return m.reply("You need owner privileges to execute this command!");
+    }
 
     try {
-      // Check if git is available (whether it's in PATH)
-      const isGitAvailable = await checkGitAvailability();
+        // Inform the user that the bot is restarting and updating
+        await m.reply("*Restarting and updating...*");
 
-      if (!isGitAvailable) {
-        await m.reply('Git is not installed or not found in the system PATH. Please install Git.');
-        return;
-      }
+        // Sleep function to delay the restart process
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-      // Add the remote repository (upstream) if not already added
-      await git.addRemote('upstream', 'https://github.com/Keithkeizzah/KEITH-MD.git').catch(() => {});
+        // Wait for 3 seconds before starting the update
+        await sleep(3000);
 
-      // Fetch latest changes from the upstream repository
-      await git.fetch('upstream');
+        // Pull the latest updates from the repository
+        exec("git pull origin main", { cwd: "./" }, (err, stdout, stderr) => {
+            if (err) {
+                console.error("Error pulling updates:", err);
+                return m.reply("Failed to update the bot. Please check the logs.");
+            }
 
-      // Check for new commits from the upstream repository
-      const commits = await git.log(['main..upstream/main']);
-      
-      if (commits.total > 0) {
-        let updateMessage = `Updates available: ${commits.total} commits\n\n`;
-        
-        // List each commit
-        commits.all.forEach(commit => {
-          updateMessage += `● ${commit.date.substring(0, 10)}: ${commit.message} - By: ${commit.author_name}\n`;
+            if (stderr) {
+                console.error("Error pulling updates (stderr):", stderr);
+                return m.reply("Failed to update the bot. Please check the logs.");
+            }
+
+            // Successfully pulled updates
+            console.log("Update successful:", stdout);
+
+            // Restart the bot
+            process.exit();  // This will restart the bot after update
         });
-
-        // Reply with commit details
-        await m.reply(updateMessage);
-
-        // Automatically pull the changes from upstream
-        await git.checkout('main');  // Ensure we're on the main branch
-        await git.pull('upstream', 'main'); // Pull the latest changes
-        await m.reply('Bot repository has been updated successfully.');
-      } else {
-        await m.reply('You are already using the latest version.');
-      }
     } catch (error) {
-      await m.reply('Failed to check for updates: ' + error.message);
+        console.error("Error during restart and update:", error);
+        m.reply("An error occurred while updating the bot.");
     }
-  });
 };
-
-// Function to check if Git is available
-async function checkGitAvailability() {
-  try {
-    const gitPath = await simpleGit().raw(['--exec-path']);
-    if (gitPath) {
-      return true;
-    }
-    return false;
-  } catch (error) {
-    return false;
-  }
-}
