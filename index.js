@@ -143,16 +143,26 @@ if (autoreact === 'true') {
       if (!mek.message) return;
       mek.message = Object.keys(mek.message)[0] === "ephemeralMessage" ? mek.message.ephemeralMessage.message : mek.message;
 
-      if (autoview === 'true' && autolike === 'true' && mek.key && mek.key.remoteJid === "status@broadcast") {
-        const keithlike = await client.decodeJid(client.user.id);
-        await client.sendMessage(mek.key.remoteJid, { react: { key: mek.key, text: '💎' } }, { statusJidList: [mek.key.participant, keithlike] });
-      }
+      // List of emojis
+const emojis = ['😂', '😅', '🤣', '🥲', '😍', '🤩', '🥳', '🌚', '🌝', '🌹', '🌷', '☑️', '♥️', '🖤', '💜', '🩷', '❤️', '🧡', '💛', '💚', '🩵', '💙', '🩶', '🤍', '🤎', '💞', '💓', '💗', '💖', '🗿'];
 
-      if (autoview === 'true' && mek.key && mek.key.remoteJid === "status@broadcast") {
-        await client.readMessages([mek.key]);
-      } else if (autoread === 'true' && mek.key && mek.key.remoteJid.endsWith('@s.whatsapp.net')) {
-        await client.readMessages([mek.key]);
-      }
+// Function to pick a random emoji
+function getRandomEmoji() {
+  return emojis[Math.floor(Math.random() * emojis.length)];
+}
+
+if (autoview === 'true' && autolike === 'true' && mek.key && mek.key.remoteJid === "status@broadcast") {
+    const mokayas = await client.decodeJid(client.user.id);
+    const randomEmoji = getRandomEmoji();  // Get random emoji
+    await client.sendMessage(mek.key.remoteJid, { react: { key: mek.key, text: randomEmoji } }, { statusJidList: [mek.key.participant, mokayas] });
+}
+
+if (autoview === 'true' && mek.key && mek.key.remoteJid === "status@broadcast") {
+    await client.readMessages([mek.key]);
+} else if (autoread === 'true' && mek.key && mek.key.remoteJid.endsWith('@s.whatsapp.net')) {
+    await client.readMessages([mek.key]);
+}
+
 
       if (mek.key && mek.key.remoteJid.endsWith('@s.whatsapp.net')) {
         const Chat = mek.key.remoteJid;
