@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "pm2 start index.js --deep-monitoring --attach --name keith",
+    "start": "node index.js",
     "stop": "pm2 stop keith",
     "restart": "pm2 restart keith"
   },
