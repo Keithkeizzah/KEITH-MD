@@ -23,13 +23,11 @@
   "dependencies": {
     "@whiskeysockets/baileys": "git+https://github.com/whiskeysockets/baileys.git",
     "@bochilteam/scraper": "^4.2.4",
-    "@bochilteam/scraper-instagram": "^5.0.0",
+     "@bochilteam/scraper-instagram": "^5.0.0",
     "@distube/ytdl-core": "latest",
     "@adiwajshing/keyed-db": "^0.2.4",
     "@hapi/boom": "^10.0.0",
     "@shineiichijo/marika": "^3.0.0",
-    "@mrnima/tiktok-downloader": "1.0.0",
-    "@mrnima/facebook-downloader": "1.0.0",
     "@google/generative-ai": "^0.1.3",
     "canvacord": "^5.4.9",
     "truecallerjs": "^2.2.0",
@@ -37,11 +35,11 @@
     "awesome-phonenumber": "^2.64.0",
     "random-useragent": "^0.5.0",
     "axios": "^1.3.6",
-    "api-dylux": "^1.8.5",
+    "api-dylux" : "^1.8.5",
     "unofficial-carbon-now": "^1.0.6",
     "express": "latest",
     "chalk": "^4.1.2",
-    "tiktokdl": "^0.0.5",
+    "tiktokdl": "^0.0.5", 
     "heroku-client": "^3.1.0",
     "wikipedia": "^2.1.1",
     "querystring": "^0.2.1",
@@ -57,6 +55,7 @@
     "file-type": "^16.5.3",
     "figlet": "^1.5.2",
     "node-catbox": "3.2.0",
+    "heroku-client": "^3.1.0",
     "mumaker": "^1.0.0",
     "ip-location": "^1.0.1",
     "calculator-engine": "^0.1.0",
@@ -68,7 +67,6 @@
     "g4f": "^1.1.0",
     "google-tts-api": "^2.0.2",
     "human-readable": "^0.2.1",
-    "ruhend-scraper": "8.0.3",
     "node-fetch": "^2.6.1",
     "cookie": "^0.5.0",
     "imgur": "^2.3.0",
@@ -112,4 +110,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/
+    "url": "git+https://github.com/Keithkeizzah/KEITH-MD.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Keithkeizzah/KEITH-MD/issues"
+  },
+  "homepage": "https://github.com/Keithkeizzah/KEITH-MD#readme"
+}
