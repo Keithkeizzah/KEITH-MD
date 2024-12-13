@@ -5,9 +5,7 @@
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node index.js",
-    "stop": "pm2 stop keith",
-    "restart": "pm2 restart keith"
+    "start": "node index.js"
   },
   "keywords": [
     "termux",
