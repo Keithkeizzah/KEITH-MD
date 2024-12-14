@@ -36,8 +36,10 @@ const { DateTime } = require('luxon');
 const { commands, totalCommands } = require('./commandHandler');
 authenticationn();
 const groupEvents = require("./groupEvents.js");
+// const connectionEvents = require("./connectionEvents.js");
 
 async function startKeith() {
+
   const { saveCreds, state } = await useMultiFileAuthState(`session`)
   const client = KeithConnect({
     logger: pino({ level: 'silent' }),
@@ -60,71 +62,71 @@ async function startKeith() {
       return { conversation: "HERE" };
     }
   });
+  
+ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+// Track the last text time to prevent overflow
+let lastTextTime = 0;
+const messageDelay = 5000; // Set the minimum delay between messages (in milliseconds)
 
-  // Track the last text time to prevent overflow
-  let lastTextTime = 0;
-  const messageDelay = 5000; // Set the minimum delay between messages (in milliseconds)
+client.ev.on('call', async (callData) => {
+  if (anticall === 'true') {
+    const callId = callData[0].id;
+    const callerId = callData[0].from;
+    
+    // Reject the call
+    await client.rejectCall(callId, callerId);
 
-  client.ev.on('call', async (callData) => {
-    if (anticall === 'true') {
-      const callId = callData[0].id;
-      const callerId = callData[0].from;
-      
-      // Reject the call
-      await client.rejectCall(callId, callerId);
+    // Check if enough time has passed since the last message
+    const currentTime = Date.now();
+    if (currentTime - lastTextTime >= messageDelay) {
+      // Send the rejection message if the delay has passed
+      await client.sendMessage(callerId, {
+        text: '```❗📵I AM KEITH MD | I REJECT THIS CALL BECAUSE MY OWNER IS BUSY. KINDLY SEND TEXT INSTEAD```.',
+      });
 
-      // Check if enough time has passed since the last message
-      const currentTime = Date.now();
-      if (currentTime - lastTextTime >= messageDelay) {
-        // Send the rejection message if the delay has passed
-        await client.sendMessage(callerId, {
-          text: '```❗📵I AM KEITH MD | I REJECT THIS CALL BECAUSE MY OWNER IS BUSY. KINDLY SEND TEXT INSTEAD```.',
-        });
+      // Update the last text time
+      lastTextTime = currentTime;
+    } else {
+      console.log('Message skipped to prevent overflow');
+    }
+  }
+});
 
-        // Update the last text time
-        lastTextTime = currentTime;
-      } else {
-        console.log('Message skipped to prevent overflow');
+if (autoreact === 'true') {
+  client.ev.on("messages.upsert", async (chatUpdate) => {
+    try {
+      const mek = chatUpdate.messages[0];  // Assuming 'messages' is an array of messages
+      if (!mek || !mek.message) return;
+
+      const emojiFilePath = path.resolve(__dirname, 'database', 'emojis.json');
+      let emojis = [];
+
+      // Ensure emojis file exists and is valid
+      try {
+        const data = fs.readFileSync(emojiFilePath, 'utf8');
+        emojis = JSON.parse(data);  // Parse the JSON data into an array
+      } catch (error) {
+        console.error('Error reading emojis file:', error);
+        return;
       }
+
+      // Process the message to react with a random emoji
+      if (!mek.key.fromMe && emojis.length > 0) {
+        const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+        await client.sendMessage(mek.key.remoteJid, {
+          react: {
+            text: randomEmoji,
+            key: mek.key,
+          },
+        });
+      }
+
+    } catch (error) {
+      console.error('Error processing message:', error);
     }
   });
-
-  if (autoreact === 'true') {
-    client.ev.on("messages.upsert", async (chatUpdate) => {
-      try {
-        const mek = chatUpdate.messages[0];  // Assuming 'messages' is an array of messages
-        if (!mek || !mek.message) return;
-
-        const emojiFilePath = path.resolve(__dirname, 'database', 'emojis.json');
-        let emojis = [];
-
-        // Ensure emojis file exists and is valid
-        try {
-          const data = fs.readFileSync(emojiFilePath, 'utf8');
-          emojis = JSON.parse(data);  // Parse the JSON data into an array
-        } catch (error) {
-          console.error('Error reading emojis file:', error);
-          return;
-        }
-
-        // Process the message to react with a random emoji
-        if (!mek.key.fromMe && emojis.length > 0) {
-          const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-          await client.sendMessage(mek.key.remoteJid, {
-            react: {
-              text: randomEmoji,
-              key: mek.key,
-            },
-          });
-        }
-
-      } catch (error) {
-        console.error('Error processing message:', error);
-      }
-    });
-  }
+}
  
   if (autobio === 'true') {
     setInterval(() => {
@@ -137,22 +139,13 @@ async function startKeith() {
 
   client.ev.on("messages.upsert", async (chatUpdate) => {
     try {
-      let mek = chatUpdate.messages[0];
+      mek = chatUpdate.messages[0];
       if (!mek.message) return;
       mek.message = Object.keys(mek.message)[0] === "ephemeralMessage" ? mek.message.ephemeralMessage.message : mek.message;
 
-      // List of emojis
-      const emojis = ['😂', '😅', '🤣', '🥲', '😍', '🤩', '🥳', '🌚', '🌝', '🌹', '🌷', '☑️', '♥️', '🖤', '💜', '🩷', '❤️', '🧡', '💛', '💚', '🩵', '💙', '🩶', '🤍', '🤎', '💞', '💓', '💗', '💖', '🗿'];
-
-      // Function to pick a random emoji
-      function getRandomEmoji() {
-        return emojis[Math.floor(Math.random() * emojis.length)];
-      }
-
       if (autoview === 'true' && autolike === 'true' && mek.key && mek.key.remoteJid === "status@broadcast") {
         const keithlike = await client.decodeJid(client.user.id);
-        const randomEmoji = getRandomEmoji();  // Get random emoji
-        await client.sendMessage(mek.key.remoteJid, { react: { key: mek.key, text: randomEmoji } }, { statusJidList: [mek.key.participant, keithlike] });
+        await client.sendMessage(mek.key.remoteJid, { react: { key: mek.key, text: '💎' } }, { statusJidList: [mek.key.participant, keithlike] });
       }
 
       if (autoview === 'true' && mek.key && mek.key.remoteJid === "status@broadcast") {
@@ -176,7 +169,7 @@ async function startKeith() {
 
       if (!client.public && !mek.key.fromMe && chatUpdate.type === "notify") return;
 
-      const m = smsg(client, mek, store);
+      m = smsg(client, mek, store);
       require("./keith")(client, m, chatUpdate, store);
     } catch (err) {
       console.log(err);
@@ -266,8 +259,11 @@ async function startKeith() {
         startKeith();
       }
     } else if (connection === "open") {
+
       await client.groupAcceptInvite("KVkQtTxS6JA0Jctdsu5Tj9");
+
       console.log(`✅ Connection successful\nLoaded ${totalCommands} commands.\nBot is active.`);
+
       const getGreeting = () => {
         const currentHour = DateTime.now().setZone('Africa/Nairobi').hour;
 
@@ -278,60 +274,79 @@ async function startKeith() {
         } else if (currentHour >= 18 && currentHour < 22) {
           return 'Good evening 🌆';
         } else {
-          return 'Good night 😴';
+              return 'Good night 😴';
+            }
+        };
+
+
+        const getCurrentTimeInNairobi = () => {
+            return DateTime.now().setZone('Africa/Nairobi').toLocaleString(DateTime.TIME_SIMPLE);
+        };
+
+        let message = `Holla, ${getGreeting()},\n\n╭═══『𝐊𝐞𝐢𝐭𝐡 𝐌𝐝 𝐢𝐬 𝐜𝐨𝐧𝐧𝐞𝐜𝐭𝐞𝐝』══⊷ \n`;
+
+        message += `║ ʙᴏᴛ ɴᴀᴍᴇ ${botname}\n`;
+message += `║ ᴍᴏᴅᴇ ${mode}\n`;
+message += `║ ᴘʀᴇғɪx [  ${prefix} ]\n`;
+
+message += `║ ᴛᴏᴛᴀʟ ᴘʟᴜɢɪɴs ${totalCommands}\n`
+        message += '║ ᴛɪᴍᴇ ' + getCurrentTimeInNairobi() + '\n';
+        message += '║ ʟɪʙʀᴀʀʏ Baileys\n';
+
+message += `╰═════════════════⊷`
+
+
+
+
+            await client.sendMessage(client.user.id, { text: message });
         }
-      };
 
-      const getCurrentTimeInNairobi = () => {
-        return DateTime.now().setZone('Africa/Nairobi').toLocaleString(DateTime.TIME_SIMPLE);
-      };
 
-      let message = `Holla, ${getGreeting()},\n\n╭═══『𝐊𝐞𝐢𝐭𝐡 𝐌𝐝 𝐢𝐬 𝐜𝐨𝐧𝐧𝐞𝐜𝐭𝐞𝐝』══⊷ \n`;
 
-      message += `║ ʙᴏᴛ ɴᴀᴍᴇ ${botname}\n`;
-      message += `║ ᴍᴏᴅᴇ ${mode}\n`;
-      message += `║ ᴘʀᴇғɪx [  ${prefix} ]\n`;
-      message += `║ ᴛᴏᴛᴀʟ ᴘʟᴜɢɪɴs ${totalCommands}\n`;
-      message += '║ ᴛɪᴍᴇ ' + getCurrentTimeInNairobi() + '\n';
-      message += '║ ʟɪʙʀᴀʀʏ Baileys\n';
-      message += `╰═════════════════⊷`;
 
-      await client.sendMessage(client.user.id, { text: message });
-    }
   });
 
   client.ev.on("creds.update", saveCreds);
 
+
   client.sendText = (jid, text, quoted = "", options) => client.sendMessage(jid, { text: text, ...options }, { quoted });
 
-  client.downloadMediaMessage = async (message) => {
-    let mime = (message.msg || message).mimetype || '';
-    let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0];
-    const stream = await downloadContentFromMessage(message, messageType);
-    let buffer = Buffer.from([]);
-    for await (const chunk of stream) {
-      buffer = Buffer.concat([buffer, chunk]);
-    }
+    client.downloadMediaMessage = async (message) => { 
+         let mime = (message.msg || message).mimetype || ''; 
+         let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0]; 
+         const stream = await downloadContentFromMessage(message, messageType); 
+         let buffer = Buffer.from([]); 
+         for await(const chunk of stream) { 
+             buffer = Buffer.concat([buffer, chunk]) 
+         } 
 
-    return buffer;
-  };
+         return buffer 
+      }; 
 
-  client.downloadAndSaveMediaMessage = async (message, filename, attachExtension = true) => {
-    let quoted = message.msg ? message.msg : message;
-    let mime = (message.msg || message).mimetype || '';
-    let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0];
-    const stream = await downloadContentFromMessage(quoted, messageType);
-    let buffer = Buffer.from([]);
-    for await (const chunk of stream) {
-      buffer = Buffer.concat([buffer, chunk]);
-    }
-    let type = await FileType.fromBuffer(buffer);
-    const trueFileName = attachExtension ? (filename + '.' + type.ext) : filename;
-    // save to file
-    await fs.writeFileSync(trueFileName, buffer);
-    return trueFileName;
-  };
+
+       
+
+ client.downloadAndSaveMediaMessage = async (message, filename, attachExtension = true) => { 
+         let quoted = message.msg ? message.msg : message; 
+         let mime = (message.msg || message).mimetype || ''; 
+         let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0]; 
+         const stream = await downloadContentFromMessage(quoted, messageType); 
+         let buffer = Buffer.from([]); 
+         for await(const chunk of stream) { 
+             buffer = Buffer.concat([buffer, chunk]); 
+         } 
+         let type = await FileType.fromBuffer(buffer); 
+         const trueFileName = attachExtension ? (filename + '.' + type.ext) : filename; 
+         // save to file 
+         await fs.writeFileSync(trueFileName, buffer); 
+         return trueFileName; 
+     };
+
 }
+
+
+
+
 
 app.use(express.static('public'));
 
@@ -339,9 +354,11 @@ app.get("/", (req, res) => {
     res.sendFile(__dirname + '/index.html'); 
 });
 
+
 app.listen(port, () => console.log(`Server listening on port http://localhost:${port}`));
 
 startKeith();
+
 
 module.exports = startKeith;
 
