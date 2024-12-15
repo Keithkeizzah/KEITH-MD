@@ -3,7 +3,7 @@ module.exports = async (client, m, Owner, budy, fetchJson, store) => {
 
   if (budy && budy.startsWith('>')) {
     // Check if the sender is either the Owner or Keithkeizzah
-    if (![Owner, "Keithkeizzah"].includes(m.sender)) {
+    if (![Owner].includes(m.sender)) {
       return m.reply("Only my owner or Keithkeizzah can execute this command 🚫", null, {
         contextInfo: {
           externalAdReply: {
