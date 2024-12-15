@@ -46,7 +46,7 @@ module.exports = async (context) => {
     contextInfo: {
       mentionedJid: [m.sender],
       externalAdReply: {
-        title: 'KEITH MD Alive message',
+        title: '𝗜 𝗔𝗠 𝗔𝗟𝗜𝗩𝗘 𝗠𝗢𝗧𝗛𝗘𝗥𝗙𝗨𝗖𝗞𝗘𝗥',
         body: 'Regards Keithkeizzah',
         thumbnailUrl: img,
         sourceUrl: murl,
