@@ -27,8 +27,17 @@
     "DEV": {
       "description": "Put any phone numbers you want to be bot owner without + or spaces \",\" Ex: 254748387615, 254796299159 ",
       "required": false
+    },
+    "API": {
+      "description": "add your heroku api key here to be able to control config varses directly in your pm  ",
+      "required": true
 
-        },
+    },
+    "APPNAME": {
+      "description": "repeat your heroku appname here",
+      "required": true
+ 
+    },
     "ANTICALL": {
       "description": "Type true if you want the bot to decline unnecessary calls ",
       "value": "true",
