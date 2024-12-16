@@ -7,14 +7,14 @@ async function downloadAudio(url) {
     if (!url) {
       throw new Error("URL parameter is required");
     }
-
+    
     const response = await fg.yta(url);
     const title = response.title;
     const downloadLink = response.dl_url;
 
     return {
       status: true,
-      createdBy: "Keithkeizzah",
+      createdBy: "Keithkeizzah ",
       title: title,
       downloadLink: downloadLink
     };
@@ -29,16 +29,13 @@ async function downloadVideo(url, format) {
     if (!url || !format) {
       throw new Error("URL and format parameters are required.");
     }
-
-    // Parse format and enforce a maximum of 720p (fallback to 360p)
+    
     const formatValue = parseInt(format.replace('p', ''), 10);
-    const selectedFormat = formatValue > 720 ? '720p' : (formatValue < 360 ? '360p' : format); // Ensure it's within 360p and 720p
-
     const requestParams = {
       button: 1,
       start: 1,
       end: 1,
-      format: parseInt(selectedFormat.replace('p', ''), 10),
+      format: formatValue,
       url: url
     };
 
@@ -61,7 +58,7 @@ async function downloadVideo(url, format) {
       params: requestParams,
       headers: headers
     });
-
+    
     const fileId = response.data.id;
 
     // Poll for progress until download is complete
@@ -107,19 +104,19 @@ module.exports = async (messageDetails) => {
       const firstVideo = searchResults.videos[0];
       const videoUrl = firstVideo.url;
 
-      // Set the video format (can be '360p' or '720p')
-      const format = '720p';  // Default format is 720p. You can make this dynamic.
+      // Ask the user to choose the video format (e.g., 720p)
+      const format = '180p';  // You can dynamically choose the format, for example
 
       // Use the downloadVideo function to get the download URL
       const downloadUrl = await downloadVideo(videoUrl, format);
 
       // If the download URL is successfully retrieved
       if (downloadUrl) {
-        // Send the video file as audio
-        await client.sendMessage(chatId, {
-          audio: { url: downloadUrl },
-          mimetype: "audio/mp4",
-          contextInfo: {
+      
+        // Send the video file to the user
+        await client.sendMessage(chatId, { audio: { url: downloadUrl }, 
+mimetype: "audio/mp4",
+    contextInfo: {
             externalAdReply: {
               title: firstVideo.title,
               body: firstVideo.title,
@@ -130,13 +127,11 @@ module.exports = async (messageDetails) => {
               showAdAttribution: true
             }
           }
-        }, { quoted: message });
+ }, { quoted: message });
 
-        // Optionally send the video as a document (audio file)
-        await client.sendMessage(chatId, {
-          document: { url: downloadUrl },
-          mimetype: "audio/mp4",
-          contextInfo: {
+        // Send the video file as a document (optional)
+        await client.sendMessage(chatId, { document: { url: downloadUrl }, mimetype: "audio/mp4",
+     contextInfo: {
             externalAdReply: {
               title: firstVideo.title,
               body: firstVideo.title,
@@ -147,8 +142,9 @@ module.exports = async (messageDetails) => {
               showAdAttribution: true
             }
           }
-        }, { quoted: message });
+ }, { quoted: message });
 
+    
       } else {
         message.reply("Failed to retrieve download URL.");
       }
