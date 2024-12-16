@@ -105,7 +105,7 @@ module.exports = async (messageDetails) => {
       const videoUrl = firstVideo.url;
 
       // Ask the user to choose the video format (e.g., 720p)
-      const format = '720p';  // You can dynamically choose the format, for example
+      const format = '360p';  // You can dynamically choose the format, for example
 
       // Use the downloadVideo function to get the download URL
       const downloadUrl = await downloadVideo(videoUrl, format);
