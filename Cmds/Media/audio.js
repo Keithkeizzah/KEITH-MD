@@ -1,5 +1,4 @@
 const axios = require("axios");
-const fg = require("api-dylux");
 const ytSearch = require("yt-search");
 
 async function downloadAudio(url) {
@@ -8,13 +7,12 @@ async function downloadAudio(url) {
       throw new Error("URL parameter is required");
     }
     
-    const response = await fg.yta(url);
-    const title = response.title;
-    const downloadLink = response.dl_url;
+    const response = await axios.get(`https://api.dylux.xyz/api/yt_audio?url=${url}`);
+    const { title, dl_url: downloadLink } = response.data;
 
     return {
       status: true,
-      createdBy: "Keithkeizzah ",
+      createdBy: "Keithkeizzah",
       title: title,
       downloadLink: downloadLink
     };
@@ -24,62 +22,20 @@ async function downloadAudio(url) {
   }
 }
 
-async function downloadVideo(url, format) {
+async function downloadVideo(url, format = '180p') {
   try {
-    if (!url || !format) {
-      throw new Error("URL and format parameters are required.");
+    if (!url) {
+      throw new Error("URL parameter is required.");
     }
     
-    const formatValue = parseInt(format.replace('p', ''), 10);
-    const requestParams = {
-      button: 1,
-      start: 1,
-      end: 1,
-      format: formatValue,
-      url: url
-    };
-
-    const headers = {
-      Accept: "*/*",
-      "Accept-Encoding": "gzip, deflate, br",
-      "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
-      Origin: "https://loader.to",
-      Referer: "https://loader.to",
-      "Sec-Ch-Ua": "\"Not-A.Brand\";v=\"99\", \"Chromium\";v=\"124\"",
-      "Sec-Ch-Ua-Mobile": '?1',
-      "Sec-Ch-Ua-Platform": "\"Android\"",
-      "Sec-Fetch-Dest": "empty",
-      "Sec-Fetch-Mode": "cors",
-      "Sec-Fetch-Site": "cross-site",
-      "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
-    };
-
-    const response = await axios.get("https://ab.cococococ.com/ajax/download.php", {
-      params: requestParams,
-      headers: headers
+    const response = await axios.get('https://loader.to/api/ajax/download', {
+      params: { url, format: format.replace('p', '') },
+      headers: { "User-Agent": "Mozilla/5.0" }
     });
     
-    const fileId = response.data.id;
+    const { download_url } = response.data;
 
-    // Poll for progress until download is complete
-    async function checkDownloadProgress() {
-      const progressResponse = await axios.get("https://p.oceansaver.in/ajax/progress.php", {
-        params: { id: fileId },
-        headers: headers
-      });
-
-      const { progress, download_url, text } = progressResponse.data;
-
-      if (text === "Finished") {
-        return download_url;
-      } else {
-        // Wait for a second before checking progress again
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        return checkDownloadProgress();
-      }
-    }
-
-    return await checkDownloadProgress();
+    return download_url || null;
   } catch (error) {
     console.error("Error fetching video:", error);
     return null;
@@ -91,67 +47,44 @@ module.exports = async (messageDetails) => {
   const chatId = message.chat;
 
   try {
-    // Check if a query is provided
+    // Check if query is provided
     if (!query || query.trim().length === 0) {
-      return message.reply("What song or video do you want to download?");
+      return message.reply("Please provide a song or video name.");
     }
 
-    // Perform a YouTube search based on the query
+    // Perform YouTube search
     const searchResults = await ytSearch(query);
 
-    // If results are found
-    if (searchResults && searchResults.videos.length > 0) {
+    if (searchResults?.videos?.length > 0) {
       const firstVideo = searchResults.videos[0];
       const videoUrl = firstVideo.url;
 
-      // Ask the user to choose the video format (e.g., 720p)
-      const format = '180p';  // You can dynamically choose the format, for example
+      // Download video or audio
+      const downloadUrl = await downloadVideo(videoUrl);
 
-      // Use the downloadVideo function to get the download URL
-      const downloadUrl = await downloadVideo(videoUrl, format);
-
-      // If the download URL is successfully retrieved
       if (downloadUrl) {
-      
-        // Send the video file to the user
-        await client.sendMessage(chatId, { audio: { url: downloadUrl }, 
-mimetype: "audio/mp4",
-    contextInfo: {
+        // Send the audio/video file to the user
+        await client.sendMessage(chatId, { 
+          audio: { url: downloadUrl }, 
+          mimetype: 'audio/mp4',
+          contextInfo: {
             externalAdReply: {
               title: firstVideo.title,
               body: firstVideo.title,
               mediaType: 1,
               sourceUrl: "https://whatsapp.com/channel/0029Vaan9TF9Bb62l8wpoD47",
-              thumbnailUrl: firstVideo.thumbnail,
-              renderLargerThumbnail: false,
-              showAdAttribution: true
+              thumbnailUrl: firstVideo.thumbnail
             }
           }
- }, { quoted: message });
+        }, { quoted: message });
 
-        // Send the video file as a document (optional)
-        await client.sendMessage(chatId, { document: { url: downloadUrl }, mimetype: "audio/mp4",
-     contextInfo: {
-            externalAdReply: {
-              title: firstVideo.title,
-              body: firstVideo.title,
-              mediaType: 1,
-              sourceUrl: "https://whatsapp.com/channel/0029Vaan9TF9Bb62l8wpoD47",
-              thumbnailUrl: firstVideo.thumbnail,
-              renderLargerThumbnail: false,
-              showAdAttribution: true
-            }
-          }
- }, { quoted: message });
-
-    
       } else {
-        message.reply("Failed to retrieve download URL.");
+        message.reply("Failed to retrieve the download URL.");
       }
     } else {
-      message.reply("No video found for the specified query.");
+      message.reply("No video found for the query.");
     }
   } catch (error) {
-    message.reply("Download failed\n" + error);
+    message.reply("Error occurred: " + error.message);
   }
 };
