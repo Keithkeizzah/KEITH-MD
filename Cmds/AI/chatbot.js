@@ -1,4 +1,4 @@
-const fetch = require("node-fetch");  // Required if you use node-fetch for making API requests
+const fetch = require("node-fetch");  // Required for making API requests
 const ownerMiddleware = require("../../utility/botUtil/Ownermiddleware");
 
 let chatbotEnabled = false;
@@ -7,8 +7,8 @@ let chatbotInInbox = false;
 
 module.exports = async (context) => {
   await ownerMiddleware(context, async () => {
-    const { client, m, Owner, q, body, itsMe, IsGroup, isBotAdmin } = context;
-    const toggle = q.trim().toLowerCase();
+    const { client, m, Owner, text, body, itsMe, IsGroup, isBotAdmin } = context;
+    const toggle = text.trim().toLowerCase();
 
     try {
       // Handle the chatbot toggle commands
@@ -42,27 +42,27 @@ module.exports = async (context) => {
       return; // Ignore messages based on chatbot settings
     }
 
-    const q = body;  // Get the message body
+    const query = body;  // Get the message body
     let data;
 
     try {
       // Try fetching responses from different APIs in sequence
-      data = await getResponseFromAPI(q, 'gpt4');
+      data = await getResponseFromAPI(query, 'gpt4');
       if (data) {
         return client.sendMessage(m.chat, { text: data.result }, { quoted: m });
       }
 
-      data = await getResponseFromAPI(q, 'gpt');
+      data = await getResponseFromAPI(query, 'gpt');
       if (data) {
         return client.sendMessage(m.chat, { text: data.result }, { quoted: m });
       }
 
-      data = await getResponseFromAPI(q, 'gpt-turbo');
+      data = await getResponseFromAPI(query, 'gpt-turbo');
       if (data) {
         return client.sendMessage(m.chat, { text: data.result }, { quoted: m });
       }
 
-      data = await getResponseFromAPI(q, 'geminiai');
+      data = await getResponseFromAPI(query, 'geminiai');
       if (data) {
         return client.sendMessage(m.chat, { text: data.result }, { quoted: m });
       }
@@ -79,7 +79,7 @@ module.exports = async (context) => {
 // Function to make API calls
 async function getResponseFromAPI(query, api) {
   try {
-    const url = `$https://api.giftedtech.my.id/api/ai/gpt?apikey=gifted&q=${encodeURIComponent(query)}`;
+    const url = `https://api.giftedtech.my.id/api/ai/gpt?apikey=gifted&q=${encodeURIComponent(query)}`;
     const res = await fetch(url);
     const data = await res.json();
     return data && data.result ? data : null;
