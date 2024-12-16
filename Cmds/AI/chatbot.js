@@ -47,26 +47,10 @@ module.exports = async (context) => {
 
     try {
       // Try fetching responses from different APIs in sequence
-      data = await getResponseFromAPI(query, 'gpt4');
+      data = await getResponseFromAPI(query);
       if (data) {
         return client.sendMessage(m.chat, { text: data.result }, { quoted: m });
       }
-
-      data = await getResponseFromAPI(query, 'gpt');
-      if (data) {
-        return client.sendMessage(m.chat, { text: data.result }, { quoted: m });
-      }
-
-      data = await getResponseFromAPI(query, 'gpt-turbo');
-      if (data) {
-        return client.sendMessage(m.chat, { text: data.result }, { quoted: m });
-      }
-
-      data = await getResponseFromAPI(query, 'geminiai');
-      if (data) {
-        return client.sendMessage(m.chat, { text: data.result }, { quoted: m });
-      }
-
     } catch (e) {
       console.log('API request failed:', e);
     }
@@ -77,14 +61,31 @@ module.exports = async (context) => {
 };
 
 // Function to make API calls
-async function getResponseFromAPI(query, api) {
+async function getResponseFromAPI(query) {
   try {
-    const url = `https://api.giftedtech.my.id/api/ai/gpt?apikey=gifted&q=${encodeURIComponent(query)}`;
-    const res = await fetch(url);
+    const apiUrl = `https://api.giftedtech.my.id/api/ai/gpt?apikey=gifted&q=${encodeURIComponent(query)}`;
+
+    // Log the URL and query for debugging
+    console.log(`Fetching data from: ${apiUrl}`);
+
+    const res = await fetch(apiUrl);
+
+    // Ensure the response is successful (status code 200)
+    if (!res.ok) {
+      throw new Error(`API request failed with status: ${res.status}`);
+    }
+
     const data = await res.json();
-    return data && data.result ? data : null;
+
+    // Check if the response has the expected structure
+    if (data && data.result) {
+      return data;  // Return the result if it exists
+    } else {
+      throw new Error("API response does not contain expected data");
+    }
   } catch (e) {
-    console.log(`${api} API failed or no valid response:`, e);
+    // Log the error for debugging
+    console.log("Error fetching data from API:", e);
     return null;
   }
 }
