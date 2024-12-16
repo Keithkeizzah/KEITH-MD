@@ -15,8 +15,9 @@ const fs = require('fs');
             { name: 'Logo' },
             { name: 'Search' },
             { name: 'Editting' },
-            { name: 'groups' },
-            { name: 'stalk' },
+            { name: 'Groups' },
+            { name: 'Stalk' },
+            { name: 'System' },
             { name: 'Owner' },
             { name: 'Coding' }
         ];
