@@ -1,13 +1,24 @@
 module.exports = async (context) => {
   const { client, m } = context;
 
-  // Sound file URLs
+  // Updated Sound file URLs
   const audioFiles = [
-    'https://cdn.jsdelivr.net/gh/Keithkeizzah/KEITH-MD2@main/data/broken.mp3',
-    'https://cdn.jsdelivr.net/gh/Keithkeizzah/KEITH-MD2@main/data/AUD-20241119-WA0011.mp3',
-    'https://cdn.jsdelivr.net/gh/Keithkeizzah/KEITH-MD2@main/data/home.mp3',
-    'https://cdn.jsdelivr.net/gh/Keithkeizzah/KEITH-MD2@main/data/broken.mp3',
-    'https://cdn.jsdelivr.net/gh/Keithkeizzah/KEITH-MD2@main/data/antidote.m4a'
+    'https://files.catbox.moe/hpwsi2.mp3',
+    'https://files.catbox.moe/xci982.mp3',
+    'https://files.catbox.moe/utbujd.mp3',
+    'https://files.catbox.moe/w2j17k.m4a',
+    'https://files.catbox.moe/851skv.m4a',
+    'https://files.catbox.moe/qnhtbu.m4a',
+    'https://files.catbox.moe/lb0x7w.mp3',
+    'https://files.catbox.moe/efmcxm.mp3',
+    'https://files.catbox.moe/gco5bq.mp3',
+    'https://files.catbox.moe/26oeeh.mp3',
+    'https://files.catbox.moe/a1sh4u.mp3',
+    'https://files.catbox.moe/vuuvwn.m4a',
+    'https://files.catbox.moe/wx8q6h.mp3',
+    'https://files.catbox.moe/uj8fps.m4a',
+    'https://files.catbox.moe/dc88bx.m4a',
+    'https://files.catbox.moe/tn32z0.m4a'
   ];
 
   // Randomly pick an audio file
@@ -46,7 +57,7 @@ module.exports = async (context) => {
     contextInfo: {
       mentionedJid: [m.sender],
       externalAdReply: {
-        title: '𝗜 𝗔𝗠 𝗔𝗟𝗜𝗩𝗘 𝗠𝗢𝗧𝗛𝗘𝗥𝗙𝗨𝗖𝗞𝗘𝗥',
+        title: 𝗜 𝗔𝗠 𝗔𝗟𝗜𝗩𝗘 𝗠𝗢𝗧𝗛𝗘𝗥𝗙𝗨𝗖𝗞𝗘𝗥',
         body: 'Regards Keithkeizzah',
         thumbnailUrl: img,
         sourceUrl: murl,
