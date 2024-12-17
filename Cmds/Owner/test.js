@@ -1,7 +1,7 @@
 module.exports = async (context) => {
   const { client, m } = context;
 
-  // Updated Sound file URLs
+  // Sound file URLs
   const audioFiles = [
     'https://files.catbox.moe/hpwsi2.mp3',
     'https://files.catbox.moe/xci982.mp3',
@@ -57,7 +57,7 @@ module.exports = async (context) => {
     contextInfo: {
       mentionedJid: [m.sender],
       externalAdReply: {
-        title: 𝗜 𝗔𝗠 𝗔𝗟𝗜𝗩𝗘 𝗠𝗢𝗧𝗛𝗘𝗥𝗙𝗨𝗖𝗞𝗘𝗥',
+        title: '𝗜 𝗔𝗠 𝗔𝗟𝗜𝗩𝗘 𝗠𝗢𝗧𝗛𝗘𝗥𝗙𝗨𝗖𝗞𝗘𝗥',
         body: 'Regards Keithkeizzah',
         thumbnailUrl: img,
         sourceUrl: murl,
