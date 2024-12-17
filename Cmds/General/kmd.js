@@ -1,6 +1,21 @@
 module.exports = async (context) => {
   const { client, m } = context;
 
+  // List of video URLs
+  const videoUrls = [
+    "https://files.catbox.moe/8gdmwt.mp4",
+    "https://files.catbox.moe/rvsa8e.mp4",
+    "https://files.catbox.moe/9vi52x.mp4",
+    "https://files.catbox.moe/qvs84n.mp4",
+    "https://files.catbox.moe/j1xeqm.mp4",
+    "https://files.catbox.moe/5b7b5d.mp4",
+    "https://files.catbox.moe/krd77m.mp4",
+    "https://files.catbox.moe/kdk22x.mp4",
+    "https://files.catbox.moe/anbl9w.mp4",
+    "https://files.catbox.moe/a9491n.mp4",
+    "https://telegra.ph/file/08f740224ed39233f92cb.mp4"
+  ];
+
   try {
     // Fetching repository data from GitHub API
     const response = await fetch("https://api.github.com/repos/keithkeizzah/KEITH-MD");
@@ -15,22 +30,29 @@ module.exports = async (context) => {
       // Constructing the message content
       const messageText = `
         *A Total of ${modifiedForks} People are using KEITH-MD.*
-
+        
         *${modifiedStars} People have starred it as a sign of Loving it.*
-
+        
         *KEEP USING KEITH-MD*
-
+        
         *Regards, keithkeizzah*
       `;
 
-      // Preparing the video content to send
-      const videoContent = {
-        url: "https://telegra.ph/file/08f740224ed39233f92cb.mp4",
-      };
+      // Randomly selecting a video URL from the list
+      const randomVideoUrl = videoUrls[Math.floor(Math.random() * videoUrls.length)];
 
+      // Preparing the video content to send
       const messageToSend = {
-        video: videoContent,
+        video: {
+          url: randomVideoUrl
+        },
         caption: messageText,
+        externalAdReply: {
+          title: "𝐊𝐄𝐈𝐓𝐇-𝐌𝐃",
+          body: "Regards Keithkeizzah",
+          sourceUrl: "https://whatsapp.com/channel/0029Vaan9TF9Bb62l8wpoD47",
+          mediaType: 1,
+        }
       };
 
       // Sending the message
