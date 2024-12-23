@@ -31,7 +31,11 @@
     "API": {
       "description": "add your heroku api key here to be able to control config varses directly in your pm  ",
       "required": true
-
+    },
+    "PM_PERMIT": {
+      "description": "type true if you don't want anyone to access your bot in your inbox  ",
+      "value": "true",
+      "required": true
     },
     "APPNAME": {
       "description": "repeat your heroku appname here",
