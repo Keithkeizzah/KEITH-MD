@@ -109,7 +109,7 @@ module.exports = Keith = async (client, m, chatUpdate, message, store) => {
     }
 
     if (m.chat.endsWith('@s.whatsapp.net') && cmd && permit === 'true' && !Owner) {
-      await m.reply("you have no access to commands here idiot🚫");
+      await m.reply("Access denied🚫");
       return;
     }
 
