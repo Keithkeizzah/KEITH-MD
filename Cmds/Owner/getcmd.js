@@ -11,8 +11,13 @@ const fs = require('fs');
             { name: 'AI' },
             { name: 'General' },
             { name: 'Media' },
+            { name: 'Fun' },
+            { name: 'Logo' },
+            { name: 'Search' },
             { name: 'Editting' },
-            { name: 'groups' },
+            { name: 'Groups' },
+            { name: 'Stalk' },
+            { name: 'System' },
             { name: 'Owner' },
             { name: 'Coding' }
         ];

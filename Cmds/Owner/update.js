@@ -1,40 +1,43 @@
-/*const simpleGit = require("simple-git");
-const Heroku = require("heroku-client");
-const herokuapi = process.env.HEROKUAPI || '';
-const name = process.env.HEROKUNAME || '';
-const fs = require("fs");
-
-const ownerMiddleware = require('../../utility/botUtil/Ownermiddleware'); 
+const { exec } = require("child_process");
 
 module.exports = async (context) => {
-  await ownerMiddleware(context, async () => {
-    const { client, m, text, Owner } = context;
+    const { client, m, budy, Owner } = context;
 
-    const heroku = new Heroku({ token: herokuapi });
-    const repo = await heroku.get(`/apps/${name}/git`);
-
-    // Create a temporary directory to clone the repository
-    const tempDir = await fs.promises.mkdtemp('/tmp/');
-
-    // Clone the repository
-    const git = simpleGit(tempDir);
-    await git.clone(repo.git_url);
-
-    // Fetch the latest changes
-    await git.fetch();
-
-    // Get the commit log
-    const commits = await git.log(['main..origin/main']);
-
-    if (commits.total === 0) {
-      return m.reply('✅ Your bot is up to date with main branch!');
-    } else {
-      m.reply("❌ Your bot is not up to date, update it by redeploying or syncing your fork");
+    // Ensure that only the owner can execute this command
+    if (!Owner) {
+        return m.reply("You need owner privileges to execute this command!");
     }
 
-    // Clean up the temporary directory
-    await fs.promises.rmdir(tempDir, { recursive: true });
-  });
-};
+    try {
+        // Inform the user that the bot is restarting and updating
+        await m.reply("*Restarting and updating...*");
 
-*/
+        // Sleep function to delay the restart process
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        // Wait for 3 seconds before starting the update
+        await sleep(3000);
+
+        // Pull the latest updates from the repository
+        exec("git pull origin main", { cwd: "./" }, (err, stdout, stderr) => {
+            if (err) {
+                console.error("Error pulling updates:", err);
+                return m.reply("Failed to update the bot. Please check the logs.");
+            }
+
+            if (stderr) {
+                console.error("Error pulling updates (stderr):", stderr);
+                return m.reply("Failed to update the bot. Please check the logs.");
+            }
+
+            // Successfully pulled updates
+            console.log("Update successful:", stdout);
+
+            // Restart the bot
+            process.exit();  // This will restart the bot after update
+        });
+    } catch (error) {
+        console.error("Error during restart and update:", error);
+        m.reply("An error occurred while updating the bot.");
+    }
+};

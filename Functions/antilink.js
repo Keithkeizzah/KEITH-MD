@@ -1,8 +1,23 @@
-module.exports = async (client, m, isBotAdmin, isAdmin, Owner, body) => {
-    if (body && body.includes('chat.whatsapp.com') && !Owner && isBotAdmin && !isAdmin && m.isGroup) {
+module.exports = async (client, m, isBotAdmin, itsMe, isAdmin, Owner, body, antilink) => {
+    // Define an array of URLs to check for
+    const forbiddenLinks = [
+        't.me',
+        'whatsapp.com'
+    ];
 
-m.reply("Group link detected");
+    // Check if the message contains any forbidden link, group settings allow link removal, and user is not admin
+    if (body && forbiddenLinks.some(link => body.includes(link)) && m.isGroup && antilink === 'true' && !Owner && isBotAdmin && !isAdmin) {
+        if (itsMe) return;  // Skip if the message is from the bot
+
         const kid = m.sender;
+
+        // Notify the user that they are not allowed to send links
+        await client.sendMessage(m.chat, {
+            text: `@${kid.split("@")[0]}, do not send links!`,
+            contextInfo: { mentionedJid: [kid] }
+        }, { quoted: m });
+
+        // Delete the offending message
         await client.sendMessage(m.chat, {
             delete: {
                 remoteJid: m.chat,
@@ -11,12 +26,15 @@ m.reply("Group link detected");
                 participant: kid
             }
         });
-        await client.groupParticipantsUpdate(m.chat, [kid], 'remove');
-        await client.sendMessage(m.chat, {
-            text: `Removed!\n\n@${kid.split("@")[0]} sending group links is prohibited!`,
-            contextInfo: {
-                mentionedJid: [kid]
-            }
-        }, { quoted: m });
+
+        if (!isBotAdmin) {
+           
+            await client.sendMessage(m.chat, {
+                text: 'Please promote me to an admin to be able to remove link senders from the group.',
+            });
+        } else {
+         
+            await client.groupParticipantsUpdate(m.chat, [kid], 'remove');
+        }
     }
 };

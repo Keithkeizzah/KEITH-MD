@@ -1,19 +1,24 @@
+const { ChatGpt } = require('chatgpt-scraper');
+
 module.exports = async (context) => {
     const { client, m, text } = context;
 
     try {
-        if (!text) return m.reply("This is dreaded, an AI using Gemini APIs to process text, provide a text");
+        // Check if there's no input text
+        if (!text) return m.reply("This is ChatGPT. Please provide text.");
 
-       
-        const { default: Gemini } = await import('gemini-ai');
+        // Get response from ChatGPT using the text provided
+        const result = await ChatGpt(text);
 
-        const gemini = new Gemini("AIzaSyCcZqDMBa8FcAdBxqE1o6YYvzlygmpBx14");
-        const chat = gemini.createChat();
+        // Send the result back to the user
+        if (result) {
+            await m.reply(result);
+        } else {
+            await m.reply("No response from ChatGPT. Please try again.");
+        }
 
-        const res = await chat.ask(text);
-
-        await m.reply(res);
-    } catch (e) {
-        m.reply("I am unable to generate responses\n\n" + e);
+    } catch (error) {
+        console.error("Error:", error.message);
+        m.reply("An unexpected error occurred. Please try again.");
     }
 };

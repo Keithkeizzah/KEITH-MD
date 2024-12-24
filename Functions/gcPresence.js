@@ -1,9 +1,7 @@
-
-
 module.exports = async (client, m, gcpresence) => {
     if (m.isGroup && gcpresence === 'true') {
-        let dreadrecordin = ['recording', 'composing'];
-        let dreadrecordinfinal = dreadrecordin[Math.floor(Math.random() * dreadrecordin.length)];
-        await client.sendPresenceUpdate(dreadrecordinfinal, m.chat);
+        let keithrecordin = ['recording', 'composing'];
+        let keithrecordinfinal = keithrecordin[Math.floor(Math.random() * keithrecordin.length)];
+        await client.sendPresenceUpdate(keithrecordinfinal, m.chat);
     }
 };
