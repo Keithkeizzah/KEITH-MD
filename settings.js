@@ -29,9 +29,9 @@ const antibot = process.env.ANTIBOT || 'true';
 const anticall = process.env.ANTICALL || 'true';
 const antibad = process.env.ANTI_BAD_WORD || 'true';
 const antidelete = process.env.ANTIDELETE || 'true';
-const permit = process.env.PM_PERMIT || 'true';
 const autoview = process.env.AUTOVIEW_STATUS || 'true';
 const autolike = process.env.AUTOLIKE_STATUS || 'true';
+const permit = process.env.PM_PERMIT || 'true';
 const autoread = process.env.AUTOREAD || 'true';
 const autobio = process.env.AUTOBIO || 'false';
 
@@ -41,9 +41,9 @@ module.exports = {
   autoview,
   autoread,
   botname,
-  permit,
   api,
   appname,
+  permit,
   autobio,
   autoreact,
   mode,
