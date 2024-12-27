@@ -1,18 +1,18 @@
 const axios = require('axios');
+
 const apiKey = '4d3d074f107f44e09123d19ed6a89950';
 const baseUrl = 'http://api.football-data.org/v4/';
 
 module.exports = async (context) => {
     const { client, m, text } = context;
 
+    // Check if the user provided a query
     if (!text) {
-        return m.reply('🚩 Please specify an endpoint or query!
-
-*Examples:*
-competitions/PL/standings
-- competitions/SA/scorers
-
-Check API documentation for more queries: https://www.football-data.org/documentation/quickstart');
+        return m.reply('🚩 Please specify an endpoint or query!\n\n' +
+            '*Examples:*\n' +
+            'competitions/PL/standings\n' +
+            'competitions/SA/scorers\n\n' +
+            'Check API documentation for more queries: https://www.football-data.org/documentation/quickstart');
     }
 
     try {
@@ -22,13 +22,15 @@ Check API documentation for more queries: https://www.football-data.org/document
         });
 
         const data = response.data;
+
+        // List of known competition codes
         const competitionCodes = ['WC', 'CL', 'BL1', 'DED', 'BSA', 'PD', 'FL1', 'ELC', 'PPL', 'EC', 'SA', 'PL', 'CLI'];
 
-        // Handle standings data
+        // Handle Standings data
         if (text.includes('standings')) {
             const competition = data.competition?.name || 'Unknown League';
             const standings = data.standings?.[0]?.table || [];
-            
+
             if (standings.length === 0) {
                 return m.reply(`⚠️ No standings data found.`);
             }
@@ -36,7 +38,8 @@ Check API documentation for more queries: https://www.football-data.org/document
             const formattedStandings = standings.slice(0, 8).map((team) => {
                 return `🏆 *Position ${team.position}: ${team.team.name}*
 - Played: ${team.playedGames}
-- Won: ${team.won}\n- Draw: ${team.draw}
+- Won: ${team.won}
+- Draw: ${team.draw}
 - Lost: ${team.lost}
 - Points: ${team.points}
 - Goals For: ${team.goalsFor}
@@ -45,15 +48,14 @@ Check API documentation for more queries: https://www.football-data.org/document
 `;
             }).join('\n');
 
-            return m.reply(`📊 *${competition} Standings:*
-${formattedStandings}`);
+            return m.reply(`📊 *${competition} Standings:*\n${formattedStandings}`);
         }
 
-        // Handle scorers data
+        // Handle Scorers data
         if (text.includes('scorers')) {
             const competition = data.competition?.name || 'Unknown League';
             const scorers = data.scorers || [];
-            
+
             if (scorers.length === 0) {
                 return m.reply(`⚠️ No scorers data found.`);
             }
@@ -66,11 +68,10 @@ ${formattedStandings}`);
 `;
             }).join('\n');
 
-            return m.reply(`📊 *Top Scorers in ${competition}:*
-${formattedScorers}`);
+            return m.reply(`📊 *Top Scorers in ${competition}:*\n${formattedScorers}`);
         }
 
-        // Handle matches data
+        // Handle Matches data
         if (text.includes('matches')) {
             const { filters, resultSet, matches } = data;
 
@@ -78,8 +79,6 @@ ${formattedScorers}`);
 - Date From: ${filters?.dateFrom || 'N/A'}
 - Date To: ${filters?.dateTo || 'N/A'}
 - Permission: ${filters?.permission || 'N/A'}
-
-
 `;
 
             const resultInfo = `📊 *Result Set:*
@@ -88,7 +87,6 @@ ${formattedScorers}`);
 - First Match: ${resultSet?.first || 'N/A'}
 - Last Match: ${resultSet?.last || 'N/A'}
 - Matches Played: ${resultSet?.played || 0}
-
 `;
 
             const matchesInfo = matches.slice(0, 15).map((match) => {
@@ -117,7 +115,6 @@ ${formattedScorers}`);
 - Type: ${competition.type || 'N/A'}
 - Matches Played: ${resultSet?.played || 0}/${resultSet?.count || 0}
 - Season: ${filters?.season || 'N/A'}
-
 `;
 
             const matchDetails = upcomingMatches.slice(0, 15).map((match) => {
@@ -136,15 +133,13 @@ ${formattedScorers}`);
             return `- *${key}*: ${JSON.stringify(value, null, 2)}`;
         }).join('\n');
 
-        return m.reply(`📊 *Data Summary:*
-${fallbackOutput}`);
+        return m.reply(`📊 *Data Summary:*\n${fallbackOutput}`);
 
     } catch (e) {
         console.error(e);
-        return m.reply(`❌ An error occurred while fetching data. Please check your query and try again.
-
-*Examples:*
-competitions/PL/standings
-competitions/SA/scorers`);
+        return m.reply(`❌ An error occurred while fetching data. Please check your query and try again.\n\n` +
+            '*Examples:*\n' +
+            'competitions/PL/standings\n' +
+            'competitions/SA/scorers');
     }
 };
