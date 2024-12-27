@@ -6,7 +6,13 @@ module.exports = async (context) => {
     const { client, m, text } = context;
 
     if (!text) {
-        return m.reply('🚩 Please specify an endpoint or query!\n\n*Examples:*\ncompetitions/PL/standings\n- competitions/SA/scorers\n\nCheck API documentation for more queries: https://www.football-data.org/documentation/quickstart');
+        return m.reply('🚩 Please specify an endpoint or query!
+
+*Examples:*
+competitions/PL/standings
+- competitions/SA/scorers
+
+Check API documentation for more queries: https://www.football-data.org/documentation/quickstart');
     }
 
     try {
@@ -28,10 +34,19 @@ module.exports = async (context) => {
             }
 
             const formattedStandings = standings.slice(0, 8).map((team) => {
-                return `🏆 *Position ${team.position}: ${team.team.name}*\n- Played: ${team.playedGames}\n- Won: ${team.won}\n- Draw: ${team.draw}\n- Lost: ${team.lost}\n- Points: ${team.points}\n- Goals For: ${team.goalsFor}\n- Goals Against: ${team.goalsAgainst}\n- Goal Difference: ${team.goalDifference}\n`;
+                return `🏆 *Position ${team.position}: ${team.team.name}*
+- Played: ${team.playedGames}
+- Won: ${team.won}\n- Draw: ${team.draw}
+- Lost: ${team.lost}
+- Points: ${team.points}
+- Goals For: ${team.goalsFor}
+- Goals Against: ${team.goalsAgainst}
+- Goal Difference: ${team.goalDifference}
+`;
             }).join('\n');
 
-            return m.reply(`📊 *${competition} Standings:*\n\n${formattedStandings}`);
+            return m.reply(`📊 *${competition} Standings:*
+${formattedStandings}`);
         }
 
         // Handle scorers data
@@ -44,23 +59,46 @@ module.exports = async (context) => {
             }
 
             const formattedScorers = scorers.slice(0, 10).map((scorer, index) => {
-                return `⚽ *${index + 1}. ${scorer.player.name} (${scorer.team.name})*\n- Goals: ${scorer.goals}\n- Assists: ${scorer.assists ?? 'N/A'}\n- Penalties: ${scorer.penalties ?? 'N/A'}\n`;
+                return `⚽ *${index + 1}. ${scorer.player.name} (${scorer.team.name})*
+- Goals: ${scorer.goals}
+- Assists: ${scorer.assists ?? 'N/A'}
+- Penalties: ${scorer.penalties ?? 'N/A'}
+`;
             }).join('\n');
 
-            return m.reply(`📊 *Top Scorers in ${competition}:*\n\n${formattedScorers}`);
+            return m.reply(`📊 *Top Scorers in ${competition}:*
+${formattedScorers}`);
         }
 
         // Handle matches data
         if (text.includes('matches')) {
             const { filters, resultSet, matches } = data;
 
-            const filterInfo = `📅 *Filters:*\n- Date From: ${filters?.dateFrom || 'N/A'}\n- Date To: ${filters?.dateTo || 'N/A'}\n- Permission: ${filters?.permission || 'N/A'}\n\n`;
+            const filterInfo = `📅 *Filters:*
+- Date From: ${filters?.dateFrom || 'N/A'}
+- Date To: ${filters?.dateTo || 'N/A'}
+- Permission: ${filters?.permission || 'N/A'}
 
-            const resultInfo = `📊 *Result Set:*\n- Total Matches: ${resultSet?.count || 0}\n- Competitions: ${resultSet?.competitions || 'N/A'}\n- First Match: ${resultSet?.first || 'N/A'}\n- Last Match: ${resultSet?.last || 'N/A'}\n- Matches Played: ${resultSet?.played || 0}\n\n`;
+
+`;
+
+            const resultInfo = `📊 *Result Set:*
+- Total Matches: ${resultSet?.count || 0}
+- Competitions: ${resultSet?.competitions || 'N/A'}
+- First Match: ${resultSet?.first || 'N/A'}
+- Last Match: ${resultSet?.last || 'N/A'}
+- Matches Played: ${resultSet?.played || 0}
+
+`;
 
             const matchesInfo = matches.slice(0, 15).map((match) => {
                 const { homeTeam, awayTeam, score, competition } = match;
-                return `⚽ *${competition.name || 'Unknown League'}*\n- Matchday: ${match.matchday || 'N/A'}\n- Status: ${match.status || 'N/A'}\n- ${homeTeam.name} (${score.fullTime.home ?? '-'} Goals) 🆚 ${awayTeam.name} (${score.fullTime.away ?? '-'} Goals)\n- Winner: ${score.winner === 'HOME_TEAM' ? homeTeam.name : score.winner === 'AWAY_TEAM' ? awayTeam.name : 'Draw'}\n`;
+                return `⚽ *${competition.name || 'Unknown League'}*
+- Matchday: ${match.matchday || 'N/A'}
+- Status: ${match.status || 'N/A'}
+- ${homeTeam.name} (${score.fullTime.home ?? '-'} Goals) 🆚 ${awayTeam.name} (${score.fullTime.away ?? '-'} Goals)
+- Winner: ${score.winner === 'HOME_TEAM' ? homeTeam.name : score.winner === 'AWAY_TEAM' ? awayTeam.name : 'Draw'}
+`;
             }).join('\n');
 
             return m.reply(`${filterInfo}${resultInfo}${matchesInfo}`);
@@ -75,11 +113,19 @@ module.exports = async (context) => {
             const today = new Date().toISOString().split('T')[0];
             const upcomingMatches = matches.filter((match) => match.utcDate >= today);
 
-            const competitionInfo = `🏆 *Competition: ${competition.name || 'N/A'}*\n- Type: ${competition.type || 'N/A'}\n- Matches Played: ${resultSet?.played || 0}/${resultSet?.count || 0}\n- Season: ${filters?.season || 'N/A'}\n\n`;
+            const competitionInfo = `🏆 *Competition: ${competition.name || 'N/A'}*
+- Type: ${competition.type || 'N/A'}
+- Matches Played: ${resultSet?.played || 0}/${resultSet?.count || 0}
+- Season: ${filters?.season || 'N/A'}
+
+`;
 
             const matchDetails = upcomingMatches.slice(0, 15).map((match) => {
                 const { homeTeam, awayTeam, utcDate, matchday } = match;
-                return `📅 *Matchday ${matchday || 'N/A'}*\n- Date: ${new Date(utcDate).toLocaleString()}\n- ${homeTeam.name} 🆚 ${awayTeam.name}\n`;
+                return `📅 *Matchday ${matchday || 'N/A'}*
+- Date: ${new Date(utcDate).toLocaleString()}
+- ${homeTeam.name} 🆚 ${awayTeam.name}
+`;
             }).join('\n');
 
             return m.reply(`${competitionInfo}${matchDetails}`);
@@ -90,10 +136,15 @@ module.exports = async (context) => {
             return `- *${key}*: ${JSON.stringify(value, null, 2)}`;
         }).join('\n');
 
-        return m.reply(`📊 *Data Summary:*\n\n${fallbackOutput}`);
+        return m.reply(`📊 *Data Summary:*
+${fallbackOutput}`);
 
     } catch (e) {
         console.error(e);
-        return m.reply(`❌ An error occurred while fetching data. Please check your query and try again.\n\n*Examples:*\ncompetitions/PL/standings\ncompetitions/SA/scorers`);
+        return m.reply(`❌ An error occurred while fetching data. Please check your query and try again.
+
+*Examples:*
+competitions/PL/standings
+competitions/SA/scorers`);
     }
 };
