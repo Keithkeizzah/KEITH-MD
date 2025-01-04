@@ -42,6 +42,11 @@
       "description": "Type true if you want the bot to decline unnecessary calls ",
       "value": "true",
       "required": false
+    },
+    "PM_PERMIT": {
+      "description": "Type true if you want the bot to deny requests in your pm",
+      "value": "true",
+      "required": false
       },
     "ANTI_BAD_WORD": {
       "description": "Type true if you want bot to automatically detect bad words and remove or block in your pm ",
