@@ -61,9 +61,8 @@ module.exports = async (messageDetails) => {
 
     // Prepare the message payload with external ad details
     const messagePayload = {
-      document: { url: downloadUrl },
+      audio: { url: downloadUrl },
       mimetype: 'audio/mp4',
-      fileName: `${videoDetails.title}.mp3`,
       contextInfo: {
         externalAdReply: {
           title: videoDetails.title,
