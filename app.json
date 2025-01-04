@@ -104,8 +104,8 @@
       "value": "true",
       "required": false
     },    
-"ANTIVIEWONCE": {
-      "description": "Type true if you want bot to automatically read viewonce media",
+"AUTOREACT": {
+      "description": "Type true if you want bot to automatically react to messages",
       "value": "true",
       "required": false
     },
