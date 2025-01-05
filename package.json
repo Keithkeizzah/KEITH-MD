@@ -89,7 +89,7 @@
     "performance-now": "^2.1.0",
     "pino": "^7.0.5",
     "pg": "^8.11.2",
-    "unlimited-ai": "^2.0.1",
+    "unlimited-ai": "^6.0.0",
     "qrcode-terminal": "^0.12.0",
     "quickmongo": "^5.2.0",
     "stream": "^0.0.2",
