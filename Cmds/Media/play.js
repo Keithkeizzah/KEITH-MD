@@ -34,7 +34,7 @@ module.exports = async (messageDetails) => {
     let videoDetails;
 
     // Try Gifted API
-    downloadData = await getDownloadData(`https://api.giftedtech.my.id/api/download/dlmp3?url=${encodeURIComponent(videoUrl)}&apikey=gifted`);
+    downloadData = await getDownloadData(`https://api.giftedtech.web.id/api/download/dlmp3?url=${encodeURIComponent(videoUrl)}&apikey=gifted`);
     if (downloadData.success) {
       downloadUrl = downloadData.result.download_url;
       videoDetails = downloadData.result;
