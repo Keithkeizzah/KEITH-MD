@@ -4,7 +4,10 @@ module.exports = async (context) => {
     await middleware(context, async () => {
         const { client, m, participants, text } = context;
 
-        // Create an array to store online members
+        // Get the bot's ID (you can also use `client.info.wid.user` as the bot's ID)
+        const botId = client.info.wid.user;
+
+        // Create an array to store online members (including bot)
         const onlineMembers = [];
 
         // Loop through the participants to check their presence status
@@ -21,6 +24,9 @@ module.exports = async (context) => {
                 console.error(`Error checking presence for ${participant.id.user}:`, err);
             }
         }
+
+        // Also check if the bot itself is online (it will always be online if it's running)
+        onlineMembers.push(botId); // Add the bot itself to the list
 
         // If no online members, reply with a message
         if (onlineMembers.length === 0) {
