@@ -47,6 +47,7 @@
     "wikipedia": "^2.1.1",
     "querystring": "^0.2.1",
     "g-i-s": "^2.1.7",
+    "gifted-gpt": "^1.1.0",
     "aptoide-scraper": "^1.0.1",
     "cheerio": "^1.0.0-rc.12",
     "child-process": "^1.0.2",
