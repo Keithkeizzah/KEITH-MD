@@ -1,5 +1,3 @@
-/* This is the main file */
-
 const {
   default: KeithConnect,
   useMultiFileAuthState,
@@ -10,15 +8,17 @@ const {
   downloadContentFromMessage,
   jidDecode,
   proto,
+  Browsers,
   getContentType,
 } = require("@whiskeysockets/baileys");
-const pino = require("pino");
+const P = require("pino");
 const fs = require("fs");
 const path = require("path");
 const FileType = require("file-type");
 const { exec, spawn, execSync } = require("child_process");
 const axios = require("axios");
 const chalk = require("chalk");
+const { File } = require("megajs");
 const figlet = require("figlet");
 const express = require("express");
 const app = express();
@@ -27,32 +27,51 @@ const _ = require("lodash");
 const PhoneNumber = require("awesome-phonenumber");
 const { imageToWebp, videoToWebp, writeExifImg, writeExifVid } = require("./lib/exif");
 const { isUrl, generateMessageTag, getBuffer, getSizeMedia, fetchJson, await, sleep } = require("./lib/botFunctions");
-const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream: "store" }) });
+const store = makeInMemoryStore({ logger: P().child({ level: "silent", stream: "store" }) });
 
-const authenticationn = require("./auth.js");
 const { smsg } = require("./smsg");
-
-const { autoview, autoread, botname, autobio, mode, prefix, autoreact, presence, autolike, anticall } = require("./settings");
+const { autoview, autoread, botname, autobio, mode, prefix, session, autoreact, presence, autolike, anticall } = require("./settings");
 const { DateTime } = require("luxon");
 const { commands, totalCommands } = require("./commandHandler");
-authenticationn();
 const groupEvents = require("./groupEvents.js");
 
+// Session Authentication
+async function authenticateSession() {
+  if (!fs.existsSync(path.join(__dirname, 'session', 'creds.json'))) {
+    if (!session) {
+      return console.log('Please provide a session file to continue.');
+    }
+
+    const sessdata = session;
+    const filer = File.fromURL(`https://mega.nz/file/${sessdata}`);
+
+    try {
+      await new Promise((resolve, reject) => {
+        filer.download((err, data) => {
+          if (err) return reject(err);
+          fs.writeFile(path.join(__dirname, 'session', 'creds.json'), data, () => {
+            console.log("SESSION DOWNLOADED COMPLETED ✅");
+            resolve();
+          });
+        });
+      });
+    } catch (err) {
+      console.log("Error downloading session:", err);
+    }
+  }
+}
+
 async function startKeith() {
-  const { saveCreds, state } = await useMultiFileAuthState(`session`);
+  const { saveCreds, state } = await useMultiFileAuthState(path.join(__dirname, 'session'));
+  const { version } = await fetchLatestBaileysVersion();
+
   const client = KeithConnect({
-    logger: pino({ level: "silent" }),
-    printQRInTerminal: true,
-    version: [2, 3000, 1015901307],
-    browser: [`KEITH-MD`, 'Safari', '3.0'],
-    fireInitQueries: false,
-    shouldSyncHistoryMessage: true,
-    downloadHistory: true,
+    logger: P({ level: 'silent' }),
+    printQRInTerminal: false,
+    browser: Browsers.macOS("Firefox"),
     syncFullHistory: true,
-    generateHighQualityLinkPreview: true,
-    markOnlineOnConnect: true,
-    keepAliveIntervalMs: 30000,
     auth: state,
+    version,
     getMessage: async (key) => {
       if (store) {
         const mssg = await store.loadMessage(key.remoteJid, key.id);
@@ -62,11 +81,10 @@ async function startKeith() {
     }
   });
 
-  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-
   let lastTextTime = 0;
   const messageDelay = 5000;
 
+  // Handle incoming calls if anticall is enabled
   client.ev.on('call', async (callData) => {
     if (anticall === 'true') {
       const callId = callData[0].id;
@@ -87,13 +105,13 @@ async function startKeith() {
     }
   });
 
+  // Handle auto react if enabled
   if (autoreact === 'true') {
     client.ev.on("messages.upsert", async (chatUpdate) => {
       try {
         const mek = chatUpdate.messages[0];
         if (!mek || !mek.message) return;
 
-        // Define the reactEmojis array with the specified emojis
         const reactEmojis = ['✅', '♂️', '🎆', '🎇', '💧', '🌟', '🙆', '🙌', '👀', '👁️', '❤️‍🔥', '💗', '👽', '💫', '🔥', '💯', '💥', '😇', '😥', '😂', '👋'];
 
         if (!mek.key.fromMe && reactEmojis.length > 0) {
@@ -105,13 +123,13 @@ async function startKeith() {
             },
           });
         }
-
       } catch (error) {
         console.error('Error processing message:', error);
       }
     });
   }
 
+  // Auto bio update
   if (autobio === 'true') {
     setInterval(() => {
       const date = new Date();
@@ -121,6 +139,7 @@ async function startKeith() {
     }, 10 * 1000);
   }
 
+  // Handle incoming messages and auto read/auto view features
   client.ev.on("messages.upsert", async (chatUpdate) => {
     try {
       let mek = chatUpdate.messages[0];
@@ -138,7 +157,7 @@ async function startKeith() {
             key: mek.key,
           }
         }, { statusJidList: [mek.key.participant, keithlike] });
-        await delay(delayMessage);
+        await sleep(delayMessage);
       }
 
       if (autoview === 'true' && mek.key && mek.key.remoteJid === "status@broadcast") {
@@ -249,11 +268,12 @@ async function startKeith() {
         startKeith();
       }
     } else if (connection === "open") {
-      await client.groupAcceptInvite("KOvNtZbE3JC32oGAe6BQpp");
+      await client.groupAcceptInvite("KVkQtTxS6JA0Jctdsu5Tj9");
       console.log(`✅ Connection successful\nLoaded ${totalCommands} commands.\nBot is active.`);
 
       const getGreeting = () => {
         const currentHour = DateTime.now().setZone('Africa/Nairobi').hour;
+
         if (currentHour >= 5 && currentHour < 12) {
           return 'Good morning 🌄';
         } else if (currentHour >= 12 && currentHour < 18) {
@@ -283,33 +303,32 @@ async function startKeith() {
   });
 
   client.ev.on("creds.update", saveCreds);
-
   client.sendText = (jid, text, quoted = "", options) => client.sendMessage(jid, { text: text, ...options }, { quoted });
 
-  client.downloadMediaMessage = async (message) => {
-    let mime = (message.msg || message).mimetype || '';
-    let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0];
-    const stream = await downloadContentFromMessage(message, messageType);
-    let buffer = Buffer.from([]);
-    for await (const chunk of stream) {
-      buffer = Buffer.concat([buffer, chunk]);
-    }
+  client.downloadMediaMessage = async (message) => { 
+    let mime = (message.msg || message).mimetype || ''; 
+    let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0]; 
+    const stream = await downloadContentFromMessage(message, messageType); 
+    let buffer = Buffer.from([]); 
+    for await (const chunk of stream) { 
+      buffer = Buffer.concat([buffer, chunk]); 
+    } 
     return buffer;
   };
 
-  client.downloadAndSaveMediaMessage = async (message, filename, attachExtension = true) => {
-    let quoted = message.msg ? message.msg : message;
-    let mime = (message.msg || message).mimetype || '';
-    let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0];
-    const stream = await downloadContentFromMessage(quoted, messageType);
-    let buffer = Buffer.from([]);
-    for await (const chunk of stream) {
-      buffer = Buffer.concat([buffer, chunk]);
-    }
-    let type = await FileType.fromBuffer(buffer);
-    const trueFileName = attachExtension ? (filename + '.' + type.ext) : filename;
-    await fs.writeFileSync(trueFileName, buffer);
-    return trueFileName;
+  client.downloadAndSaveMediaMessage = async (message, filename, attachExtension = true) => { 
+    let quoted = message.msg ? message.msg : message; 
+    let mime = (message.msg || message).mimetype || ''; 
+    let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0]; 
+    const stream = await downloadContentFromMessage(quoted, messageType); 
+    let buffer = Buffer.from([]); 
+    for await (const chunk of stream) { 
+      buffer = Buffer.concat([buffer, chunk]); 
+    } 
+    let type = await FileType.fromBuffer(buffer); 
+    const trueFileName = attachExtension ? (filename + '.' + type.ext) : filename; 
+    await fs.writeFileSync(trueFileName, buffer); 
+    return trueFileName; 
   };
 }
 
@@ -321,14 +340,7 @@ app.get("/", (req, res) => {
 
 app.listen(port, () => console.log(`Server listening on port http://localhost:${port}`));
 
-startKeith();
+// Authentication and Session Fix
+authenticateSession().then(() => startKeith());
 
 module.exports = startKeith;
-
-let file = require.resolve(__filename);
-fs.watchFile(file, () => {
-  fs.unwatchFile(file);
-  console.log(chalk.redBright(`Update ${__filename}`));
-  delete require.cache[file];
-  require(file);
-});
