@@ -31,7 +31,7 @@ module.exports = async (context) => {
       │✞ *Last Update:* ${lastUpdateDate}
       │✞ *Owner:* ${repoInfo.owner}
       │✞ *Repository:* ${repoInfo.url}
-      │✞ *Session:* https://keith-sessions-pi5z.onrender.com
+      │✞ *Session:* keithmd.onrender.com
       ╰───────────────────
     `;
 
