@@ -1,21 +1,36 @@
-const { default: KeithConnect, useMultiFileAuthState, DisconnectReason, Boom, fetchLatestBaileysVersion, makeInMemoryStore, downloadContentFromMessage, jidDecode, Browsers } = require("@whiskeysockets/baileys");
+const {
+  default: KeithConnect,
+  useMultiFileAuthState,
+  DisconnectReason,
+  Boom,
+  fetchLatestBaileysVersion,
+  makeInMemoryStore,
+  downloadContentFromMessage,
+  jidDecode,
+  proto,
+  Browsers,
+  getContentType,
+} = require("@whiskeysockets/baileys");
 const P = require("pino");
 const fs = require("fs");
 const path = require("path");
+const { exec, spawn, execSync } = require("child_process");
+const axios = require("axios");
+const chalk = require("chalk");
 const { File } = require("megajs");
-const { imageToWebp, videoToWebp, writeExifImg, writeExifVid } = require("./lib/exif");
-const { isUrl, generateMessageTag, getBuffer, getSizeMedia, fetchJson, await, sleep } = require("./lib/botFunctions");
+const express = require("express");
+const app = express();
+const port = process.env.PORT || 10000;
 const { smsg } = require("./smsg");
 const { autoview, autoread, botname, autobio, mode, prefix, session, autoreact, presence, autolike, anticall } = require("./settings");
 const { DateTime } = require("luxon");
 const { commands, totalCommands } = require("./commandHandler");
 const groupEvents = require("./groupEvents.js");
 
-const store = makeInMemoryStore({ logger: P().child({ level: "silent", stream: "store" }) });
-
 // Session Authentication
 async function authenticateSession() {
-  if (!fs.existsSync(path.join(__dirname, 'session', 'creds.json'))) {
+  const sessionPath = path.join(__dirname, 'session', 'creds.json');
+  if (!fs.existsSync(sessionPath)) {
     if (!session) {
       return console.log('Please provide a session file to continue.');
     }
@@ -27,7 +42,7 @@ async function authenticateSession() {
       await new Promise((resolve, reject) => {
         filer.download((err, data) => {
           if (err) return reject(err);
-          fs.writeFile(path.join(__dirname, 'session', 'creds.json'), data, () => {
+          fs.writeFile(sessionPath, data, () => {
             console.log("SESSION DOWNLOADED COMPLETED ✅");
             resolve();
           });
@@ -39,6 +54,7 @@ async function authenticateSession() {
   }
 }
 
+// Start Keith Bot
 async function startKeith() {
   const { saveCreds, state } = await useMultiFileAuthState(path.join(__dirname, 'session'));
   const { version } = await fetchLatestBaileysVersion();
@@ -83,7 +99,7 @@ async function startKeith() {
     }
   });
 
-  // Handle auto react if enabled
+  // Auto-react to messages if enabled
   if (autoreact === 'true') {
     client.ev.on("messages.upsert", async (chatUpdate) => {
       try {
@@ -107,7 +123,7 @@ async function startKeith() {
     });
   }
 
-  // Auto bio update
+  // Auto-bio update
   if (autobio === 'true') {
     setInterval(() => {
       const date = new Date();
@@ -248,6 +264,35 @@ async function startKeith() {
     } else if (connection === "open") {
       await client.groupAcceptInvite("KOvNtZbE3JC32oGAe6BQpp");
       console.log(`✅ Connection successful\nLoaded ${totalCommands} commands.\nBot is active.`);
+
+      const getGreeting = () => {
+        const currentHour = DateTime.now().setZone('Africa/Nairobi').hour;
+
+        if (currentHour >= 5 && currentHour < 12) {
+          return 'Good morning 🌄';
+        } else if (currentHour >= 12 && currentHour < 18) {
+          return 'Good afternoon ☀️';
+        } else if (currentHour >= 18 && currentHour < 22) {
+          return 'Good evening 🌆';
+        } else {
+          return 'Good night 😴';
+        }
+      };
+
+      const getCurrentTimeInNairobi = () => {
+        return DateTime.now().setZone('Africa/Nairobi').toLocaleString(DateTime.TIME_SIMPLE);
+      };
+
+      let message = `Holla, ${getGreeting()},\n\n╭═══『𝐊𝐞𝐢𝐭𝐡 𝐌𝐝 𝐢𝐬 𝐜𝐨𝐧𝐧𝐞𝐜𝐭𝐞𝐝』══⊷ \n`;
+      message += `║ ʙᴏᴛ ɴᴀᴍᴇ ${botname}\n`;
+      message += `║ ᴍᴏᴅᴇ ${mode}\n`;
+      message += `║ ᴘʀᴇғɪx [  ${prefix} ]\n`;
+      message += `║ ᴛᴏᴛᴀʟ ᴘʟᴜɢɪɴs ${totalCommands}\n`;
+      message += '║ ᴛɪᴍᴇ ' + getCurrentTimeInNairobi() + '\n';
+      message += '║ ʟɪʙʀᴀʀʏ Baileys\n';
+      message += `╰═════════════════⊷`;
+
+      await client.sendMessage(client.user.id, { text: message });
     }
   });
 
@@ -281,7 +326,15 @@ async function startKeith() {
   };
 }
 
-module.exports = startKeith;
+app.use(express.static("public"));
 
-// Start Keith bot
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/index.html");
+});
+
+app.listen(port, () => console.log(`Server listening on port http://localhost:${port}`));
+
+// Authentication and Session Fix
 authenticateSession().then(() => startKeith());
+
+module.exports = startKeith;
