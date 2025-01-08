@@ -14,7 +14,7 @@ const {
 const P = require("pino");
 const fs = require("fs");
 const path = require("path");
-const { exec, spawn, execSync } = require("child_process");
+const { execSync } = require("child_process");
 const axios = require("axios");
 const chalk = require("chalk");
 const { File } = require("megajs");
@@ -27,10 +27,11 @@ const { DateTime } = require("luxon");
 const { commands, totalCommands } = require("./commandHandler");
 const groupEvents = require("./groupEvents.js");
 
+const store = makeInMemoryStore({ logger: P().child({ level: "silent", stream: "store" }) });
+
 // Session Authentication
 async function authenticateSession() {
-  const sessionPath = path.join(__dirname, 'session', 'creds.json');
-  if (!fs.existsSync(sessionPath)) {
+  if (!fs.existsSync(path.join(__dirname, 'session', 'creds.json'))) {
     if (!session) {
       return console.log('Please provide a session file to continue.');
     }
@@ -42,7 +43,7 @@ async function authenticateSession() {
       await new Promise((resolve, reject) => {
         filer.download((err, data) => {
           if (err) return reject(err);
-          fs.writeFile(sessionPath, data, () => {
+          fs.writeFile(path.join(__dirname, 'session', 'creds.json'), data, () => {
             console.log("SESSION DOWNLOADED COMPLETED ✅");
             resolve();
           });
@@ -54,7 +55,6 @@ async function authenticateSession() {
   }
 }
 
-// Start Keith Bot
 async function startKeith() {
   const { saveCreds, state } = await useMultiFileAuthState(path.join(__dirname, 'session'));
   const { version } = await fetchLatestBaileysVersion();
@@ -63,7 +63,12 @@ async function startKeith() {
     logger: P({ level: 'silent' }),
     printQRInTerminal: false,
     browser: Browsers.macOS("Firefox"),
+    shouldSyncHistoryMessage: true,
+    downloadHistory: true,
     syncFullHistory: true,
+    generateHighQualityLinkPreview: true,
+    markOnlineOnConnect: true,
+    keepAliveIntervalMs: 30000,
     auth: state,
     version,
     getMessage: async (key) => {
@@ -99,7 +104,7 @@ async function startKeith() {
     }
   });
 
-  // Auto-react to messages if enabled
+  // Auto react if enabled
   if (autoreact === 'true') {
     client.ev.on("messages.upsert", async (chatUpdate) => {
       try {
@@ -123,7 +128,7 @@ async function startKeith() {
     });
   }
 
-  // Auto-bio update
+  // Auto bio update
   if (autobio === 'true') {
     setInterval(() => {
       const date = new Date();
@@ -262,68 +267,12 @@ async function startKeith() {
         startKeith();
       }
     } else if (connection === "open") {
-      await client.groupAcceptInvite("KOvNtZbE3JC32oGAe6BQpp");
       console.log(`✅ Connection successful\nLoaded ${totalCommands} commands.\nBot is active.`);
-
-      const getGreeting = () => {
-        const currentHour = DateTime.now().setZone('Africa/Nairobi').hour;
-
-        if (currentHour >= 5 && currentHour < 12) {
-          return 'Good morning 🌄';
-        } else if (currentHour >= 12 && currentHour < 18) {
-          return 'Good afternoon ☀️';
-        } else if (currentHour >= 18 && currentHour < 22) {
-          return 'Good evening 🌆';
-        } else {
-          return 'Good night 😴';
-        }
-      };
-
-      const getCurrentTimeInNairobi = () => {
-        return DateTime.now().setZone('Africa/Nairobi').toLocaleString(DateTime.TIME_SIMPLE);
-      };
-
-      let message = `Holla, ${getGreeting()},\n\n╭═══『𝐊𝐞𝐢𝐭𝐡 𝐌𝐝 𝐢𝐬 𝐜𝐨𝐧𝐧𝐞𝐜𝐭𝐞𝐝』══⊷ \n`;
-      message += `║ ʙᴏᴛ ɴᴀᴍᴇ ${botname}\n`;
-      message += `║ ᴍᴏᴅᴇ ${mode}\n`;
-      message += `║ ᴘʀᴇғɪx [  ${prefix} ]\n`;
-      message += `║ ᴛᴏᴛᴀʟ ᴘʟᴜɢɪɴs ${totalCommands}\n`;
-      message += '║ ᴛɪᴍᴇ ' + getCurrentTimeInNairobi() + '\n';
-      message += '║ ʟɪʙʀᴀʀʏ Baileys\n';
-      message += `╰═════════════════⊷`;
-
-      await client.sendMessage(client.user.id, { text: message });
     }
   });
 
   client.ev.on("creds.update", saveCreds);
   client.sendText = (jid, text, quoted = "", options) => client.sendMessage(jid, { text: text, ...options }, { quoted });
-
-  client.downloadMediaMessage = async (message) => { 
-    let mime = (message.msg || message).mimetype || ''; 
-    let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0]; 
-    const stream = await downloadContentFromMessage(message, messageType); 
-    let buffer = Buffer.from([]); 
-    for await (const chunk of stream) { 
-      buffer = Buffer.concat([buffer, chunk]); 
-    } 
-    return buffer;
-  };
-
-  client.downloadAndSaveMediaMessage = async (message, filename, attachExtension = true) => { 
-    let quoted = message.msg ? message.msg : message; 
-    let mime = (message.msg || message).mimetype || ''; 
-    let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0]; 
-    const stream = await downloadContentFromMessage(quoted, messageType); 
-    let buffer = Buffer.from([]); 
-    for await (const chunk of stream) { 
-      buffer = Buffer.concat([buffer, chunk]); 
-    } 
-    let type = await FileType.fromBuffer(buffer); 
-    const trueFileName = attachExtension ? (filename + '.' + type.ext) : filename; 
-    await fs.writeFileSync(trueFileName, buffer); 
-    return trueFileName; 
-  };
 }
 
 app.use(express.static("public"));
@@ -336,5 +285,3 @@ app.listen(port, () => console.log(`Server listening on port http://localhost:${
 
 // Authentication and Session Fix
 authenticateSession().then(() => startKeith());
-
-module.exports = startKeith;
