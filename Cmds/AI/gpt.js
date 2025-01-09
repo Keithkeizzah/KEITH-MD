@@ -12,7 +12,7 @@ module.exports = async (context) => {
         const rawData = fs.readFileSync('store.json');
         conversationData = JSON.parse(rawData);
     } catch (err) {
-        // If file doesn't exist, create a new conversation array
+        
         console.log('No previous conversation found, starting new one.');
     }
 
