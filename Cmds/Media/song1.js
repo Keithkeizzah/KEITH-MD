@@ -1,7 +1,6 @@
 const axios = require("axios");
 const fg = require("api-dylux");
 const ytSearch = require("yt-search");
-const ffmpeg = require("fluent-ffmpeg");
 const fs = require("fs");
 const path = require("path");
 
@@ -17,7 +16,7 @@ async function downloadAudio(url) {
 
     return {
       status: true,
-      createdBy: "Keithkeizzah ",
+      createdBy: "Keithkeizzah",
       title: title,
       downloadLink: downloadLink
     };
@@ -25,79 +24,6 @@ async function downloadAudio(url) {
     console.error("Error fetching audio:", error);
     return null;
   }
-}
-
-async function downloadVideo(url, format) {
-  try {
-    if (!url || !format) {
-      throw new Error("URL and format parameters are required.");
-    }
-    
-    const formatValue = parseInt(format.replace('p', ''), 10);
-    const requestParams = {
-      button: 1,
-      start: 1,
-      end: 1,
-      format: formatValue,
-      url: url
-    };
-
-    const headers = {
-      Accept: "*/*",
-      "Accept-Encoding": "gzip, deflate, br",
-      "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
-      Origin: "https://loader.to",
-      Referer: "https://loader.to",
-      "Sec-Ch-Ua": "\"Not-A.Brand\";v=\"99\", \"Chromium\";v=\"124\"",
-      "Sec-Ch-Ua-Mobile": '?1',
-      "Sec-Ch-Ua-Platform": "\"Android\"",
-      "Sec-Fetch-Dest": "empty",
-      "Sec-Fetch-Mode": "cors",
-      "Sec-Fetch-Site": "cross-site",
-      "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
-    };
-
-    const response = await axios.get("https://ab.cococococ.com/ajax/download.php", {
-      params: requestParams,
-      headers: headers
-    });
-    
-    const fileId = response.data.id;
-
-    // Poll for progress until download is complete
-    async function checkDownloadProgress() {
-      const progressResponse = await axios.get("https://p.oceansaver.in/ajax/progress.php", {
-        params: { id: fileId },
-        headers: headers
-      });
-
-      const { progress, download_url, text } = progressResponse.data;
-
-      if (text === "Finished") {
-        return download_url;
-      } else {
-        // Wait for a second before checking progress again
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        return checkDownloadProgress();
-      }
-    }
-
-    return await checkDownloadProgress();
-  } catch (error) {
-    console.error("Error fetching video:", error);
-    return null;
-  }
-}
-
-async function resizeVideo(inputPath, outputPath) {
-  return new Promise((resolve, reject) => {
-    ffmpeg(inputPath)
-      .output(outputPath)
-      .size('320x180')  // Resize to 180p (320x180)
-      .on('end', () => resolve(outputPath))
-      .on('error', (err) => reject(err))
-      .run();
-  });
 }
 
 module.exports = async (messageDetails) => {
@@ -118,52 +44,31 @@ module.exports = async (messageDetails) => {
       const firstVideo = searchResults.videos[0];
       const videoUrl = firstVideo.url;
 
-      // Ask the user to choose the video format (e.g., 720p)
-      const format = '720p';  // You can dynamically choose the format, for example
+      // Download the audio
+      const audioData = await downloadAudio(videoUrl);
 
-      // Use the downloadVideo function to get the download URL
-      const downloadUrl = await downloadVideo(videoUrl, format);
+      // If the audio download URL is successfully retrieved
+      if (audioData && audioData.downloadLink) {
+        const inputPath = path.join(__dirname, 'downloaded_audio.mp3');
 
-      // If the download URL is successfully retrieved
-      if (downloadUrl) {
-        const inputPath = path.join(__dirname, 'downloaded_video.mp4');
-        const outputPath = path.join(__dirname, 'resized_video_180p.mp4');
-
-        // Download the video and save it locally
+        // Download the audio and save it locally
         const writer = fs.createWriteStream(inputPath);
-        const videoStream = axios.get(downloadUrl, { responseType: 'stream' }).data.pipe(writer);
+        const audioStream = axios.get(audioData.downloadLink, { responseType: 'stream' }).data.pipe(writer);
         
-        videoStream.on('finish', async () => {
-          // Resize the video to 180p
+        audioStream.on('finish', async () => {
           try {
-            await resizeVideo(inputPath, outputPath);
-
-            // Send the resized video to the user
-            await client.sendMessage(chatId, { audio: { url: outputPath }, 
-              mimetype: "audio/mp4",
-              contextInfo: {
-                externalAdReply: {
-                  title: firstVideo.title,
-                  body: firstVideo.title,
-                  mediaType: 1,
-                  sourceUrl: "https://whatsapp.com/channel/0029Vaan9TF9Bb62l8wpoD47",
-                  thumbnailUrl: firstVideo.thumbnail,
-                  renderLargerThumbnail: false,
-                  showAdAttribution: true
-                }
-              }
-            }, { quoted: message });
+            // Send the audio to the user
+            await client.sendMessage(chatId, { audio: { url: inputPath }, mimetype: "audio/mp3" }, { quoted: message });
           } catch (err) {
-            console.error("Error resizing video:", err);
-            message.reply("Failed to resize the video.");
+            console.error("Error sending audio:", err);
+            message.reply("Failed to send the audio.");
           } finally {
-            // Clean up the downloaded files
+            // Clean up the downloaded audio file
             fs.unlinkSync(inputPath);
-            fs.unlinkSync(outputPath);
           }
         });
       } else {
-        message.reply("Failed to retrieve download URL.");
+        message.reply("Failed to retrieve the audio download link.");
       }
     } else {
       message.reply("No video found for the specified query.");
