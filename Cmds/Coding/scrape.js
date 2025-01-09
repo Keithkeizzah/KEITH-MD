@@ -4,9 +4,9 @@ const ownerMiddleware = require('../../Middleware/ownerMiddleware');
 module.exports = async (context) => {
   const { 
     client, m, text, Owner, chatUpdate, store, isBotAdmin, isAdmin, IsGroup, 
-    participants, pushname, body, budy, totalCommands, args, mime, qmsg, msgDreaded, 
+    participants, pushname, body, budy, totalCommands, args, mime, qmsg, msgKeith, 
     botNumber, itsMe, packname, author, generateProfilePicture, groupMetadata, 
-    dreadedspeed, mycode, fetchJson, exec, getRandom, UploadFileUgu, TelegraPh, 
+    keithspeed, mycode, fetchJson, exec, getRandom, UploadFileUgu, TelegraPh, 
     prefix, cmd, botname, mode, gcpresence, antitag, antidelete, antionce, 
     fetchBuffer, uploadtoimgur, ytmp3, getGroupAdmins, Tag
   } = context;
