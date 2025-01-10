@@ -5,18 +5,18 @@ You don't have to set this if you deploy using heroku because you can simply set
 
 const session = process.env.SESSION || '';
 
-const prefix = process.env.PREFIX || '';
-const mycode = process.env.CODE || "254";
-const author = process.env.STICKER_AUTHOR || 'Keith';
-const packname = process.env.PACKNAME || 'keith';
-const dev = process.env.DEV || '254748387615';
+const prefix = process.env.PREFIX || '®';
+const mycode = process.env.CODE || "919366928699";
+const author = process.env.STICKER_AUTHOR || 'Baby monster 👻';
+const packname = process.env.PACKNAME || 'Baby monster 👻';
+const dev = process.env.DEV || '919366928699';
 const DevKeith = dev.split(",");
-const botname = process.env.BOTNAME || 'KEITH-MD';
+const botname = process.env.BOTNAME || 'Baby monster 👻';
 const mode = process.env.MODE || 'public';
 const gcpresence = process.env.GC_PRESENCE || 'false';
 const antionce = process.env.ANTIVIEWONCE || 'true';
 const sessionName = "session";
-const presence = process.env.WA_PRESENCE || 'online';
+const presence = process.env.WA_PRESENCE  | 'online';
 
 const antitag = process.env.ANTITAG || 'true';
 const api = process.env.API || 'true';
@@ -24,7 +24,7 @@ const appname = process.env.APPNAME || 'true';
 const antispam = process.env.ANTISPAM || 'true';
 const chatbot = process.env.CHAT_BOT || 'true';
 const antilink = process.env.ANTILINK || 'true';
-const autoreact = process.env.AUTOREACT || 'true';
+const autoreact = process.env.AUTOREACT || 'false';
 const antibot = process.env.ANTIBOT || 'true';
 const anticall = process.env.ANTICALL || 'true';
 const antibad = process.env.ANTI_BAD_WORD || 'true';
