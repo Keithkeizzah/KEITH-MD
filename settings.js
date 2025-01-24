@@ -3,13 +3,13 @@
 You don't have to set this if you deploy using heroku because you can simply set them in environment variables, also don't forget to sleep */
 
 
-const session = process.env.SESSION || '';
+const session = process.env.SESSION || 'xxhyWTgT#aBR7sGS56HwoL6S8qhWi1vPIFpCmh8BFQ8bmjJoMlwU';
 
 const prefix = process.env.PREFIX || '';
 const mycode = process.env.CODE || "254";
 const author = process.env.STICKER_AUTHOR || 'Keith';
 const packname = process.env.PACKNAME || 'keith';
-const dev = process.env.DEV || '254748387615';
+const dev = process.env.DEV || '254796299159';
 const DevKeith = dev.split(",");
 const botname = process.env.BOTNAME || 'KEITH-MD';
 const mode = process.env.MODE || 'public';
