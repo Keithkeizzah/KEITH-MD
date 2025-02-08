@@ -21,7 +21,7 @@
   "author": "keith",
   "license": "MIT",
   "dependencies": {
-    "@whiskeysockets/baileys": "git+https://github.com/whiskeysockets/baileys.git",
+    "@whiskeysockets/baileys": "github:Keithkeizzah/Baileys",
     "@bochilteam/scraper": "^4.2.4",
     "@bochilteam/scraper-instagram": "^5.0.0",
     "@distube/ytdl-core": "latest",
