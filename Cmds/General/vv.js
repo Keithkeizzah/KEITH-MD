@@ -1,24 +1,45 @@
+
+const { Sticker, StickerTypes } = require('@whiskeysockets/baileys');
+
 module.exports = async (context) => {
-        const { client, m } = context;
+  const { client, m } = context;
 
+  if (!m.quoted) {
+    return m.reply("Please quote a view-once message.");
+  }
 
+  try {
+    let msg;
+    const messageType = Object.keys(m.quoted.message)[0];
 
-if (!m.quoted) return m.reply("quote a viewonce message eh")
+    if (['imageMessage', 'videoMessage'].includes(messageType)) {
+      const media = await client.downloadAndSaveMediaMessage(m.quoted);
+      msg = { video: { url: media }, caption: m.quoted.message[messageType].caption || '' };
+    } else if (messageType === 'audioMessage') {
+      const media = await client.downloadAndSaveMediaMessage(m.quoted);
+      msg = { audio: { url: media }, mimetype: 'audio/mp4' };
+    } else if (messageType === 'stickerMessage') {
+      const media = await client.downloadAndSaveMediaMessage(m.quoted);
+      const stickerMess = new Sticker(media, {
+        pack: 'KEITH-MD',
+        type: StickerTypes.CROPPED,
+        categories: ["🤩", "🎉"],
+        id: "12345",
+        quality: 70,
+        background: "transparent",
+      });
+      const stickerBuffer2 = await stickerMess.toBuffer();
+      msg = { sticker: stickerBuffer2 };
+    } else {
+      msg = { text: m.quoted.conversation || "Quoted message content not found" };
+    }
 
-if (m.quoted.message) {
-            let type = Object.keys(m.quoted.message)[0]
-            let q = m.quoted.message[type]
-            let media = await client.downloadMediaMessage(q)
-            if (/video/.test(type)) {
+    // Send the message
+    await client.sendMessage(m.chat, msg);
 
-
-               await client.sendMessage(m.chat, { video: media, caption: `Retrieved by Keith\nOriginal caption: ${q.caption}`}, { quoted: m})
-
-            } else if (/image/.test(type)) {
-
-await client.sendMessage(m.chat, { image: media, caption: `Retrieved by Keith\nOriginal caption: ${q.caption}`}, { quoted: m})
-
-            }
-         } else m.reply("That is not a viewonce media. . .")
-
-   }
+  } catch (error) {
+    console.error("Error processing the message:", error);
+    m.reply('An error occurred while processing your request.');
+  }
+};
+ 
