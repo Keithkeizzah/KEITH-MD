@@ -1,34 +1,35 @@
 
-module.exports = async (context) => {
-  const { client, m } = context;
+module.exports = async (client, m) => {
+  const textL = m.text.toLowerCase();
+  const quotedMessage = m.msg?.contextInfo?.quotedMessage;
 
-  if (!m.quoted) {
-    return m.reply("Please quote a message.");
+  if (!quotedMessage || !textL || !m.quoted.chat) {
+    return m.reply("Please quote a status media to save.");
   }
 
   try {
-    let msg;
-    let type = Object.keys(m.quoted.message)[0];
-    let q = m.quoted.message[type];
-    let media = await client.downloadMediaMessage(m.quoted);
-
-    if (/video/.test(type)) {
-      msg = { video: media, caption: `Retrieved by Keith\nOriginal caption: ${q.caption || ''}` };
-    } else if (/image/.test(type)) {
-      msg = { image: media, caption: `Retrieved by Keith\nOriginal caption: ${q.caption || ''}` };
-    } else if (/audio/.test(type)) {
-      msg = { audio: media, mimetype: 'audio/mp4' };
-    } else if (/sticker/.test(type)) {
-      msg = { sticker: media };
-    } else if (/document/.test(type)) {
-      msg = { document: media, fileName: q.fileName };
-    } else {
-      msg = { text: q.conversation || "Quoted message content not found" };
+    if (quotedMessage.imageMessage) {
+      let imageCaption = quotedMessage.imageMessage.caption || "No caption provided.";
+      let imageUrl = await client.downloadMediaMessage(m.quoted);
+      await client.sendMessage(m.chat, { image: { url: imageUrl }, caption: `Retrieved by Keith\nOriginal caption: ${imageCaption}` }, { quoted: m });
     }
 
-    // Send the message
-    await client.sendMessage(m.chat, msg, { quoted: m });
+    if (quotedMessage.videoMessage) {
+      let videoCaption = quotedMessage.videoMessage.caption || "No caption provided.";
+      let videoUrl = await client.downloadMediaMessage(m.quoted);
+      await client.sendMessage(m.chat, { video: { url: videoUrl }, caption: `Retrieved by Keith\nOriginal caption: ${videoCaption}` }, { quoted: m });
+    }
 
+    if (quotedMessage.audioMessage) {
+      let audioUrl = await client.downloadMediaMessage(m.quoted);
+      await client.sendMessage(m.chat, { audio: { url: audioUrl }, mimetype: 'audio/mp4' }, { quoted: m });
+    }
+
+    if (quotedMessage.stickerMessage) {
+      let stickerUrl = await client.downloadMediaMessage(m.quoted);
+      await client.sendMessage(m.chat, { sticker: stickerUrl }, { quoted: m });
+    }
+    
   } catch (error) {
     console.error("Error processing the message:", error);
     m.reply('An error occurred while processing your request.');
