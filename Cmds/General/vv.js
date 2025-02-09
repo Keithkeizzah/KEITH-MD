@@ -1,38 +1,29 @@
 
-const { Sticker, StickerTypes } = require('@whiskeysockets/baileys');
-
 module.exports = async (context) => {
   const { client, m } = context;
 
   if (!m.quoted) {
-    return m.reply("Please quote a view-once message.");
+    return m.reply("Please quote a message.");
   }
 
   try {
     let msg;
-    const messageType = Object.keys(m.quoted.message)[0];
-    const quotedMessage = m.quoted.message[messageType];
-    const media = await client.downloadMediaMessage(m.quoted);
+    let type = Object.keys(m.quoted.message)[0];
+    let q = m.quoted.message[type];
+    let media = await client.downloadMediaMessage(m.quoted);
 
-    if (/video/.test(messageType)) {
-      msg = { video: media, caption: `Retrieved by Keith\nOriginal caption: ${quotedMessage.caption || ''}` };
-    } else if (/image/.test(messageType)) {
-      msg = { image: media, caption: `Retrieved by Keith\nOriginal caption: ${quotedMessage.caption || ''}` };
-    } else if (/audio/.test(messageType)) {
+    if (/video/.test(type)) {
+      msg = { video: media, caption: `Retrieved by Keith\nOriginal caption: ${q.caption || ''}` };
+    } else if (/image/.test(type)) {
+      msg = { image: media, caption: `Retrieved by Keith\nOriginal caption: ${q.caption || ''}` };
+    } else if (/audio/.test(type)) {
       msg = { audio: media, mimetype: 'audio/mp4' };
-    } else if (/sticker/.test(messageType)) {
-      const stickerMess = new Sticker(media, {
-        pack: 'KEITH-MD',
-        type: StickerTypes.CROPPED,
-        categories: ["🤩", "🎉"],
-        id: "12345",
-        quality: 70,
-        background: "transparent",
-      });
-      const stickerBuffer2 = await stickerMess.toBuffer();
-      msg = { sticker: stickerBuffer2 };
+    } else if (/sticker/.test(type)) {
+      msg = { sticker: media };
+    } else if (/document/.test(type)) {
+      msg = { document: media, fileName: q.fileName };
     } else {
-      msg = { text: m.quoted.conversation || "Quoted message content not found" };
+      msg = { text: q.conversation || "Quoted message content not found" };
     }
 
     // Send the message
@@ -42,4 +33,4 @@ module.exports = async (context) => {
     console.error("Error processing the message:", error);
     m.reply('An error occurred while processing your request.');
   }
-}; 
+};
