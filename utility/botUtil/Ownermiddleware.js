@@ -1,12 +1,14 @@
-
+const { sendReply } = require(__dirname + "/../../lib/context"); 
 
 const Ownermiddleware = async (context, next) => {
-    const { m, Owner } = context;
+    const { m, isOwner, client } = context;
 
-    if (!Owner) {
-        return m.reply("You need owner privileges to execute this command.");
+    
+    if (!isOwner) {
+        return sendReply(client, m, "You need owner privileges to execute this command."); 
     }
 
+    
     await next();
 };
 
