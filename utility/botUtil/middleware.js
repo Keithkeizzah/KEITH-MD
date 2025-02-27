@@ -1,19 +1,27 @@
 
+const { sendReply } = require(__dirname + "/../../lib/context");
+
 
 const middleware = async (context, next) => {
-    const { m, isBotAdmin, isAdmin } = context;
+    const { m, client, isAdmin, isBotAdmin } = context;
 
+  
     if (!m.isGroup) {
-        return m.reply("This command is meant for groups");
-    }
-    if (!isAdmin) {
-        return m.reply("You need admin privileges");
-    }
-    if (!isBotAdmin) {
-        return m.reply("I need admin privileges");
+        return sendReply(client, m, "This command is meant for groups");
     }
 
-    await next(); // Proceed to the next function (main handler)
+    
+    if (!isAdmin) {
+        return sendReply(client, m, "You need admin privileges to use this command");
+    }
+
+    
+    if (!isBotAdmin) {
+        return sendReply(client, m, "I need admin privileges to execute this command");
+    }
+
+   
+    await next();
 };
 
 module.exports = middleware;
