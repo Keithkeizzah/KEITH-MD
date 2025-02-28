@@ -29,7 +29,7 @@ module.exports = async (context) => {
       │✞ *Forks:* ${repoInfo.forks}
       │✞ *Release Date:* ${createdDate}
       │✞ *Last Update:* ${lastUpdateDate}
-      │✞ *Owner:* ${repoInfo.owner}
+      │✞ *Owner:* ${author}
       │✞ *Repository:* ${repoInfo.url}
       │✞ *Session:* https://keithmd.onrender.com
       ╰───────────────────
@@ -43,6 +43,7 @@ module.exports = async (context) => {
         externalAdReply: {
           title: botname,
           body: author,
+          thumbnailUrl: url,
           sourceUrl: gurl,
           mediaType: 1,
           renderLargerThumbnail: true
