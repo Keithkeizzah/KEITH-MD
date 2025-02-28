@@ -1,5 +1,5 @@
 module.exports = async (context) => {
-  const { client, m } = context;
+  const { client, m, botname, author, gurl, url } = context;
 
   try {
     // Fetch repository data from GitHub
@@ -22,8 +22,8 @@ module.exports = async (context) => {
 
     // Construct message caption
     const messageCaption = `
-      *Hello ,,,👋 This is 𝐊𝐄𝐈𝐓𝐇-𝐌𝐃*
-      The best bot in the universe developed by Kᴇɪᴛʜ Kᴇɪᴢᴢᴀʜ. Fork and give a star 🌟 to my repo
+      *Hello ,,,👋 This is ${botname}*
+      The best bot in the universe developed by ${author}. Fork and give a star 🌟 to my repo
       ╭───────────────────
       │✞ *Stars:* ${repoInfo.stars}
       │✞ *Forks:* ${repoInfo.forks}
@@ -41,9 +41,9 @@ module.exports = async (context) => {
       contextInfo: {
         mentionedJid: [m.sender], // Mention the sender
         externalAdReply: {
-          title: "🌟 𝐊𝐄𝐈𝐓𝐇-𝐌𝐃 ✨",
-          body: "𝐫𝐞𝐠𝐚𝐫𝐝𝐬 𝐊𝐞𝐢𝐭𝐡𝐤𝐞𝐢𝐳𝐳𝐚𝐡",
-          sourceUrl: "https://whatsapp.com/channel/0029Vaan9TF9Bb62l8wpoD47",
+          title: botname,
+          body: author,
+          sourceUrl: gurl,
           mediaType: 1,
           renderLargerThumbnail: true
         }
