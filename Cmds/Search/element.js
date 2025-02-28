@@ -1,38 +1,51 @@
 module.exports = async (context) => {
-    const { client, m, text } = context;
+    const { client, m, text, sendReply, botname, sendMediaMessage } = context;
 
     try {
-        // Check if an element name was provided
         if (!text) {
-            return m.reply('Provide an element name to get its details');
+            return await sendReply(client, m, '🔬 Please provide an element name.\nExample: *element sodium*\n\nType *elementlist* for all elements');
         }
 
-        // Fetch element data from the API
-        const response = await fetch(`https://api.popcat.xyz/periodic-table?element=${text}`);
+        const apiUrl = `https://api.popcat.xyz/periodic-table?element=${encodeURIComponent(text)}`;
+        const response = await fetch(apiUrl);
+        
+        if (!response.ok) throw new Error('Element not found');
         const data = await response.json();
-
-        // Check if the element exists
-        if (!data || !data.name) {
-            return m.reply('Element not found. type elementlist to check all periodic elements.');
+        
+        if (!data?.name) {
+            return await sendReply(client, m, '❌ Element not found. Type *elementlist* for the periodic table');
         }
 
-        // Extract element information
-        const name = data.name;
-        const symbol = data.symbol;
-        const atomicNumber = data.atomic_number;
-        const atomicMass = data.atomic_mass;
-        const period = data.period;
-        const phase = data.phase;
-        const summary = data.summary;
-        const imageUrl = data.image; // Assuming the image URL is in the response
+        const {
+            name, symbol, atomic_number,
+            atomic_mass, period, phase,
+            summary, image
+        } = data;
 
-        // Create the message
-        const message = `Here is Keith Md element.If you want to check on more elements type *elementlist* to get all periodic table for all elements.\n\n\n\n*KEITH-MD ELEMENT*\n\nname: ${name}\n\nSymbol: ${symbol}\n\nAtomic Number: ${atomicNumber}\n\nAtomic Mass: ${atomicMass}\n\nPeriod: ${period}\n\nPhase: ${phase}\n\nSummary: ${summary}`;
+        const elementInfo = `⚛️ ${botname} 𝗘𝗟𝗘𝗠𝗘𝗡𝗧 𝗗𝗔𝗧𝗔
 
-        // Send the message with the element's image
-        await client.sendMessage(m.chat, { image: { url: imageUrl }, caption: message }, { quoted: m });
+*Name:* ${name}
+*Symbol:* ${symbol}
+*Atomic Number:* ${atomic_number}
+*Atomic Mass:* ${atomic_mass}
+*Period:* ${period}
+*Phase:* ${phase}
+
+📝 *Summary:*
+${summary.trim()}
+
+🔎 Type *elementlist* for more elements`;
+
+        await sendMediaMessage(client, m, { 
+            image: { url: image }, 
+            caption: elementInfo 
+        });
 
     } catch (error) {
-        console.log("Error occurred:", error);
+        console.error('Element Module Error:', error);
+        const errorMessage = error.message.includes('not found') 
+            ? '🔍 Element not found. Check spelling or type *elementlist*'
+            : '⚠️ Error fetching element data. Please try again later.';
+        await sendReply(client, m, errorMessage);
     }
 };
