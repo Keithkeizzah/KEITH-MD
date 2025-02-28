@@ -1,10 +1,10 @@
 module.exports = async (context) => {
-    const { client, m, text } = context;
+    const { client, m, text, sendReply, sendMediaMessage } = context;
 
     try {
         // Check if the word was provided
         if (!text) {
-            return m.reply('Please provide a word.');
+            return sendReply(client, m, 'Please provide a word.');
         }
 
         // Set the word to query the API
@@ -15,7 +15,7 @@ module.exports = async (context) => {
 
         // Check if the response is ok
         if (!response.ok) {
-            return m.reply('Failed to fetch data. Please try again later.');
+            return sendReply(client, m, 'Failed to fetch data. Please try again later.');
         }
 
         // Parse the response JSON
@@ -42,10 +42,10 @@ module.exports = async (context) => {
 *MADE WITH ♥ KEITH-MD*`;
 
         // Send the message
-        await client.sendMessage(m.chat, { text: message }, { quoted: m });
+      await sendMediaMessage(client, m, {text: message});  
 
     } catch (error) {
         console.error("Error occurred:", error);
-        m.reply('An error occurred while fetching the data. Please try again later.\n' + error);
+        sendReply(client, m, 'An error occurred while fetching the data. Please try again later.\n' + error);
     }
 };
