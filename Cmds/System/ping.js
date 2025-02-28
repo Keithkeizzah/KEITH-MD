@@ -1,4 +1,4 @@
-const { botname } = require(__dirname + "/../../settings");
+
 const speed = require("performance-now");
 
 // Function to create a delay
@@ -24,7 +24,7 @@ async function loading(m, client) {
 
 // Main handler function
 module.exports = async (context) => {
-  const { client, m } = context;
+  const { client, m, botname, author } = context;
 
   try {
     // Calculate the ping speed
@@ -43,7 +43,7 @@ module.exports = async (context) => {
     };
 
     // Send ping message immediately
-    await client.sendMessage(m.chat, { text: `${pingSpeed.toFixed(4)} m/s..` }, { quoted: customContactMessage });
+    await client.sendMessage(m.chat, { text: `${botname} speed\n\n *${pingSpeed.toFixed(4)} m/s..*` }, { quoted: customContactMessage });
 
     // Show loading animation after sending the ping message
     await loading(m, client);
