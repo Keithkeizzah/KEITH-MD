@@ -1,9 +1,7 @@
 const Heroku = require('heroku-client');
-const herokuapi = process.env.API;
-const appname = process.env.APPNAME || 'heroku-app-nsmw';
 
 module.exports = async (context) => {
-  const { m, text } = context;
+  const { m, text, herokuapikey, herokuAppname } = context;
 
   const input = text.split('=');
   if (input.length !== 2) {
@@ -14,10 +12,10 @@ module.exports = async (context) => {
 
  
   const herok = new Heroku({
-    token: herokuapi,
+    token: herokuapikey,
   });
 
-  const baseURI = `/apps/${appname}/config-vars`;
+  const baseURI = `/apps/${herokuAppname}/config-vars`;
 
   try {
     
