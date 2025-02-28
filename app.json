@@ -109,6 +109,7 @@
     },
     "MODE": {
       "description": "Type private if you don't want other people to use the bot or public if you want everyone to access.",
+      "value": "public",
       "required": false
     }
   },
