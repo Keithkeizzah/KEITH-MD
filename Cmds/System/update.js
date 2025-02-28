@@ -1,44 +1,41 @@
-const Heroku = require('heroku-client');
-const herokuapi = process.env.API;
-const anticall = process.env.ANTICALL || 'heroku-app-nsmw';
+const axios = require("axios");
+const ownerMiddleware = require('../../Middleware/ownerMiddleware');
 
 module.exports = async (context) => {
-  const { m, text, prefix } = context;
+    await ownerMiddleware(context, async () => {
+        const { client, m, text, isOwner, herokuapikey, herokuAppname } = context;
 
-  // Split the input by spaces and check if it follows the correct format
-  const input = text.split(' ');
+        if (!herokuAppname || !herokuapikey) {
+            await m.reply("It looks like the Heroku app name or API key is not set. Please make sure you have set the `HEROKU_APP_NAME` and `HEROKU_API_KEY` environment variables.");
+            return;
+        }
 
-  // Check if the input length is correct and command is 'anticall'
-  if (input.length !== 2 || input[0].toLowerCase() !== 'anticall') {
-    return m.reply(`⚠️ Please use the correct format: ${prefix}anticall <true|false>\nFor example: ${prefix}anticall true`);
-  }
+        async function redeployApp() {
+            try {
+                const response = await axios.post(
+                    `https://api.heroku.com/apps/${herokuAppname}/builds`,
+                    {
+                        source_blob: {
+                            url: "https://github.com/Keithkeizzah/KEITH-MD/tarball/main",
+                        },
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${herokuapikey}`,
+                            Accept: "application/vnd.heroku+json; version=3",
+                        },
+                    }
+                );
 
-  const [command, value] = input;
+                await m.reply("Your bot is getting updated, wait 2 mins for the redeploy to finish! This will install the latest version of KEITH-MD.");
+                console.log("Build details:", response.data);
+            } catch (error) {
+                const errorMessage = error.response?.data || error.message;
+                await m.reply(`Failed to update and redeploy. Please check if you have set the Heroku API key and Heroku app name correctly.`);
+                console.error("Error triggering redeploy:", errorMessage);
+            }
+        }
 
-  // Ensure the value is either 'true' or 'false'
-  if (value !== 'true' && value !== 'false') {
-    return m.reply(`❌ The value must be either 'true' or 'false'.\nFor example: ${prefix}anticall true or ${prefix}anticall false`);
-  }
-
-  // Initialize Heroku client
-  const herok = new Heroku({
-    token: herokuapi,
-  });
-
-  const baseURI = `/apps/${anticall}/config-vars`;
-
-  try {
-    // Update the config variable with the value 'true' or 'false'
-    await herok.patch(baseURI, {
-      body: {
-        ANTICALL: value,  // Set the config variable
-      },
+        redeployApp();
     });
-
-    // Inform the user that the variable has been updated
-    await m.reply(`✅ The ANTICALL variable has been set to ${value} successfully.\nBot is restarting...`);
-  } catch (error) {
-    console.error('Error setting config variable:', error);
-    await m.reply(`❌ There was an error setting the ANTICALL variable. Please try again later.\nError: ${error.message}`);
-  }
 };
