@@ -1,13 +1,18 @@
 module.exports = async (context) => {
-    const { client, m, sendReply, sendMediaMessage} = context;
+    const { client, m, sendReply, sendMediaMessage } = context;
 
-    // Fetch a random dare from the new API
-    const response = await fetch('https://shizoapi.onrender.com/api/texts/dare?apikey=shizo');
-    const data = await response.json();
+    try {
+        const response = await fetch('https://shizoapi.onrender.com/api/texts/dare?apikey=shizo');
+        if (!response.ok) throw new Error('API request failed');
+        
+        const data = await response.json();
+        if (!data?.dare) throw new Error('Invalid dare response');
 
-    // Extract the dare text from the response
-    const { dare } = data;
+        
+        await sendReply(client, m, `💥 *DARE OF THE DAY*\n\n${data.dare}`);
 
-    // Send the dare text as a message
-    await sendMediaMessage(client, m, {text: dare});
+    } catch (error) {
+        console.error('Dare Module Error:', error);
+        await sendReply(client, m, '❌ Failed to fetch dare. Please try again later.');
+    }
 };
