@@ -1,5 +1,5 @@
 module.exports = async (context) => {
-  const { client, m, botname, author, sendReply, sendMediaMessage } = context;
+  const { client, m, botname, author, url, sendReply, sendMediaMessage } = context;
 
   const messageCaption = `
  ${botname} 𝐄𝐋𝐄𝐌𝐄𝐍𝐓 𝐋𝐈𝐒𝐓
@@ -129,7 +129,7 @@ module.exports = async (context) => {
   try {
     await sendMediaMessage(client, m, {
       image: { 
-        url: "https://files.catbox.moe/yldsxj.jpg" 
+        url: url 
       },
       caption: messageCaption
     });
