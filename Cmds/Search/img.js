@@ -1,37 +1,38 @@
-var gis = require('g-i-s');
+const { promisify } = require('util');
+const gis = promisify(require('g-i-s'));
 
 module.exports = async (context) => {
-    const { client, m, text, botname } = context;
-
-    if (!text) return m.reply("Provide a text");
+    const { client, m, text, botname, sendReply, sendMediaMessage } = context;
 
     try {
-        // Use the 'text' as the search term for images
-        gis(text, async (error, results) => {
-            if (error) {
-                return m.reply("An error occurred while searching for images.\n" + error);
-            }
+        if (!text) {
+            return await sendReply(client, m, `📸 Please provide a search term\nExample: *image sunset*`);
+        }
 
-            // Check if results are found
-            if (results.length === 0) {
-                return m.reply("No images found.");
-            }
+        const results = await gis(text);
+        if (!results || results.length === 0) {
+            return await sendReply(client, m, '🔍 No images found for your search');
+        }
 
-            // Limit the number of images to send (e.g., 5)
-            const numberOfImages = Math.min(results.length, 5);
-            const imageUrls = results.slice(0, numberOfImages).map(result => result.url);
+        const maxImages = 5;
+        const imageUrls = results
+            .slice(0, maxImages)
+            .map(result => result.url)
+            .filter(url => url);
 
-            // Send the images
-            const messages = imageUrls.map(url => ({
+        if (imageUrls.length === 0) {
+            return await sendReply(client, m, '⚠️ Found images but failed to extract valid URLs');
+        }
+
+        for (const url of imageUrls) {
+            await sendMediaMessage(client, m, {
                 image: { url },
-                caption: `Downloaded by ${botname}`
-            }));
+                caption: `🌄 Image search result\n🔍 Query: ${text}\n🤖 Powered by ${botname}`
+            });
+        }
 
-            for (const message of messages) {
-                await client.sendMessage(m.chat, message, { quoted: m });
-            }
-        });
-    } catch (e) {
-        m.reply("An error occurred.\n" + e);
+    } catch (error) {
+        console.error('Image Search Error:', error);
+        await sendReply(client, m, `❌ Error fetching images: ${error.message}`);
     }
 };
