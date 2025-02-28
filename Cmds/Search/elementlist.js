@@ -126,19 +126,18 @@ module.exports = async (context) => {
 
 *Regards ${author}*
   `;
+  await sendMediaMessage(client, m, {
+            image: { 
+                url: "https://files.catbox.moe/yldsxj.jpg" 
+            },
+            caption: messageCaption
+        });
 
-  // Prepare the image URL
-  const image = {
-    url: "https://files.catbox.moe/yldsxj.jpg"
-  };
-
-  // Prepare the message object
-  const message = {
-    image: image,
-    caption: messageCaption
-  };
-
-  // Send the message
-await sendMediaMessage(client, m, {text: message});
+    } catch (error) {
+        console.error('Element List Error:', error);
+        await sendReply(client, m, '❌ Failed to send element list. Please try again later.');
+    }
 };
 
+  // Prepare the image URL
+  
