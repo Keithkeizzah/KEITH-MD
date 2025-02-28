@@ -1,5 +1,5 @@
 module.exports = async (context) => {
-    const { client, m, text, sendReply, sendMediaMessage } = context;
+    const { client, m, text, sendReply, botname, sendMediaMessage } = context;
 
     try {
         if (!text) {
@@ -15,7 +15,7 @@ module.exports = async (context) => {
         const data = await response.json();
         if (!data?.reference) throw new Error('Invalid scripture reference');
 
-        const bibleText = `📖 𝗞𝗘𝗜𝗧𝗛 𝗠𝗗 𝗕𝗜𝗕𝗟𝗘\n
+        const bibleText = `📖 ${botname} 𝗠𝗗 𝗕𝗜𝗕𝗟𝗘\n
 *Reference:* ${data.reference}
 *Verses:* ${data.verses.length}
 *Translation:* ${data.translation_name}
