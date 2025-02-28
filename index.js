@@ -352,9 +352,9 @@ async function startKeith() {
         return "Good night 😴";
       };
 
-      const message = `Holla, ${getGreeting()},\n\n╭═══『𝐊𝐞𝐢𝐭𝐡 𝐌𝐝 𝐢𝐬 𝐜𝐨𝐧𝐧𝐞𝐜𝐭𝐞𝐝』══⊷ \n` +
-        `║ ʙᴏᴛ ɴᴀᴍᴇ ${botname}\n` +
-        `║ �ᴍᴏᴅᴇ ${mode}\n` +
+      const message = `Holla, ${getGreeting()},\n\n╭═══『 ${botname} 𝐢𝐬 𝐜𝐨𝐧𝐧𝐞𝐜𝐭𝐞𝐝』══⊷ \n` +
+        `║ ʙᴏᴛ ᴏᴡɴᴇʀ ${author}\n` +
+        `║ ᴍᴏᴅᴇ ${mode}\n` +
         `║ ᴘʀᴇғɪx [  ${prefix} ]\n` +
         `║ ᴛᴏᴛᴀʟ ᴘʟᴜɢɪɴs ${totalCommands}\n` +
         `║ ᴛɪᴍᴇ ${DateTime.now().setZone("Africa/Nairobi").toLocaleString(DateTime.TIME_SIMPLE)}\n` +
