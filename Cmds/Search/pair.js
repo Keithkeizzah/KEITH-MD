@@ -12,7 +12,7 @@ module.exports = async (messageContext) => {
     const response = await fetch(`https://keithmd-l4qc.onrender.com/code?number=${encodedPhoneNumber}`);
 
     if (!response.ok) {
-      return sendReply(client, message, "Error fetching data from the API. Please try again later.");
+      return sendReply(client, message, "Error fetching data from the API.Please try again later.");
     }
 
     const data = await response.json();
