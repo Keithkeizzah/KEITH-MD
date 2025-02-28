@@ -29,7 +29,7 @@
     "@mrnima/facebook-downloader": "1.0.0",
     "@mrnima/tiktok-downloader": "1.0.0",
     "@shineiichijo/marika": "^3.0.0",
-    "@whiskeysockets/baileys": "npm:@fizzxydev/baileys-pro@8.6.8",
+    "@whiskeysockets/baileys": "github:Keithkeizzah/BaileysV2",
     "acrcloud": "^1.4.0",
     "aptoide-scraper": "^1.0.1",
     "awesome-phonenumber": "^2.64.0",
