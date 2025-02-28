@@ -1,9 +1,9 @@
 module.exports = async (context) => {
-  const { client, m, sendReply, sendMediaMessage } = context;
+  const { client, m, sendReply, author, botname, sendMediaMessage } = context;
 
 
   const messageCaption = `
- 𝐊𝐄𝐈𝐓𝐇-𝐌𝐃 𝐁𝐈𝐁𝐋𝐄 𝐁𝐎𝐎𝐊 𝐋𝐈𝐒𝐓
+ ${botname} 𝐁𝐈𝐁𝐋𝐄 𝐁𝐎𝐎𝐊 𝐋𝐈𝐒𝐓
 
 Old Testament:
 1. Genesis
@@ -75,7 +75,7 @@ New Testament:
 26. Jude
 27. Revelation
 
-*Regards keithkeizzah*
+*Regards ${author}*
   `;
 
   // Prepare the image URL
