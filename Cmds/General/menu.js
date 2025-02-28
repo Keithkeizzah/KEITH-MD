@@ -148,7 +148,7 @@ module.exports = async (context) => {
                         title: botname,
                         body: author,
                         thumbnailUrl: url,
-                        sourceUrl: url,
+                        sourceUrl: gurl,
                         mediaType: 1,
                         renderLargerThumbnail: true
                     }
