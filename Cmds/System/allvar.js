@@ -1,15 +1,13 @@
 const Heroku = require('heroku-client');
-const herokuapi = process.env.API;
-const appname = process.env.APPNAME || 'heroku-app-nsmw';
 
 module.exports = async (context) => {
-  const { m } = context;
+  const { m, herokuapikey, herokuAppname } = context;
 
   const heroku = new Heroku({
-    token: herokuapi,
+    token: herokuapikey,
   });
 
-  const baseURI = `/apps/${appname}/config-vars`;
+  const baseURI = `/apps/${herokuAppname}/config-vars`;
 
   try {
     // Fetch config vars from Heroku API
