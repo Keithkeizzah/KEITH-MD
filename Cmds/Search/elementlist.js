@@ -1,7 +1,6 @@
 module.exports = async (context) => {
   const { client, m, botname, author, sendReply, sendMediaMessage } = context;
 
-
   const messageCaption = `
  ${botname} 𝐄𝐋𝐄𝐌𝐄𝐍𝐓 𝐋𝐈𝐒𝐓
 
@@ -126,18 +125,16 @@ module.exports = async (context) => {
 
 *Regards ${author}*
   `;
-  await sendMediaMessage(client, m, {
-            image: { 
-                url: "https://files.catbox.moe/yldsxj.jpg" 
-            },
-            caption: messageCaption
-        });
 
-    } catch (error) {
-        console.error('Element List Error:', error);
-        await sendReply(client, m, '❌ Failed to send element list. Please try again later.');
-    }
+  try {
+    await sendMediaMessage(client, m, {
+      image: { 
+        url: "https://files.catbox.moe/yldsxj.jpg" 
+      },
+      caption: messageCaption
+    });
+  } catch (error) {
+    console.error('Element List Error:', error);
+    await sendReply(client, m, '❌ Failed to send element list. Please try again later.');
+  }
 };
-
-  // Prepare the image URL
-  
