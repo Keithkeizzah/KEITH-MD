@@ -35,7 +35,7 @@ const daddy = "254748387615@s.whatsapp.net";
 
 const {
   autoview, autoread, botname, autobio, mode, anticallmsg, reactemoji, prefix, presence,
-  mycode, author, antibad, packname, anticall, dev, antilink, gcpresence, antionce, antitag, antidelete, autolike,
+  mycode, author, antibad, packname, herokuapi, herokuapikey, anticall, dev, antilink, gcpresence, antionce, antitag, antidelete, autolike,
 } = require("./settings");
 
 const groupEvents = require("./groupEvents.js");
@@ -281,7 +281,7 @@ async function startKeith() {
       if (command) {
         const commandObj = commands[command];
         if (commandObj) {
-          await commandObj.execute({ client, m, text, totalCommands, prefix, groupAdmin, getGroupAdmins, args, groupName, groupMetadata, participants, isOwner, pushname, botNumber, itsMe, store, isAdmin, isBotAdmin });
+          await commandObj.execute({ client, m, text, totalCommands, botname, prefix, groupAdmin, getGroupAdmins, args, groupName, groupMetadata, herokuapi, herokuapikey, participants, isOwner, pushname, botNumber, itsMe, store, isAdmin, isBotAdmin });
         }
       }
     } catch (err) {
