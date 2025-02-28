@@ -1,9 +1,9 @@
 module.exports = async (context) => {
-  const { client, m } = context;
+  const { client, m, botname, author, sendReply, sendMediaMessage } = context;
 
 
   const messageCaption = `
- 𝐊𝐄𝐈𝐓𝐇-𝐌𝐃 𝐄𝐋𝐄𝐌𝐄𝐍𝐓 𝐋𝐈𝐒𝐓
+ ${botname} 𝐄𝐋𝐄𝐌𝐄𝐍𝐓 𝐋𝐈𝐒𝐓
 
 1. Hydrogen (H)
 2. Helium (He)
@@ -124,7 +124,7 @@ module.exports = async (context) => {
 117. Tennessine (Ts)
 118. Oganesson (Og)
 
-*Regards keithkeizzah*
+*Regards ${author}*
   `;
 
   // Prepare the image URL
@@ -139,6 +139,6 @@ module.exports = async (context) => {
   };
 
   // Send the message
-  await client.sendMessage(m.chat, message, { quoted: m });
+await sendMediaMessage(client, m, {text: message});
 };
 
