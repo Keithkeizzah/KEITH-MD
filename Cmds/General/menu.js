@@ -2,7 +2,7 @@ const { DateTime } = require('luxon');
 const fs = require('fs');
 
 module.exports = async (context) => {
-    const { client, m, totalCommands, mode, botname, prefix } = context;
+    const { client, m, totalCommands, mode, botname, prefix, url, gurl, author } = context;
 
     try {
         const categories = [
@@ -145,10 +145,10 @@ module.exports = async (context) => {
                 contextInfo: {
                     mentionedJid: [m.sender], // Mention the sender
                     externalAdReply: {
-                        title: "🌟 𝐊𝐄𝐈𝐓𝐇-𝐌𝐃 ✨",
-                        body: "𝐫𝐞𝐠𝐚𝐫𝐝𝐬 𝐊𝐞𝐢𝐭𝐡𝐤𝐞𝐢𝐳𝐳𝐚𝐡",
-                        thumbnailUrl: "https://i.imgur.com/v9gJCSD.jpeg",
-                        sourceUrl: "https://whatsapp.com/channel/0029Vaan9TF9Bb62l8wpoD47",
+                        title: botname,
+                        body: author,
+                        thumbnailUrl: url,
+                        sourceUrl: url,
                         mediaType: 1,
                         renderLargerThumbnail: true
                     }
