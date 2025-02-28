@@ -1,10 +1,10 @@
 module.exports = async (context) => {
-    const { client, m, text } = context;
+    const { client, m, text, sendReply, sendMediaMessage } = context;
 
     try {
         // Check if the book name was provided
         if (!text) {
-            return m.reply('Please specify the book, chapter, and verse you want to read. Example: bible john 3:16');
+            return sendReply(client, message, 'Please specify the book, chapter, and verse you want to read. Example: bible john 3:16');
         }
 
         // Set the reference for the API call
@@ -16,7 +16,7 @@ module.exports = async (context) => {
 
         // Check if the data is valid
         if (!data || !data.reference) {
-            return m.reply('Invalid reference. Example: bible john 3:16.');
+            return sendReply(client, message, 'Invalid reference. Example: bible john 3:16.');
         }
 
         // Extract element information
@@ -25,13 +25,13 @@ module.exports = async (context) => {
         const language = data.translation_name;
 
         // Create the message
-        const message = `𝗞𝗘𝗜𝗧𝗛 𝗠𝗗 𝗕𝗜𝗕𝗟𝗘\n\nWe are reading: ${data.reference}\n\nNumber of verses: ${verses}\n\nNow Read: ${contentText}\n\nTranslation: ${language}`;
+        const message1 = `𝗞𝗘𝗜𝗧𝗛 𝗠𝗗 𝗕𝗜𝗕𝗟𝗘\n\nWe are reading: ${data.reference}\n\nNumber of verses: ${verses}\n\nNow Read: ${contentText}\n\nTranslation: ${language}`;
 
         // Send the message
-        await client.sendMessage(m.chat, { text: message }, { quoted: m });
+        await sendMediaMessage(client, message, message1);
 
     } catch (error) {
         console.error("Error occurred:", error);
-        m.reply('An error occurred while fetching the data. Please try again later.');
+        sendReply(client, message, 'An error occurred while fetching the data. Please try again later.');
     }
 };
