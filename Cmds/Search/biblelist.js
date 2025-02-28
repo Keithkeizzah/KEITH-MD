@@ -1,5 +1,5 @@
 module.exports = async (context) => {
-  const { client, m } = context;
+  const { client, m, sendReply, sendMediaMessage } = context;
 
 
   const messageCaption = `
@@ -88,7 +88,5 @@ New Testament:
     image: image,
     caption: messageCaption
   };
-
-  // Send the message
-  await client.sendMessage(m.chat, message, { quoted: m });
+await sendMediaMessage(client, m, {text: messageCaption});
 };
