@@ -31,6 +31,7 @@
     "@shineiichijo/marika": "^3.0.0",
     "@whiskeysockets/baileys": "github:Keithkeizzah/BaileysV2",
     "acrcloud": "^1.4.0",
+    "api-dylux" : "^1.8.5",
     "aptoide-scraper": "^1.0.1",
     "awesome-phonenumber": "^2.64.0",
     "axios": "^1.3.6",
