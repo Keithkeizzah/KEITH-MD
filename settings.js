@@ -38,7 +38,6 @@ module.exports = {
   autoread,
   botname,
   reactemoji,
-  antispam,
   autobio,
   antilink: groupControl,  // Use groupControl for antilink
   antibad: groupControl,   // Use groupControl for antibad
