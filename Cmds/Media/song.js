@@ -33,11 +33,11 @@ module.exports = async (context) => {
           await sendMediaMessage(client, m, {
             image: { url: songData.thumbnail },
             caption: `
-            ╭═════════════════⊷
-            ║ *Title*: *${songData.title}*
-            ║ *Artist*: *${songData.artist}*
-            ║ *Url*: *${songData.videoUrl}*
-            ╰═════════════════⊷
+      ╭═════════════════⊷
+      ║ *Title*: *${songData.title}*
+      ║ *Artist*: *${songData.artist}*
+      ║ *Url*: *${songData.videoUrl}*
+      ╰═════════════════⊷
             > downloaded by ${botname}`
           }, { quoted: m });
 
@@ -45,7 +45,7 @@ module.exports = async (context) => {
             m.chat,
             {
               audio: { url: videoUrl },
-              mimetype: "audio/mp3",
+              mimetype: "audio/mp4",
              
             },
             { quoted: m }
