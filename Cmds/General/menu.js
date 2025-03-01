@@ -84,11 +84,9 @@ module.exports = async (context) => {
             menuText += ' ╰──────────────┈⊷ \n';
         }
 
-        // Fixed: Validate URL and provide fallback
-        const imageUrl = url || 'https://example.com/default-image.jpg'; // Replace with actual default URL
-
+        
         await sendMediaMessage(client, m, { 
-            image: imageUrl,
+            image: { url },
             caption: menuText,
             contextInfo: {
                 mentionedJid: [m.sender],
