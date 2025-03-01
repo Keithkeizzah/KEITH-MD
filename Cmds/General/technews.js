@@ -1,5 +1,5 @@
 module.exports = async (context) => {
-    const { client, m, text } = context;
+    const { client, m, text, sendReply, sendMediaMessage } = context;
 
 
 
@@ -8,7 +8,7 @@ module.exports = async (context) => {
 
     const { thumbnail, news } = data;
 
-        await client.sendMessage(m.chat, { image: { url: thumbnail }, caption: news }, { quoted: m });
+        await sendMediaMessage(client, m, { image: { url: thumbnail }, caption: news }, { quoted: m });
 
 
 }
