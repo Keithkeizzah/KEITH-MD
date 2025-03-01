@@ -1,44 +1,34 @@
+const getFBInfo = require("@xaviabot/fb-downloader");
+
 module.exports = async (context) => {
-    const { client, m, text, botname, fetchJson } = context;
-
-    if (!text) {
-        return m.reply("Provide a facebook link for the video");
-    }
-
-    if (!text.includes("facebook.com")) {
-        return m.reply("That is not a facebook link.");
-    }
+    const { client, m, text, botname, sendReply, sendMediaMessage } = context;
 
     try {
-                let data = await fetchJson(`https://api.dreaded.site/api/facebook?url=${text}`);
+        // Validate input
+        if (!text) return await sendReply(client, m, '📘 Please provide a Facebook URL\nExample: *fb https://fb.watch/...*');
+        
+        const fbUrl = text.match(/(https?:\/\/)?(www\.)?(facebook\.com|fb\.watch)\/[^\s]+/i)?.[0];
+        if (!fbUrl) return await sendReply(client, m, '❌ Invalid Facebook URL');
 
+        // Fetch Facebook video info
+        const result = await getFBInfo(fbUrl);
+        if (!result?.hd) throw new Error('No downloadable video found');
 
-        if (!data || data.status !== 200 || !data.facebook || !data.facebook.sdVideo) {
-            return m.reply("We are sorry but the API endpoint didn't respond correctly. Try again later.");
-        }
+        // Build caption
+        const caption = `📹 *Facebook Video* - ${botname}\n\n` +
+                        `📌 *Title:* ${result.title || 'Untitled'}\n` +
+                        `🔗 *Original URL:* ${result.url}\n\n` +
+                        `_Powered by Facebook Downloader_`;
 
+        // Send HD video
+        await sendMediaMessage(client, m, {
+            video: { url: result.hd },
+            caption: caption,
+            gifPlayback: false
+        });
 
-
-
-        const fbvid = data.facebook.sdVideo;
-        const title = data.facebook.title;
-
-
-        if (!fbvid) {
-            return m.reply("Invalid facebook data. Please ensure the video exists.");
-        }
-
-        await client.sendMessage(
-            m.chat,
-            {
-                video: { url: fbvid },
-                caption: `${title}\n\nDownloaded by ${botname}`,
-                gifPlayback: false,
-            },
-            { quoted: m }
-        );
-    } catch (e) {
-        console.error("Error occurred:", e);
-        m.reply("An error occurred. API might be down. Error: " + e.message);
+    } catch (error) {
+        console.error('Facebook Download Error:', error);
+        await sendReply(client, m, `❌ Failed to download Facebook video: ${error.message}`);
     }
 };
