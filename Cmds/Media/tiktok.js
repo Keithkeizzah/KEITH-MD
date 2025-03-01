@@ -27,7 +27,6 @@ module.exports = async (context) => {
           if (videoUrl) {
             await client.sendMessage(m.chat, { 
               video: { url: videoUrl }, 
-              caption: `Downloaded by ${botname}\nTitle: ${data.data?.title || data.tiktok?.description}\nAuthor: ${data.data?.author?.nickname || data.tiktok?.author?.nickname}`, 
               gifPlayback: false 
             }, { quoted: m });
             return;
