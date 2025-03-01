@@ -2,7 +2,7 @@ const { DateTime } = require('luxon');
 const fs = require('fs');
 
 module.exports = async (context) => {
-    const { client, m, totalCommands, mode, botname, prefix, url, sendReply, sendMediaMessage, gurl, author } = context;
+    const { client, m, totalCommands, mode, botname, prefix, url, sendReply, sendMediaMessage, author } = context;
 
     try {
         const categories = [
@@ -138,21 +138,14 @@ module.exports = async (context) => {
             menuText += ' ╰──────────────┈⊷ \n';
         }
 
-        // Send the generated menu to the user
+        // Send the generated menu to the user with the thumbnail image
         try {
             await sendMediaMessage(client, m, {
                 text: menuText,
                 contextInfo: {
                     mentionedJid: [m.sender], // Mention the sender
-                    externalAdReply: {
-                        title: botname,
-                        body: author,
-                        thumbnailUrl: url,
-                        sourceUrl: gurl,
-                        mediaType: 1,
-                        renderLargerThumbnail: true
-                    }
-                }
+                },
+                thumbnail: url // Thumbnail is passed here
             });
         } catch (error) {
             console.error("Error sending message:", error);
