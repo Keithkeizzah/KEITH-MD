@@ -1,156 +1,115 @@
 const { DateTime } = require('luxon');
-const fs = require('fs');
+const fs = require('fs').promises;
 
 module.exports = async (context) => {
-    const { client, m, totalCommands, mode, botname, prefix, url, sendReply, sendMediaMessage, gurl, author } = context;
+    const { 
+        client, m, totalCommands, mode, botname, 
+        prefix, url, sendReply, sendMediaMessage, author 
+    } = context;
 
     try {
-        const categories = [
-            { name: 'AI', emoji: '」' },
-            { name: 'General', emoji: '」' },
-            { name: 'Media', emoji: '」' },
-            { name: 'Search', emoji: '」' },
-            { name: 'Editting', emoji: '」' },
-            { name: 'Groups', emoji: '」' },
-            { name: 'Fun', emoji: '」' },
-            { name: 'Owner', emoji: '」' },
-            { name: 'Coding', emoji: '」' },
-            { name: 'Stalk', emoji: '」' }
+        // Configuration
+        const CATEGORIES = [
+            { name: 'AI', emoji: '🤖' },
+            { name: 'General', emoji: '⚙️' },
+            { name: 'Media', emoji: '🎵' },
+            { name: 'Search', emoji: '🔍' },
+            { name: 'Editing', emoji: '✏️' },
+            { name: 'Groups', emoji: '👥' },
+            { name: 'Fun', emoji: '🎮' },
+            { name: 'Owner', emoji: '👑' },
+            { name: 'Coding', emoji: '💻' },
+            { name: 'Stalk', emoji: '👀' }
         ];
 
-        // Inspirational quotes array
-        const quotes = [
-            "Dream big, work hard.",
-            "Stay humble, hustle hard.",
-            "Believe in yourself.",
-            "Success is earned, not given.",
-            "Actions speak louder than words.",
-            "The best is yet to come.",
-            "Keep pushing forward.",
-            "Do more than just exist.",
-            "Progress, not perfection.",
-            "Stay positive, work hard.",
-            "Be the change you seek.",
-            "Never stop learning.",
-            "Chase your dreams.",
-            "Be your own hero.",
-            "Life is what you make of it.",
-            "Do it with passion or not at all.",
-            "You are stronger than you think.",
-            "Create your own path.",
-            "Make today count.",
-            "Embrace the journey.",
-            "The best way out is always through.",
-            "Strive for progress, not perfection.",
-            "Don't wish for it, work for it.",
-            "Live, laugh, love.",
-            "Keep going, you're getting there.",
-            "Don’t stop until you’re proud.",
-            "Success is a journey, not a destination.",
-            "Take the risk or lose the chance.",
-            "It’s never too late.",
-            "Believe you can and you're halfway there.",
-            "Small steps lead to big changes.",
-            "Happiness depends on ourselves.",
-            "Take chances, make mistakes.",
-            "Be a voice, not an echo.",
-            "The sky is the limit.",
-            "You miss 100% of the shots you don’t take.",
-            "Start where you are, use what you have.",
-            "The future belongs to those who believe.",
-            "Don’t count the days, make the days count.",
-            "Success is not the key to happiness. Happiness is the key to success."
-        ];
-
-        // Get greeting based on the time of day
+        // Helper functions
         const getGreeting = () => {
             const currentHour = DateTime.now().setZone('Africa/Nairobi').hour;
-            if (currentHour >= 5 && currentHour < 12) return 'Hello,,Good morning 🌅';
-            if (currentHour >= 12 && currentHour < 18) return 'Good afternoon ☀️';
-            if (currentHour >= 18 && currentHour < 22) return 'Good evening 🌆';
-            return 'Good night and have wonderful dreams 😴';
+            return currentHour >= 5 && currentHour < 12 ? '🌅 Good Morning' :
+                   currentHour >= 12 && currentHour < 18 ? '☀️ Good Afternoon' :
+                   currentHour >= 18 && currentHour < 22 ? '🌆 Good Evening' : 
+                   '🌙 Good Night';
         };
 
-        // Get current time in Nairobi
-        const getCurrentTimeInNairobi = () => {
-            return DateTime.now().setZone('Africa/Nairobi').toLocaleString(DateTime.TIME_SIMPLE);
+        const getCurrentTime = () => 
+            DateTime.now().setZone('Africa/Nairobi').toLocaleString(DateTime.TIME_SIMPLE);
+
+        const generateMenuHeader = () => {
+            return `╭─── ✦ ${botname} ✦ ────⊷\n` +
+                   `│ ➤ User: ${m.pushName || 'Guest'}\n` +
+                   `│ ➤ Commands: ${totalCommands}\n` +
+                   `│ ➤ Time: ${getCurrentTime()}\n` +
+                   `│ ➤ Prefix: [ ${prefix} ]\n` +
+                   `│ ➤ Mode: ${mode}\n` +
+                   `╰────────────────────⊷\n\n`;
         };
 
-        // Function to get random quote
-        const getRandomQuote = () => {
-            const randomIndex = Math.floor(Math.random() * quotes.length);
-            return quotes[randomIndex];
-        };
-
-        let menuText = `*╰►Hey, ${getGreeting()}, ${m.pushName}*\n\n`;
-
-        // Add random quote
-        menuText += `✨ *Inspiration*: *${getRandomQuote()}*  ✨\n\n`;
-
-        // General information about the bot and user
-        menuText += `╭━━━  ⟮  ${botname} ⟯━━━━━━┈⊷\n`;
-        menuText += `┃✵╭──────────────\n`; 
-        menuText += `┃✵│ ᴄᴏᴍᴍᴀɴᴅᴇʀ: ${m.pushName}\n`; 
-        menuText += `┃✵│ ᴛᴏᴛᴀʟ ᴘʟᴜɢɪɴs: ${totalCommands}\n`;
-        menuText += `┃✵│ ᴛɪᴍᴇ: ${getCurrentTimeInNairobi()}\n`;
-        menuText += `┃✵│ ᴘʀᴇғɪx: ${prefix}\n`;
-        menuText += `┃✵│ ᴍᴏᴅᴇ: ${mode}\n`;
-        menuText += '┃✵│ ʟɪʙʀᴀʀʏ: Baileys\n';
-        menuText += '┃✵╰──────────────\n';
-        menuText += '╰━━━━━━━━━━━━━━━━━━┈⊷\n';
-
-        menuText += '━━━━━━━━━━━━━━━━━━━━\n';
-        menuText += '*┃𒊹┃𒊹┃𒊹┃𒊹┃𒊹┃𒊹┃𒊹┃𒊹┃:*\n\n';
-
-        // Function to convert text to fancy uppercase font
-        const toFancyUppercaseFont = (text) => {
-            const fonts = {
-                'A': '𝐀', 'B': '𝐁', 'C': '𝐂', 'D': '𝐃', 'E': '𝐄', 'F': '𝐅', 'G': '𝐆', 'H': '𝐇', 'I': '𝐈', 'J': '𝐉', 'K': '𝐊', 'L': '𝐋', 'M': '𝐌',
-                'N': '𝐍', 'O': '𝐎', 'P': '𝐏', 'Q': '𝐐', 'R': '𝐑', 'S': '𝐒', 'T': '𝐓', 'U': '𝐔', 'V': '𝐕', 'W': '𝐖', 'X': '𝐗', 'Y': '𝐘', 'Z': '𝐙'
-            };
-            return text.split('').map(char => fonts[char] || char).join('');
-        };
-
-        // Function to convert text to fancy lowercase font for lowercase letters as well
-        const toFancyLowercaseFont = (text) => {
-            const fonts = {
-                "a": "ᴀ", "b": "ʙ", "c": "ᴄ", "d": "ᴅ", "e": "ᴇ", "f": "ꜰ", "g": "ɢ", "h": "ʜ", "i": "ɪ", "j": "ᴊ", "k": "ᴋ", "l": "ʟ", "m": "ᴍ", 
-                "n": "ɴ", "o": "ᴏ", "p": "ᴘ", "q": "ϙ", "r": "ʀ", "s": "ꜱ", "t": "ᴛ", "u": "ᴜ", "v": "ᴠ", "w": "ᴡ", "x": "x", "y": "ʏ", "z": "ᴢ"
-            };
-            return text.split('').map(char => fonts[char.toUpperCase()] || fonts[char] || char).join('');
-        };
-
-        let commandCounter = 1;
-
-        // Loop through categories and commands
-        for (const category of categories) {
-            const commandFiles = fs.readdirSync(`./Cmds/${category.name}`).filter((file) => file.endsWith('.js'));
-            const fancyCategory = toFancyUppercaseFont(category.name.toUpperCase());
-
-            menuText += ` ╭─────「 ${fancyCategory} ${category.emoji}───┈⊷ \n`;
-            for (const file of commandFiles) {
-                const commandName = file.replace('.js', '');
-                const fancyCommandName = toFancyLowercaseFont(commandName);
-                menuText += ` ││◦➛  ${commandCounter}. ${fancyCommandName}\n`;
-                commandCounter++;
+        // Font transformation utilities
+        const FONTS = {
+            boldUpper: {
+                'A': '𝐀', 'B': '𝐁', 'C': '𝐂', 'D': '𝐃', 'E': '𝐄', 
+                'F': '𝐅', 'G': '𝐆', 'H': '𝐇', 'I': '𝐈', 'J': '𝐉', 
+                'K': '𝐊', 'L': '𝐋', 'M': '𝐌', 'N': '𝐍', 'O': '𝐎', 
+                'P': '𝐏', 'Q': '𝐐', 'R': '𝐑', 'S': '𝐒', 'T': '𝐓', 
+                'U': '𝐔', 'V': '𝐕', 'W': '𝐖', 'X': '𝐗', 'Y': '𝐘', 'Z': '𝐙'
+            },
+            smallCaps: {
+                'a': 'ᴀ', 'b': 'ʙ', 'c': 'ᴄ', 'd': 'ᴅ', 'e': 'ᴇ',
+                'f': 'ꜰ', 'g': 'ɢ', 'h': 'ʜ', 'i': 'ɪ', 'j': 'ᴊ',
+                'k': 'ᴋ', 'l': 'ʟ', 'm': 'ᴍ', 'n': 'ɴ', 'o': 'ᴏ',
+                'p': 'ᴘ', 'q': 'ϙ', 'r': 'ʀ', 's': 'ꜱ', 't': 'ᴛ',
+                'u': 'ᴜ', 'v': 'ᴠ', 'w': 'ᴡ', 'x': 'x', 'y': 'ʏ', 'z': 'ᴢ'
             }
+        };
 
-            menuText += ' ╰──────────────┈⊷ \n';
+        const transformText = (text, fontMap) => 
+            text.split('').map(c => fontMap[c]?.[c] || c).join('');
+
+        // Generate menu content
+        let menuContent = `╭─── ✦ ${getGreeting()} ${m.pushName || ''} ✦ ───⊷\n\n`;
+
+        // Add header section
+        menuContent += generateMenuHeader();
+
+        // Generate commands list
+        let commandCount = 1;
+        for (const category of CATEGORIES) {
+            try {
+                const commandFiles = await fs.readdir(`./Cmds/${category.name}`);
+                const commands = commandFiles.filter(file => file.endsWith('.js'));
+                
+                if (commands.length === 0) continue;
+
+                menuContent += `╭── ${category.emoji} ${transformText(category.name, FONTS.boldUpper)} ──⊷\n`;
+                
+                commands.forEach((file, index) => {
+                    const commandName = file.replace('.js', '');
+                    menuContent += `│ ${index + 1}. ${transformText(commandName, FONTS.smallCaps)}\n`;
+                });
+
+                menuContent += `╰────────────────────⊷\n`;
+                commandCount += commands.length;
+            } catch (error) {
+                console.error(`Error loading ${category.name} commands:`, error);
+            }
         }
 
-        // Send the generated menu to the user
-        try {
-            await sendMediaMessage(client, m, { 
-                image: url, 
-                text: menuText 
-            });
-        } catch (error) {
-            console.error("Error sending message:", error);
-            await sendReply(client, m, 'An error occurred while sending the menu.');
-        }
+        // Add footer
+        menuContent += `\n╰─── ✦ Powered by ${author} ✦ ───⊷`;
+
+        // Send media message with caption
+        await sendMediaMessage(client, m, {
+            image: { url },
+            caption: menuContent,
+            contextInfo: {
+                mentionedJid: [m.sender],
+                forwardingScore: 999,
+                isForwarded: true
+            }
+        });
 
     } catch (error) {
-        console.error("Error:", error);
-        await sendReply(client, m, 'An unexpected error occurred while generating the menu.' + error);
+        console.error('Menu Generation Error:', error);
+        await sendReply(client, m, `❌ Failed to generate menu: ${error.message}`);
     }
 };
