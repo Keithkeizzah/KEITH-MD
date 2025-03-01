@@ -2,11 +2,11 @@ const middleware = require('../../utility/botUtil/middleware');
 
 module.exports = async (context) => {
     await middleware(context, async () => {
-        const { client, m, participants, botname, groupMetadata, text, pushname } = context;
+        const { client, m, participants, botname, sendReply, sendMediaMessage, groupMetadata, text, pushname } = context;
 
         const { getBinaryNodeChild, getBinaryNodeChildren } = require('@whiskeysockets/baileys');
 
-        if (!text) return m.reply("provide number to be added in this format.\n\nadd 254114018035");
+        if (!text) return sendReply(client, m, "provide number to be added in this format.\n\nadd 254114018035");
 
         const _participants = participants.map((user) => user.id);
 
