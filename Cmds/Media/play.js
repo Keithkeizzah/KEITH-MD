@@ -5,10 +5,10 @@ const path = require("path");
 const axios = require("axios");
 
 module.exports = async (context) => {
-  const { client, m, text, fetchJson } = context;
+  const { client, m, text, fetchJson, sendReply, sendMediaMessage } = context;
 
   try {
-    if (!text) return m.reply("What song do you want to download?");
+    if (!text) return sendReply(client, m, "What song do you want to download?");
 
     let search = await yts(text);
     let link = search.all[0].url;
@@ -35,7 +35,7 @@ module.exports = async (context) => {
             videoUrl: link
           };
 
-          await client.sendMessage(m.chat, {
+          await sendMediaMessage(client, m, {
             image: { url: songData.thumbnail },
             caption: `Title: ${songData.title}\nArtist: ${songData.artist}\nVideo URL: ${songData.videoUrl}`
           }, { quoted: m });
@@ -47,7 +47,7 @@ module.exports = async (context) => {
           });
 
           if (response.status !== 200) {
-            m.reply("We are sorry but the API endpoint didn't respond correctly. Try again later.");
+            sendReply(client, m, "We are sorry but the API endpoint didn't respond correctly. Try again later.");
             continue;
           }
 
@@ -58,7 +58,7 @@ module.exports = async (context) => {
               await client.sendMessage(
                 m.chat,
                 {
-                  document: { url: outputPath },
+                  audio: { url: outputPath },
                   mimetype: "audio/mp3",
                   fileName: outputFileName,
                 },
@@ -67,7 +67,7 @@ module.exports = async (context) => {
               fs.unlinkSync(outputPath);
             })
             .on("error", (err) => {
-              m.reply("Download failed\n" + err.message);
+              sendReply(client, m, "Download failed\n" + err.message);
             });
 
           return;
@@ -79,8 +79,8 @@ module.exports = async (context) => {
     }
 
     // If no APIs succeeded
-    m.reply("An error occurred. All APIs might be down or unable to process the request.");
+    sendReply(client, m, "An error occurred. All APIs might be down or unable to process the request.");
   } catch (error) {
-    m.reply("Download failed\n" + error.message);
+    sendReply(client, m, "Download failed\n" + error.message);
   }
 };
