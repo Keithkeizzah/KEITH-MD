@@ -2,7 +2,7 @@ const yts = require("yt-search");
 const axios = require("axios");
 
 module.exports = async (context) => {
-  const { client, m, text, fetchJson, sendReply, sendMediaMessage } = context;
+  const { client, m, text, fetchJson, botname, sendReply, sendMediaMessage } = context;
 
   try {
     if (!text) return sendReply(client, m, "What song do you want to download?");
