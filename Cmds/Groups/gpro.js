@@ -3,52 +3,73 @@ const { S_WHATSAPP_NET } = require('@whiskeysockets/baileys');
 
 module.exports = async (context) => {
     await middleware(context, async () => {
-        const { client, m } = context;
+        const { client, m, sendReply, sendMediaMessage } = context;
 
         try {
-            // Ensure the command is used in a group
-            if (!m.isGroup) {
-                m.reply('This command can only be used in a group.');
-                return;
+            const isGroup = m.chat.endsWith('@g.us');
+            let profileInfo;
+
+            if (isGroup) {
+                // Handle group profile
+                const groupMetadata = await client.groupMetadata(m.chat);
+                const participants = groupMetadata.participants || [];
+                
+                let ppUrl;
+                try {
+                    ppUrl = await client.profilePictureUrl(m.chat, 'image');
+                } catch {
+                    ppUrl = "https://telegra.ph/file/95680cd03e012bb08b9e6.jpg";
+                }
+
+                profileInfo = {
+                    image: { url: ppUrl },
+                    caption: `👥 *Group Information*\n\n` +
+                             `🔖 *Name:* ${groupMetadata.subject}\n` +
+                             `📝 *Description:* ${groupMetadata.desc || 'No description'}\n` +
+                             `📅 *Created:* ${new Date(groupMetadata.creation * 1000).toLocaleDateString()}\n` +
+                             `👤 *Members:* ${participants.length}\n` +
+                             `👑 *Admins:* ${participants.filter(p => p.admin).length}\n` +
+                             `🔒 *Restricted:* ${groupMetadata.restrict ? 'Yes' : 'No'}\n` +
+                             `🆔 *ID:* ${groupMetadata.id}\n\n` +
+                             `_Powered by ${client.user.name}_`
+                };
+            } else {
+                // Handle user profile
+                const sender = m.quoted ? m.quoted.sender : m.sender;
+                const contact = await client.getContact(sender, 'full');
+                const name = contact.notify || contact.name || sender.split('@')[0];
+
+                let ppUrl;
+                try {
+                    ppUrl = await client.profilePictureUrl(sender, 'image');
+                } catch {
+                    ppUrl = "https://telegra.ph/file/95680cd03e012bb08b9e6.jpg";
+                }
+
+                let status;
+                try {
+                    status = await client.fetchStatus(sender);
+                } catch {
+                    status = { status: "🔒 Private (status not available)" };
+                }
+
+                profileInfo = {
+                    image: { url: ppUrl },
+                    caption: `👤 *User Profile*\n\n` +
+                             `🔖 *Name:* ${name}\n` +
+                             `📝 *About:* ${status.status}\n` +
+                             `📱 *Number:* ${sender.split('@')[0]}\n` +
+                             `🆔 *ID:* ${sender}\n\n` +
+                             `_Powered by ${client.user.name}_`,
+                    mentions: [sender]
+                };
             }
 
-            // Get the group ID
-            const groupId = m.chat;
+            await sendMediaMessage(client, m, profileInfo);
 
-            // Fetch the group's metadata
-            const groupMetadata = await client.groupMetadata(groupId);
-
-            // Get the group's profile picture URL
-            let groupPpUrl;
-            try {
-                groupPpUrl = await client.profilePictureUrl(groupId, 'image');
-            } catch {
-                groupPpUrl = "https://telegra.ph/file/95680cd03e012bb08b9e6.jpg"; // Default image if group picture is not accessible
-            }
-
-            // Set the group description
-            const groupDescription = "Just work and give me your best.";
-
-            // Update the group description
-            await client.groupUpdateDescription(groupId, groupDescription);
-
-            // Prepare the message with group profile details
-            const mess = {
-                image: { url: groupPpUrl },
-                caption: `*Group Name:* ${groupMetadata.subject}\n` +
-                         `*Group Description:* ${groupDescription}\n` +
-                         `*Group Members:* ${groupMetadata.participants.length}\n` +
-                         `*Group Created:* ${new Date(groupMetadata.creation * 1000).toLocaleString()}`
-            };
-
-            // Send the group profile information
-            await client.sendMessage(m.chat, mess, { quoted: m });
-
-            // Notify the user
-            m.reply("Group profile updated successfully!");
         } catch (error) {
-            console.error("Error updating group profile:", error);
-            m.reply("An error occurred while updating the group profile:\n" + error);
+            console.error('Profile Check Error:', error);
+            await sendReply(client, m, '❌ Failed to fetch profile information. Please try again.');
         }
     });
 };
