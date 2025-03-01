@@ -1,7 +1,4 @@
 const yts = require("yt-search");
-const ffmpeg = require("fluent-ffmpeg");
-const fs = require("fs");
-const path = require("path");
 const axios = require("axios");
 
 module.exports = async (context) => {
@@ -25,9 +22,7 @@ module.exports = async (context) => {
         // Checking if the API response is successful
         if (data.status === 200 || data.success) {
           let videoUrl = data.result?.downloadUrl || data.url;
-          let outputFileName = `${search.all[0].title.replace(/[^a-zA-Z0-9 ]/g, "")}.mp3`;
-          let outputPath = path.join(__dirname, outputFileName);
-          
+
           let songData = {
             title: data.result?.title || search.all[0].title,
             artist: data.result?.author || search.all[0].author.name,
@@ -40,35 +35,11 @@ module.exports = async (context) => {
             caption: `Title: ${songData.title}\nArtist: ${songData.artist}\nVideo URL: ${songData.videoUrl}`
           }, { quoted: m });
 
-          const response = await axios({
-            url: videoUrl,
-            method: "GET",
-            responseType: "stream"
-          });
-
-          if (response.status !== 200) {
-            sendReply(client, m, "We are sorry but the API endpoint didn't respond correctly. Try again later.");
-            continue;
-          }
-
-          ffmpeg(response.data)
-            .toFormat("mp3")
-            .save(outputPath)
-            .on("end", async () => {
-              await client.sendMessage(
-                m.chat,
-                {
-                  audio: { url: outputPath },
-                  mimetype: "audio/mp3",
-                  fileName: outputFileName,
-                },
-                { quoted: m }
-              );
-              fs.unlinkSync(outputPath);
-            })
-            .on("error", (err) => {
-              sendReply(client, m, "Download failed\n" + err.message);
-            });
+          await client.sendMessage(m.chat, {
+            audio: { url: videoUrl },
+            mimetype: "audio/mp3",
+            fileName: `${songData.title.replace(/[^a-zA-Z0-9 ]/g, "")}.mp3`
+          }, { quoted: m });
 
           return;
         }
