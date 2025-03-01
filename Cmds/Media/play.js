@@ -83,8 +83,8 @@ module.exports = async (context) => {
       }
     }
 
-    m.reply("An error occurred. All APIs might be down or unable to process the request.");
+    sendReply(client, m, "An error occurred. All APIs might be down or unable to process the request.");
   } catch (error) {
-    m.reply("Download failed\n" + error.message);
+    sendReply(client, m, "Download failed\n" + error.message);
   }
 };
