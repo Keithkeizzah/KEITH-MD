@@ -1,5 +1,5 @@
 module.exports = async (context) => {
-  const { client, m, sendReply, sendMediaMessage } = context;
+  const { client, m, sendReply, author, botname, sendMediaMessage } = context;
 
   try {
     
