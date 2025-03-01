@@ -1,24 +1,44 @@
-const { ChatGpt } = require('chatgpt-scraper');
+const fs = require('fs');
+const ai = require('unlimited-ai');
 
 module.exports = async (context) => {
     const { client, m, text } = context;
 
+    if (!text) return m.reply("Please provide text");
+
+    // Load previous conversation from store.json, if exists
+    let conversationData = [];
     try {
-        // Check if there's no input text
-        if (!text) return m.reply("This is ChatGPT. Please provide text.");
+        const rawData = fs.readFileSync('store.json');
+        conversationData = JSON.parse(rawData);
+    } catch (err) {
+        
+        console.log('No previous conversation found, starting new one.');
+    }
 
-        // Get response from ChatGPT using the text provided
-        const result = await ChatGpt(text);
+    // Define the model and the user/system message
+    const model = 'gpt-4-turbo-2024-04-09';
+    const userMessage = { role: 'user', content: text };
+    const systemMessage = { role: 'system', content: 'You are an assistant in WhatsApp. You are called Keith. You respond to user commands.' };
 
-        // Send the result back to the user
-        if (result) {
-            await m.reply(result);
-        } else {
-            await m.reply("No response from ChatGPT. Please try again.");
-        }
+    // Add user input to the conversation data
+    conversationData.push(userMessage);
+    conversationData.push(systemMessage);
 
+    try {
+        // Get AI response from the model
+        const aiResponse = await ai.generate(model, conversationData);
+
+        // Add AI response to the conversation data
+        conversationData.push({ role: 'assistant', content: aiResponse });
+
+        // Write the updated conversation data to store.json
+        fs.writeFileSync('store.json', JSON.stringify(conversationData, null, 2));
+
+        // Reply to the user with AI's response
+        await m.reply(aiResponse);
     } catch (error) {
-        console.error("Error:", error.message);
-        m.reply("An unexpected error occurred. Please try again.");
+        console.error("Error with AI generation: ", error);
+        await m.reply("Sorry, there was an error generating the response.");
     }
 };
