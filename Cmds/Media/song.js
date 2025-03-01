@@ -33,12 +33,12 @@ module.exports = async (context) => {
           await sendMediaMessage(client, m, {
             image: { url: songData.thumbnail },
             caption: `
-      ╭═════════════════⊷
-      ║ *Title*: *${songData.title}*
-      ║ *Artist*: *${songData.artist}*
-      ║ *Url*: *${songData.videoUrl}*
-      ╰═════════════════⊷
-            > downloaded by ${botname}`
+     ╭═════════════════⊷
+     ║ *Title*: *${songData.title}*
+     ║ *Artist*: *${songData.artist}*
+     ║ *Url*: *${songData.videoUrl}*
+     ╰═════════════════⊷
+      *Powered by ${botname}*`
           }, { quoted: m });
 
           await client.sendMessage(
