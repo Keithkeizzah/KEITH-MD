@@ -1,5 +1,5 @@
 module.exports = async (context) => {
-        const { client, m } = context;
+        const { client, m, sendReply, sendMediaMessage } = context;
 
 
 const  { TempMail } = require("tempmail.lol");
@@ -9,15 +9,15 @@ const tempmail = new TempMail();
       const inbox = await tempmail.createInbox();
       const emailMessage = `${inbox.address}`;
 
-await m.reply(emailMessage);
+await sendReply(client, m, emailMessage);
 
 
-const mas = await client.sendMessage(m.chat, { text: `${inbox.token}` });
+const mas = await sendMediaMessage(client, m, { text: `${inbox.token}` });
       
 
 
       
-await client.sendMessage(m.chat, { text: `Quoted text is your token. To fetch messages in your email use <.tempinbox your-token>`}, { quoted: mas});
+await await sendMediaMessage(client, m, { text: `Quoted text is your token. To fetch messages in your email use <.tempinbox your-token>`}, { quoted: mas});
 
 
 
