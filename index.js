@@ -14,7 +14,7 @@ const express = require("express");
 const { DateTime } = require("luxon");
 const util = require("util");
 const speed = require("performance-now");
-const { smsg } = require('./smsg');
+const { smsg } = require('./lib/smsg');
 const {
   smsgsmsg, formatp, tanggal, formatDate, getTime, sleep, clockString,
   fetchJson, getBuffer, jsonformat, antispam, generateProfilePicture, parseMention,
