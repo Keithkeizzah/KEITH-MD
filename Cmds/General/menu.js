@@ -2,7 +2,7 @@ const { DateTime } = require('luxon');
 const fs = require('fs');
 
 module.exports = async (context) => {
-    const { client, m, totalCommands, mode, botname, prefix, url, gurl, author } = context;
+    const { client, m, totalCommands, mode, botname, prefix, url, sendReply, sendMediaMessage gurl, author } = context;
 
     try {
         const categories = [
@@ -140,7 +140,7 @@ module.exports = async (context) => {
 
         // Send the generated menu to the user
         try {
-            await client.sendMessage(m.chat, {
+            await sendMediaMessage(client, m, {
                 text: menuText,
                 contextInfo: {
                     mentionedJid: [m.sender], // Mention the sender
@@ -156,11 +156,11 @@ module.exports = async (context) => {
             });
         } catch (error) {
             console.error("Error sending message:", error);
-            m.reply('An error occurred while sending the menu.');
+            sendReply(client, m, 'An error occurred while sending the menu.');
         }
 
     } catch (error) {
         console.error("Error:", error);
-        m.reply('An unexpected error occurred while generating the menu.' + error);
+        sendReply(client, m, 'An unexpected error occurred while generating the menu.' + error);
     }
 };
