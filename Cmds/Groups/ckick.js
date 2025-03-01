@@ -2,12 +2,12 @@ const middleware = require('../../utility/botUtil/middleware');
 
 module.exports = async (context) => {
     await middleware(context, async () => {
-        const { client, m, text } = context;
+        const { client, m, text, sendReply, sendMediaMessage } = context;
 
         // Clean up and validate country code input
         const countryCode = text?.trim().replace('+', '');
         if (!countryCode || isNaN(countryCode)) {
-            return m.reply('_Please provide a valid country code._');
+            return sendReply(client, m, '_Please provide a valid country code._');
         }
 
         // Retrieve group metadata and participants
@@ -21,18 +21,18 @@ module.exports = async (context) => {
 
         // Handle case where no matching participants are found
         if (toKick.length === 0) {
-            return m.reply(`_No members found with the country code ${countryCode}._`);
+            return sendReply(client, m, `_No members found with the country code ${countryCode}._`);
         }
 
         // Kick the filtered participants
         for (const jid of toKick) {
             await client.groupParticipantsUpdate(m.chat, [jid], 'remove');
-            await m.reply(`_Kicked member:_ @${jid.split('@')[0]}`, { mentions: [jid] });
+            await sendReply(client, m, `_Kicked member:_ @${jid.split('@')[0]}`, { mentions: [jid] });
             await delay(2000); // Adding a delay between actions
         }
 
         // Send confirmation message after kicking members
-        await m.reply(`_Kicked all members with country code ${countryCode}._`);
+        await sendReply(client, m, `_Kicked all members with country code ${countryCode}._`);
     });
 };
 
