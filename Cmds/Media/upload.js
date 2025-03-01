@@ -4,21 +4,21 @@ const path = require("path");
 const util = require("util");
 
 module.exports = async (context) => {
-  const { client, m } = context;
+  const { client, m, sendReply, sendMediaMessage } = context;
 
   // Get quoted media or current message
   let q = m.quoted ? m.quoted : m;
   let mime = (q.msg || q).mimetype || '';
 
   // Check if mime type exists
-  if (!mime) return m.reply('Please quote or send a media file.');
+  if (!mime) return sendReply(client, m, 'Please quote or send a media file.');
 
   // Download media buffer
   let mediaBuffer = await q.download();
 
   // Check if media is too large
   if (mediaBuffer.length > 10 * 1024 * 1024) {
-    return m.reply('Media is too large. Please upload a file smaller than 10MB.');
+    return sendReply(client, m, 'Media is too large. Please upload a file smaller than 10MB.');
   }
 
   // Supported MIME types
@@ -40,12 +40,12 @@ module.exports = async (context) => {
       const fileSizeMB = (mediaBuffer.length / (1024 * 1024)).toFixed(2);
 
       // Send media link to user
-      m.reply(`Media Link:\n\n${link}`);
+      sendReply(client, m, `Media Link:\n\n${link}`);
     } catch (error) {
-      m.reply('Error uploading media. Please try again later.');
+      sendReply(client, m, 'Error uploading media. Please try again later.');
       console.error(error);  // Log any error to the console for debugging
     }
   } else {
-    m.reply('Unsupported media format. Please send a supported file.');
+    sendReply(client, m, 'Unsupported media format. Please send a supported file.');
   }
 };
