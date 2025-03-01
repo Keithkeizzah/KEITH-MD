@@ -1,5 +1,5 @@
 module.exports = async (context) => {
-  const { client, m } = context;
+  const { client, m, sendReply, sendMediaMessage } = context;
 
   try {
     // Fetch repository data from GitHub
@@ -35,23 +35,17 @@ module.exports = async (context) => {
       ╰───────────────────
     `;
 
-    // Send the generated message to the user
-    await client.sendMessage(m.chat, {
-      text: messageCaption,
-      contextInfo: {
-        mentionedJid: [m.sender], // Mention the sender
-        externalAdReply: {
-          title: "🌟 𝐊𝐄𝐈𝐓𝐇-𝐌𝐃 ✨",
-          body: "𝐫𝐞𝐠𝐚𝐫𝐝𝐬 𝐊𝐞𝐢𝐭𝐡𝐤𝐞𝐢𝐳𝐳𝐚𝐡",
-          sourceUrl: "https://whatsapp.com/channel/0029Vaan9TF9Bb62l8wpoD47",
-          mediaType: 1,
-          renderLargerThumbnail: true
-        }
-      }
+    // Image to be sent along with the text message
+    const imageUrl = "https://path-to-your-image.jpg"; // Replace with your image URL
+
+    // Send the message with the image and caption
+    await sendMediaMessage(client, m, {
+      image: imageUrl,
+      text: messageCaption
     });
 
   } catch (error) {
     console.error("Error:", error);
-    m.reply('An unexpected error occurred while generating the repo information.');
+    await sendReply(client, m, 'An unexpected error occurred while generating the repo information.');
   }
 };
