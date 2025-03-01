@@ -1,11 +1,11 @@
 const axios = require("axios");
 
 module.exports = async (context) => {
-  const { client, m, text } = context;
+  const { client, m, text, sendReply, sendMediaMessage } = context;
 
   // Check if the text (URL) is provided
   if (!text) {
-    return m.reply(
+    return sendReply(client, m, 
       `Hello,\nKeith Tiny URL Shortener Here.\nPlease provide a URL to shorten.\n*Usage:*\n.tiny https://example.com`
     );
   }
@@ -15,7 +15,7 @@ module.exports = async (context) => {
 
     // Ensure the URL is valid
     if (!urlToShorten) {
-      return m.reply("Please provide a valid URL to shorten.");
+      return sendReply(client, m, "Please provide a valid URL to shorten.");
     }
 
     // Construct the API URL for TinyURL
@@ -28,7 +28,7 @@ module.exports = async (context) => {
     console.log("API Response:", response.data);
 
     // Send the shortened URL as a message
-    await client.sendMessage(m.chat, {
+    await sendMediaMessage(client, m, {
       text: `Here is your shortened URL: ${response.data}`
     }, {
       quoted: m
@@ -37,6 +37,6 @@ module.exports = async (context) => {
   } catch (error) {
     // Log error and notify user
     console.error("Error shortening URL:", error.message);
-    m.reply("Error shortening URL. Please check the URL format or try again later.");
+    sendReply(client, m, "Error shortening URL. Please check the URL format or try again later.");
   }
 };
