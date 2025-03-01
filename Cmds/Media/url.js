@@ -1,7 +1,7 @@
 const { Catbox } = require("node-catbox");
 const fs = require('fs-extra');
 const { downloadAndSaveMediaMessage } = require('@whiskeysockets/baileys');
-const { sendReply, sendMediaMessage } = require(__dirname + "/../../lib/context"); //
+
 // Initialize Catbox
 const catbox = new Catbox();
 
@@ -23,7 +23,7 @@ async function uploadToCatbox(filePath) {
 }
 
 module.exports = async (context) => {
-  const { client, m } = context;
+  const { client, m, sendReply, sendMediaMessage } = context;
 
   const quotedMessage = m.message?.extendedTextMessage?.contextInfo?.quotedMessage;
 
