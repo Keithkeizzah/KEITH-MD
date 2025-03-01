@@ -363,6 +363,8 @@ async function startKeith() {
         `╰═════════════════⊷`;
 
       await client.sendMessage(client.user.id, { text: message });
+       console.log(` ${message} \nconnected ✅ enjoy`);
+
     }
   });
 
