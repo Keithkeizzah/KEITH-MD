@@ -50,7 +50,7 @@ module.exports = async (context) => {
                         `❤️ *Likes:* ${meta.stats?.likes || 'N/A'} | 💬 *Comments:* ${meta.stats?.comment || 'N/A'}\n` +
                         `⏱️ *Duration:* ${meta.duration || 'N/A'}\n` +
                         `📅 *Uploaded:* ${meta.taken_at || 'Unknown date'}\n\n` +
-                        `_Powered by ${apiResponse.creator || 'TikTok API'}_`;
+                        `_Powered by ${botname}_`;
 
         // Send video
         await sendMediaMessage(client, m, {
