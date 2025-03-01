@@ -12,6 +12,7 @@ const { exec } = require("child_process");
 const chalk = require("chalk");
 const express = require("express");
 const { DateTime } = require("luxon");
+const { smsg } = require('./smsg');
 const speed = require("performance-now");
 
 const {
