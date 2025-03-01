@@ -1,5 +1,5 @@
 const {
-  default: KeithConnect, BufferJSON, WA_DEFAULT_EPHEMERAL, generateWAMessageFromContent, proto, generateWAMessageContent,
+   default: KeithConnect, BufferJSON, WA_DEFAULT_EPHEMERAL, generateWAMessageFromContent, proto, generateWAMessageContent,
   generateWAMessage, prepareWAMessageMedia, areJidsSameUser, getContentType, useMultiFileAuthState,
   DisconnectReason, makeInMemoryStore, downloadContentFromMessage, jidDecode
 } = require("@whiskeysockets/baileys");
@@ -12,9 +12,9 @@ const { exec } = require("child_process");
 const chalk = require("chalk");
 const express = require("express");
 const { DateTime } = require("luxon");
-const { smsg } = require('./smsg');
+const util = require("util");
 const speed = require("performance-now");
-
+const { smsg } = require('./smsg');
 const {
   smsgsmsg, formatp, tanggal, formatDate, getTime, sleep, clockString,
   fetchJson, getBuffer, jsonformat, antispam, generateProfilePicture, parseMention,
@@ -84,16 +84,20 @@ async function startKeith() {
   let lastTextTime = 0;
   const messageDelay = 5000;
 
+  // Handle incoming calls if anticall is enabled
   client.ev.on('call', async (callData) => {
     if (anticall === 'true') {
       const callId = callData[0].id;
       const callerId = callData[0].from;
 
+      // Reject the call
       await client.rejectCall(callId, callerId);
 
       const currentTime = Date.now();
       if (currentTime - lastTextTime >= messageDelay) {
-        await client.sendMessage(callerId, { text: anticallmsg });
+        await client.sendMessage(callerId, {
+          text: anticallmsg
+        });
         lastTextTime = currentTime;
       } else {
         console.log('Message skipped to prevent overflow');
@@ -112,7 +116,6 @@ async function startKeith() {
       } else if (autoread === "true" && mek.key?.remoteJid.endsWith("@s.whatsapp.net")) {
         await client.readMessages([mek.key]);
       }
-
       if (autoview === 'true' && autolike === 'true' && mek.key && mek.key.remoteJid === "status@broadcast") {
         const keithlike = await client.decodeJid(client.user.id);
         const emojis = ['😂', '😥', '😇', '🥹', '💥', '💯', '🔥', '💫', '👽', '💗', '❤️‍🔥', '👁️', '👀', '🙌', '🙆', '🌟', '💧', '🎇', '🎆', '♂️', '✅'];
@@ -136,6 +139,7 @@ async function startKeith() {
 
       const m = smsg(client, mek, store);
 
+      // Command Handler Logic
       const body = m.mtype === "conversation" ? m.message.conversation :
         m.mtype === "imageMessage" ? m.message.imageMessage.caption :
           m.mtype === "extendedTextMessage" ? m.message.extendedTextMessage.text : "";
@@ -144,7 +148,7 @@ async function startKeith() {
       const args = body.trim().split(/ +/).slice(1);
       const pushname = m.pushName || "No Name";
       const botNumber = await client.decodeJid(client.user.id);
-      const isBotMessage = m.sender === botNumber;
+      const isBotMessage = m.sender === botNumber;  
       const itsMe = m.sender === botNumber;
       const text = args.join(" ");
       const isOwner = dev.split(",").map(v => v.replace(/[^0-9]/g, "") + "@s.whatsapp.net").includes(m.sender);
@@ -190,7 +194,7 @@ async function startKeith() {
       const isAdmin = m.isGroup ? groupAdmin.includes(m.sender) : false;
 
       const IsGroup = m.chat?.endsWith("@g.us");
-
+       
       const context = {
         client, m, text, isBotMessage, Owner, chatUpdate, store, isBotAdmin, isOwner, isAdmin, IsGroup,
         participants, pushname, body, budy, totalCommands, args, mime, qmsg, msgKeith, botNumber, itsMe, packname,
@@ -199,6 +203,8 @@ async function startKeith() {
         store, uploadtoimgur, chatUpdate, ytmp3, getGroupAdmins, Tag
       };
 
+
+      // Antilink Logic
       const forbiddenLinkPattern = /https?:\/\/[^\s]+/;
       if (body && forbiddenLinkPattern.test(body) && m.isGroup && antilink === 'true' && !isOwner && isBotAdmin && !isAdmin) {
         if (itsMe) return;
@@ -228,6 +234,7 @@ async function startKeith() {
         }
       }
 
+      // Antibad Word Logic
       const forbiddenWords = [
         'kuma',
         'mafi',
@@ -275,7 +282,7 @@ async function startKeith() {
       if (command) {
         const commandObj = commands[command];
         if (commandObj) {
-          await commandObj.execute({ fetchJson, generateProfilePicture, client, m, mode, mime, Owner, qmsg, msgKeith, DevKeith, Tag, generateProfilePicture, text, totalCommands, botname, url, sendReply, sendMediaMessage, gurl, prefix, groupAdmin, getGroupAdmins, args, groupName, groupMetadata, herokuAppname, herokuapikey, packname, author, participants, isOwner, pushname, botNumber, itsMe, store, isAdmin, isBotAdmin });
+          await commandObj.execute({ fetchJson, generateProfilePicture, client, m, mode,mime, Owner, qmsg, msgKeith, DevKeith, Tag, generateProfilePicture, text, totalCommands, botname, url, sendReply, sendMediaMessage, gurl, prefix, groupAdmin, getGroupAdmins, args, groupName, groupMetadata, herokuAppname, herokuapikey, packname, author, participants, isOwner, pushname, botNumber, itsMe, store, isAdmin, isBotAdmin });
         }
       }
     } catch (err) {
