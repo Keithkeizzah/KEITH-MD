@@ -2,11 +2,11 @@ module.exports = async (context) => {
   const { client, m, sendReply, sendMediaMessage } = context;
 
   try {
-    // Fetch repository data from GitHub
+    
     const response = await fetch("https://api.github.com/repos/Keithkeizzah/KEITH-MD");
     const repoData = await response.json();
 
-    // Extract relevant information
+    
     const repoInfo = {
       stars: repoData.stargazers_count,
       forks: repoData.forks_count,
@@ -16,29 +16,29 @@ module.exports = async (context) => {
       url: repoData.html_url
     };
 
-    // Format dates
+    
     const createdDate = new Date(repoInfo.createdAt).toLocaleDateString("en-GB");
     const lastUpdateDate = new Date(repoInfo.lastUpdate).toLocaleDateString("en-GB");
 
-    // Construct message caption
+    
     const messageCaption = `
-      *Hello ,,,👋 This is 𝐊𝐄𝐈𝐓𝐇-𝐌𝐃*
-      The best bot in the universe developed by Kᴇɪᴛʜ Kᴇɪᴢᴢᴀʜ. Fork and give a star 🌟 to my repo
+      *Hello ,,,👋 This is ${botname}*
+      The best bot in the universe developed by ${author}. Fork and give a star 🌟 to my repo
       ╭───────────────────
       │✞ *Stars:* ${repoInfo.stars}
       │✞ *Forks:* ${repoInfo.forks}
       │✞ *Release Date:* ${createdDate}
       │✞ *Last Update:* ${lastUpdateDate}
-      │✞ *Owner:* ${repoInfo.owner}
+      │✞ *Owner:* ${author}
       │✞ *Repository:* ${repoInfo.url}
       │✞ *Session:* keithmd.onrender.com
       ╰───────────────────
     `;
 
-    // Image to be sent along with the text message
-    const imageUrl = "https://path-to-your-image.jpg"; // Replace with your image URL
+    
+    const imageUrl = "https://path-to-your-image.jpg"; 
 
-    // Send the message with the image and caption
+    
     await sendMediaMessage(client, m, {
       image: imageUrl,
       text: messageCaption
