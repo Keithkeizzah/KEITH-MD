@@ -27,7 +27,7 @@ module.exports = async (context) => {
           let videoUrl = data.result?.downloadUrl || data.url;
           let outputFileName = `${search.all[0].title.replace(/[^a-zA-Z0-9 ]/g, "")}.mp3`;
           let outputPath = path.join(__dirname, outputFileName);
-          
+
           let songData = {
             title: data.result?.title || search.all[0].title,
             artist: data.result?.author || search.all[0].author.name,
@@ -79,12 +79,10 @@ module.exports = async (context) => {
           return;
         }
       } catch (e) {
-        // Continue to the next API if one fails
         continue;
       }
     }
 
-    // If no APIs succeeded
     m.reply("An error occurred. All APIs might be down or unable to process the request.");
   } catch (error) {
     m.reply("Download failed\n" + error.message);
