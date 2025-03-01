@@ -3,7 +3,7 @@ const { S_WHATSAPP_NET } = require('@whiskeysockets/baileys');
 
 module.exports = async (context) => {
     await middleware(context, async () => {
-        const { client, m, sendReply, sendMediaMessage } = context;
+        const { client, m, sendReply, sendMediaMessage, botname, author } = context;
 
         try {
             const isGroup = m.chat.endsWith('@g.us');
@@ -31,7 +31,7 @@ module.exports = async (context) => {
                              `👑 *Admins:* ${participants.filter(p => p.admin).length}\n` +
                              `🔒 *Restricted:* ${groupMetadata.restrict ? 'Yes' : 'No'}\n` +
                              `🆔 *ID:* ${groupMetadata.id}\n\n` +
-                             `_Powered by ${client.user.name}_`
+                             `_Powered by ${author}_`
                 };
             } else {
                 // Handle user profile
@@ -60,7 +60,7 @@ module.exports = async (context) => {
                              `📝 *About:* ${status.status}\n` +
                              `📱 *Number:* ${sender.split('@')[0]}\n` +
                              `🆔 *ID:* ${sender}\n\n` +
-                             `_Powered by ${client.user.name}_`,
+                             `_Powered by ${author}_`,
                     mentions: [sender]
                 };
             }
