@@ -138,6 +138,11 @@ module.exports = async (context) => {
             menuText += ' ╰──────────────┈⊷ \n';
         }
 
+        // Ensure the URL is properly configured in the context
+        if (!url) {
+            throw new Error("URL is not configured in the context.");
+        }
+
         // Send the generated menu to the user
         try {
             await sendMediaMessage(client, m, { 
