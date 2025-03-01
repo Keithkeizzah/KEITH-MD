@@ -1,5 +1,5 @@
 module.exports = async (context) => {
-    const { client, m, participants, text } = context;
+    const { client, m, participants, text, sendReply, sendMediaMessage } = context;
 
     
     if (!m.isGroup) return sendReply(client, m, "Command meant for groups");
