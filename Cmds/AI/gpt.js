@@ -1,7 +1,7 @@
 const fetch = require("node-fetch");
 
 module.exports = async (context) => {
-  const { client, m, text, author } = context;
+  const { client, m, text, author, sendReply, sendMediaMessage } = context;
 
   const apis = [
     `https://dark.guruapi.tech/egpt?prompt=${encodeURIComponent(text)}`,
@@ -15,7 +15,7 @@ module.exports = async (context) => {
   ];
 
   try {
-    if (!text) return m.reply("I am ${author} assistant based on the model developed by Keith  how can i assist you today ☺️ ");
+    if (!text) return sendReply(client, m, "I am  an AI based on the model developed by Keith  how can i assist you today ☺️ ");
 
     for (const api of apis) {
       try {
@@ -25,7 +25,7 @@ module.exports = async (context) => {
         
         if (msgg.message || msgg.response || msgg.result) {
           const final = msgg.message || msgg.response?.response || msgg.result.prompt || msgg.result;
-          await m.reply(final);
+          await sendReply(client, m, final);
           return;
         }
       } catch (e) {
@@ -35,8 +35,8 @@ module.exports = async (context) => {
     }
 
     
-    m.reply("An error occurred while communicating with the APIs. Please try again later.");
+    sendReply(client, m, "An error occurred while communicating with the APIs. Please try again later.");
   } catch (e) {
-    m.reply('An error occurred while communicating with the APIs\n' + e);
+    sendReply(client, m, 'An error occurred while communicating with the APIs\n' + e);
   }
 };
