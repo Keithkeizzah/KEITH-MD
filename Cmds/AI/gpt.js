@@ -1,7 +1,7 @@
 const fetch = require("node-fetch");
 
 module.exports = async (context) => {
-  const { client, m, text } = context;
+  const { client, m, text, author } = context;
 
   const apis = [
     `https://dark.guruapi.tech/egpt?prompt=${encodeURIComponent(text)}`,
