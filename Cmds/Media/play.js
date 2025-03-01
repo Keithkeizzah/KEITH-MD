@@ -2,7 +2,7 @@ const ytSearch = require('yt-search');
 const fetch = require('node-fetch');
 
 module.exports = async (messageDetails) => {
-  const { client, m: message, text: query } = messageDetails;
+  const { client, m: message, text: query, sendReply, sendMediaMessage } = messageDetails;
   const chatId = message.chat;
 
   // Function to attempt download from API
@@ -14,7 +14,7 @@ module.exports = async (messageDetails) => {
   try {
     // Check if query is provided
     if (!query || query.trim().length === 0) {
-      return message.reply('Please provide a song to download.');
+      return sendReply(client, message, 'Please provide a song to download.');
     }
 
     // Perform a YouTube search based on the query
@@ -22,7 +22,7 @@ module.exports = async (messageDetails) => {
 
     // Check if any videos were found
     if (!searchResults || !searchResults.videos.length) {
-      return message.reply('No video found for the specified query.');
+      return sendReply(client, message, 'No video found for the specified query.');
     }
 
     const firstVideo = searchResults.videos[0];
@@ -56,7 +56,7 @@ module.exports = async (messageDetails) => {
 
     // Check if a valid download URL was found
     if (!downloadUrl || !videoDetails) {
-      return message.reply('Failed to retrieve download URL from all sources. Please try again later.');
+      return sendReply(client, message, 'Failed to retrieve download URL from all sources. Please try again later.');
     }
 
     // Prepare the message payload with external ad details
