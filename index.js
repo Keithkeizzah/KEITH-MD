@@ -282,9 +282,7 @@ async function startKeith() {
       if (command) {
         const commandObj = commands[command];
         if (commandObj) {
-          await commandObj.execute({ smsgsmsg, formatp, tanggal, formatDate, getTime, sleep, clockString,
-  fetchJson, getBuffer, jsonformat, antispam, parseMention,
-  getRandom, fetchBuffer, client, m, mode,mime, Owner, qmsg, msgKeith, DevKeith, Tag, generateProfilePicture, text, totalCommands, botname, url, sendReply, sendMediaMessage, gurl, prefix, groupAdmin, getGroupAdmins, args, groupName, groupMetadata, herokuAppname, herokuapikey, packname, author, participants, isOwner, pushname, botNumber, itsMe, store, isAdmin, isBotAdmin });
+          await commandObj.execute({ fetchJson, generateProfilePicture, client, m, mode,mime, Owner, qmsg, msgKeith, DevKeith, Tag, generateProfilePicture, text, totalCommands, botname, url, sendReply, sendMediaMessage, gurl, prefix, groupAdmin, getGroupAdmins, args, groupName, groupMetadata, herokuAppname, herokuapikey, packname, author, participants, isOwner, pushname, botNumber, itsMe, store, isAdmin, isBotAdmin });
         }
       }
     } catch (err) {
