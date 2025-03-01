@@ -53,7 +53,7 @@ module.exports = async (context) => {
         // Build caption
         const caption = `🐦 *Twitter Video* - ${botname}\n\n` +
                         `${metadata?.description || 'Downloaded video'}\n\n` +
-                        `_Powered by ${metadata?.creator || 'Twitter API'}_`;
+                        `_Powered by ${botname}_`;
 
         // Send media
         await sendMediaMessage(client, m, {
