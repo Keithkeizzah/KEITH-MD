@@ -2,72 +2,76 @@ const yts = require("yt-search");
 const axios = require("axios");
 
 module.exports = async (context) => {
-    const { client, m, text, botname, sendReply, sendMediaMessage } = context;
+  const { client, m, text, fetchJson, sendReply, sendMediaMessage } = context;
 
-    try {
-        if (!text) return await sendReply(client, m, "🎵 Please provide a song name or YouTube link");
+  try {
+    if (!text) return sendReply(client, m, "What song do you want to download?");
 
-        // Search YouTube
-        const search = await yts(text);
-        if (!search.all.length) return await sendReply(client, m, "❌ No results found");
-        
-        const video = search.videos[0];
-        const videoUrl = video.url;
+    let search = await yts(text);
+    let link = search.all[0].url;
 
-        // API endpoints with fallback
-        const APIs = [
-            `https://api.ryzendesu.vip/api/downloader/ytmp3?url=${videoUrl}`,
-            `https://apis.davidcyriltech.my.id/youtube/mp3?url=${videoUrl}`
-        ];
+    const apis = [
+      `https://apis.davidcyriltech.my.id/youtube/mp3?url=${link}`,
+      `https://api.ryzendesu.vip/api/downloader/ytmp3?url=${link}`
+    ];
 
-        let audioUrl;
-        for (const api of APIs) {
-            try {
-                const { data } = await axios.get(api);
-                if (data.url || data.result?.downloadUrl) {
-                    audioUrl = data.url || data.result.downloadUrl;
-                    break;
-                }
-            } catch (error) {
-                console.error(`API ${api} failed:`, error);
-                continue;
-            }
+    for (const api of apis) {
+      try {
+        let data = await fetchJson(api);
+
+        // Checking if the API response is successful
+        if (data.status === 200 || data.success) {
+          let videoUrl = data.result?.downloadUrl || data.url;
+
+          let songData = {
+            title: data.result?.title || search.all[0].title,
+            artist: data.result?.author || search.all[0].author.name,
+            thumbnail: data.result?.image || search.all[0].thumbnail,
+            videoUrl: link
+          };
+
+          await sendMediaMessage(client, m, {
+            image: { url: songData.thumbnail },
+            caption: `
+            ╭═════════════════⊷
+            ║ *Title*: *${songData.title}*
+            ║ *Artist*: *${songData.artist}*
+            ║ *Url*: *${songData.videoUrl}*
+            ╰═════════════════⊷
+            > downloaded by ${botname}`
+          }, { quoted: m });
+
+          await client.sendMessage(
+            m.chat,
+            {
+              audio: { url: videoUrl },
+              mimetype: "audio/mp3",
+             
+            },
+            { quoted: m }
+          );
+
+          await client.sendMessage(
+            m.chat,
+            {
+              document: { url: videoUrl },
+              mimetype: "audio/mp3",
+              fileName: `${songData.title.replace(/[^a-zA-Z0-9 ]/g, "")}.mp3`,
+            },
+            { quoted: m }
+          );
+
+          return;
         }
-
-        if (!audioUrl) throw new Error("All download APIs failed");
-
-        // Send metadata first
-        await sendMediaMessage(client, m, {
-            image: { url: video.thumbnail },
-            caption: `🎧 *${video.title}*\n\n` +
-                     `👤 Artist: ${video.author.name}\n` +
-                     `⏱ Duration: ${video.timestamp}\n\n` +
-                     `_Downloading audio..._`
-        });
-
-        // Get audio stream
-        const { data: audioStream } = await axios({
-            url: audioUrl,
-            method: 'GET',
-            responseType: 'stream'
-        });
-
-        // Send audio file
-        await client.sendMessage(m.chat, {
-            audio: audioStream,
-            mimetype: 'audio/mp3',
-            fileName: `${video.title.replace(/[^\w\s]/gi, '')}.mp3`,
-            contextInfo: {
-                externalAdReply: {
-                    title: video.title,
-                    body: `Downloaded by ${botname}`,
-                    thumbnail: await axios.get(video.thumbnail, { responseType: 'arraybuffer' })
-                }
-            }
-        }, { quoted: m });
-
-    } catch (error) {
-        console.error('YT Music Error:', error);
-        await sendReply(client, m, `❌ Download failed: ${error.message}`);
+      } catch (e) {
+        // Continue to the next API if one fails
+        continue;
+      }
     }
+
+    // If no APIs succeeded
+    sendReply(client, m, "An error occurred. All APIs might be down or unable to process the request.");
+  } catch (error) {
+    sendReply(client, m, "Download failed\n" + error.message);
+  }
 };
