@@ -29,6 +29,7 @@
     "@mrnima/facebook-downloader": "1.0.0",
     "@mrnima/tiktok-downloader": "1.0.0",
     "@shineiichijo/marika": "^3.0.0",
+    "@xaviabot/fb-downloader": "^1.0.14",
     "@whiskeysockets/baileys": "github:Keithkeizzah/BaileysV2",
     "acrcloud": "^1.4.0",
     "api-dylux" : "^1.8.5",
