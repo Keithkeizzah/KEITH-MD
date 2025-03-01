@@ -1,9 +1,9 @@
 module.exports = async (context) => {
-  const { client, m, text, botname } = context;
+  const { client, m, text, botname, sendReply, sendMediaMessage } = context;
 
-  if (!text) return m.reply("Provide a Twitter link for the video");
+  if (!text) return sendReply(client, m, "Provide a Twitter link for the video");
 
-  if (!text.includes('twitter.com') && !text.includes('x.com')) return m.reply("That is not a Twitter link.");
+  if (!text.includes('twitter.com') && !text.includes('x.com')) return sendReply(client, m, "That is not a Twitter link.");
 
   const apis = [
     `https://apis.davidcyriltech.my.id/twitter?url=${text}`,
@@ -23,7 +23,7 @@ module.exports = async (context) => {
           const videoUrl = data.video_hd || data.video_sd || data.media?.[0]?.url;
           
           if (videoUrl) {
-            await client.sendMessage(m.chat, { 
+            await sendMediaMessage(client, m, { 
               video: { url: videoUrl }, 
               gifPlayback: false 
             }, { quoted: m });
@@ -37,8 +37,8 @@ module.exports = async (context) => {
     }
 
     // If no APIs succeeded
-    m.reply("An error occurred. All APIs might be down or unable to process the request.");
+    sendReply(client, m, "An error occurred. All APIs might be down or unable to process the request.");
   } catch (e) {
-    m.reply("An error occurred: " + e);
+    sendReply(client, m, "An error occurred: " + e);
   }
 };
