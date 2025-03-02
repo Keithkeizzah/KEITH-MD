@@ -5,6 +5,7 @@ module.exports = async (context) => {
 
   const apis = [
     `https://dark.guruapi.tech/egpt?prompt=${encodeURIComponent(text)}`,
+    `https://vapis.my.id/api/Ilamav2?q=${encodeURIComponent(text)}`,
     `https://api.siputzx.my.id/api/ai/meta-llama-33-70B-instruct-turbo?content=${encodeURIComponent(text)}`,
     `https://apis.davidcyriltech.my.id/ai/llama3?text=${encodeURIComponent(text)}`
   ];
