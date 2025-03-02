@@ -1,77 +1,88 @@
-const yts = require("yt-search");
-const axios = require("axios");
 
-module.exports = async (context) => {
-  const { client, m, text, fetchJson, botname, sendReply, sendMediaMessage } = context;
+const ytSearch = require('yt-search');
+const fetch = require('node-fetch');
+const { sendReply, sendMediaMessage } = require(__dirname + "/../../lib/context"); // Import functions from context.js
+
+module.exports = async (messageDetails) => {
+  const { client, m: message, text: query } = messageDetails;
+  const chatId = message.chat;
+
+  // Function to attempt download from API
+  const getDownloadData = async (apiUrl) => {
+    const response = await fetch(apiUrl);
+    return response.json();
+  };
 
   try {
-    if (!text) return sendReply(client, m, "What song do you want to download?");
+    // Check if query is provided
+    if (!query || query.trim().length === 0) {
+      return sendReply(client, message, 'Please provide a song to download.'); // Use sendReply for text replies
+    }
 
-    let search = await yts(text);
-    let link = search.all[0].url;
+    // Perform a YouTube search based on the query
+    const searchResults = await ytSearch(query);
 
-    const apis = [
-      `https://apis.davidcyriltech.my.id/youtube/mp4?url=${link}`,
-      `https://api.ryzendesu.vip/api/downloader/ytmp4?url=${link}`
-    ];
+    // Check if any videos were found
+    if (!searchResults || !searchResults.videos.length) {
+      return sendReply(client, message, 'No video found for the specified query.'); // Use sendReply for text replies
+    }
 
-    for (const api of apis) {
-      try {
-        let data = await fetchJson(api);
+    const firstVideo = searchResults.videos[0];
+    const videoUrl = firstVideo.url;
 
-        // Checking if the API response is successful
-        if (data.status === 200 || data.success) {
-          let videoUrl = data.result?.downloadUrl || data.url;
+    // Attempt to download from different APIs
+    let downloadData;
+    let downloadUrl;
+    let videoDetails;
 
-          let songData = {
-            title: data.result?.title || search.all[0].title,
-            artist: data.result?.author || search.all[0].author.name,
-            thumbnail: data.result?.image || search.all[0].thumbnail,
-            videoUrl: link
-          };
-
-          await sendMediaMessage(client, m, {
-            image: { url: songData.thumbnail },
-            caption: `
-     ╭═════════════════⊷
-     ║ *Title*: *${songData.title}*
-     ║ *Artist*: *${songData.artist}*
-     ║ *Url*: *${songData.videoUrl}*
-     ╰═════════════════⊷
-      *Powered by ${botname}*`
-          }, { quoted: m });
-
-          await client.sendMessage(
-            m.chat,
-            {
-              video: { url: videoUrl },
-              mimetype: "video/mp4",
-             
-            },
-            { quoted: m }
-          );
-
-          await client.sendMessage(
-            m.chat,
-            {
-              document: { url: videoUrl },
-              mimetype: "video/mp4",
-              fileName: `${songData.title.replace(/[^a-zA-Z0-9 ]/g, "")}`,
-            },
-            { quoted: m }
-          );
-
-          return;
+    // Try Gifted API
+    downloadData = await getDownloadData(`https://api.giftedtech.web.id/api/download/ytmp4?url=${encodeURIComponent(videoUrl)}&apikey=gifted`);
+    if (downloadData.success) {
+      downloadUrl = downloadData.result.download_url;
+      videoDetails = downloadData.result;
+    } else {
+      // Try Yasiya API if Gifted fails
+      downloadData = await getDownloadData(`https://www.dark-yasiya-api.site/download/ytmp4?url=${encodeURIComponent(videoUrl)}`);
+      if (downloadData.success) {
+        downloadUrl = downloadData.result.download_url;
+        videoDetails = downloadData.result;
+      } else {
+        // Try Dreaded API if both fail
+        downloadData = await getDownloadData(`https://api.dreaded.site/api/ytdl/video?query=${encodeURIComponent(videoUrl)}`);
+        if (downloadData.success) {
+          downloadUrl = downloadData.result.download_url;
+          videoDetails = downloadData.result;
         }
-      } catch (e) {
-        // Continue to the next API if one fails
-        continue;
       }
     }
 
-    // If no APIs succeeded
-    sendReply(client, m, "An error occurred. All APIs might be down or unable to process the request.");
+    // Check if a valid download URL was found
+    if (!downloadUrl || !videoDetails) {
+      return sendReply(client, message, 'Failed to retrieve download URL from all sources. Please try again later.'); // Use sendReply for text replies
+    }
+
+    // Prepare the message payload with external ad details
+    const messagePayload = {
+      video: { url: downloadUrl },
+      mimetype: 'video/mp4',
+      contextInfo: {
+        externalAdReply: {
+          title: videoDetails.title,
+          body: videoDetails.title,
+          mediaType: 1,
+          sourceUrl: 'https://whatsapp.com/channel/0029Vaan9TF9Bb62l8wpoD47',
+          thumbnailUrl: firstVideo.thumbnail,
+          renderLargerThumbnail: false,
+          showAdAttribution: true,
+        },
+      },
+    };
+
+    // Send the download link to the user with contextInfo
+    await sendMediaMessage(client, message, messagePayload);
+
   } catch (error) {
-    sendReply(client, m, "Download failed\n" + error.message);
+    console.error('Error during download process:', error);
+    return sendReply(client, message, `Download failed due to an error: ${error.message || error}`); // Use sendReply for error messages
   }
-};
+};// Import functions from context.js
