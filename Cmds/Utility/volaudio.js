@@ -10,7 +10,7 @@ module.exports = async (context) => {
     const mime = quoted?.mimetype || "";
 
     if (!args.length) {
-      await client.sendMessage(m.chat, { text: `*Example: ${prefix + command} 10*` }, { quoted: m });
+      await client.sendMessage(m.chat, { text: `*Example: prefix + command 10*` }, { quoted: m });
       return;
     }
 
