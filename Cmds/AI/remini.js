@@ -1,4 +1,4 @@
-const { remini } = require(__dirname + "/../../lib/remini");
+const { enhanceImage } = require(__dirname + "/../../lib/remini");
 
 module.exports = async (context) => {
   const { client, m, text: instructionText, mime: mimeType } = context;
