@@ -26,10 +26,10 @@ module.exports = async (context) => {
     await client.sendMessage(m.chat, { text: msg }, { quoted: m });
 
     for (let i = 0; i < stickers.data.result.stickers.length; i++) {
-      let file = await axios.get(`https://api.telegram.org/bot<YOUR_TELEGRAM_BOT_API_KEY>/getFile?file_id=${stickers.data.result.stickers[i].file_id}`);
+      let file = await axios.get(`https://api.telegram.org/bot7025486524:AAGNJ3lMa8610p7OAIycwLtNmF9vG8GfboM/getFile?file_id=${stickers.data.result.stickers[i].file_id}`);
       let buffer = await axios({
         method: 'get',
-        url: `https://api.telegram.org/file/bot<YOUR_TELEGRAM_BOT_API_KEY>/${file.data.result.file_path}`,
+        url: `https://api.telegram.org/file/bot7025486524:AAGNJ3lMa8610p7OAIycwLtNmF9vG8GfboM/${file.data.result.file_path}`,
         responseType: 'arraybuffer',
       });
 
