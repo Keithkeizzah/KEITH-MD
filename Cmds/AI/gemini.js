@@ -4,7 +4,7 @@ module.exports = async (context) => {
   const { client, m, text, sendReply, sendMediaMessage } = context;
 
   const apis = [
-    `https://dark.guruapi.tech/egpt?prompt=${encodeURIComponent(text)}`,
+    `https://vapis.my.id/api/gemini?q=${encodeURIComponent(text)}`,
     `https://api.siputzx.my.id/api/ai/gemini-pro?content=${encodeURIComponent(text)}`,
     `https://api.ryzendesu.vip/api/ai/gemini?text=${encodeURIComponent(text)}`,
     `https://api.dreaded.site/api/gemini2?text=${encodeURIComponent(text)}`,
