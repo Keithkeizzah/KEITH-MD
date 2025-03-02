@@ -1,44 +1,40 @@
-const fs = require('fs');
-const ai = require('unlimited-ai');
+const fetch = require("node-fetch");
 
 module.exports = async (context) => {
-    const { client, m, text } = context;
+  const { client, m, text, sendReply, sendMediaMessage } = context;
 
-    if (!text) return m.reply("Please provide text");
+  const apis = [
+    `https://dark.guruapi.tech/egpt?prompt=${encodeURIComponent(text)}`,
+    `https://api.siputzx.my.id/api/ai/gemini-pro?content=${encodeURIComponent(text)}`,
+    `https://api.ryzendesu.vip/api/ai/gemini?text=${encodeURIComponent(text)}`,
+    `https://api.dreaded.site/api/gemini2?text=${encodeURIComponent(text)}`,
+    `https://api.giftedtech.my.id/api/ai/geminiai?apikey=gifted&q=${encodeURIComponent(text)}`,
+    `https://api.giftedtech.my.id/api/ai/geminiaipro?apikey=gifted&q=${encodeURIComponent(text)}`
+  ];
 
-    // Load previous conversation from store.json, if exists
-    let conversationData = [];
-    try {
-        const rawData = fs.readFileSync('store.json');
-        conversationData = JSON.parse(rawData);
-    } catch (err) {
-        
-        console.log('No previous conversation found, starting new one.');
+  try {
+    if (!text) return sendReply(client, m, "provide a text ");
+
+    for (const api of apis) {
+      try {
+        const data = await fetch(api);
+        const msgg = await data.json();
+
+        // Checking if the API response is successful
+        if (msgg.message || msgg.data || msgg.answer || msgg.result) {
+          const final = msgg.message || msgg.data || msgg.answer || msgg.result;
+          await sendReply(client, m, final);
+          return;
+        }
+      } catch (e) {
+        // Continue to the next API if one fails
+        continue;
+      }
     }
 
-    // Define the model and the user/system message
-    const model = 'gpt-4-turbo-2024-04-09';
-    const userMessage = { role: 'user', content: text };
-    const systemMessage = { role: 'system', content: 'You are an assistant in WhatsApp. You are called Keith. You respond to user commands.' };
-
-    // Add user input to the conversation data
-    conversationData.push(userMessage);
-    conversationData.push(systemMessage);
-
-    try {
-        // Get AI response from the model
-        const aiResponse = await ai.generate(model, conversationData);
-
-        // Add AI response to the conversation data
-        conversationData.push({ role: 'assistant', content: aiResponse });
-
-        // Write the updated conversation data to store.json
-        fs.writeFileSync('store.json', JSON.stringify(conversationData, null, 2));
-
-        // Reply to the user with AI's response
-        await m.reply(aiResponse);
-    } catch (error) {
-        console.error("Error with AI generation: ", error);
-        await m.reply("Sorry, there was an error generating the response.");
-    }
+    // If no APIs succeeded
+    sendReply(client, m, "An error occurred while communicating with the APIs. Please try again later.");
+  } catch (e) {
+    sendReply(client, m, 'An error occurred while communicating with the APIs\n' + e);
+  }
 };
