@@ -1,5 +1,6 @@
+const fancy = require(__dirname + "/../../lib/style");
 module.exports = async (context) => {
-  const { client, m, author, text, args, botname, fancy } = context;
+  const { client, m, author, text, args, botname } = context;
 
   const id = text;
   const fullText = args.slice(1).join(" ");
