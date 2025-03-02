@@ -5,6 +5,7 @@ module.exports = async (context) => {
 
   const apis = [
     `https://vapis.my.id/api/openai?q=${encodeURIComponent(text)}`,
+    `https://vapis.my.id/api/gpt4o?q=${encodeURIComponent(text)}`,
     `https://lance-frank-asta.onrender.com/api/gpt?q=${encodeURIComponent(text)}`,
     `https://api.gurusensei.workers.dev/llama?prompt=${encodeURIComponent(text)}`,
     `https://api.ryzendesu.vip/api/ai/v2/chatgpt?text=${encodeURIComponent(text)}`,
