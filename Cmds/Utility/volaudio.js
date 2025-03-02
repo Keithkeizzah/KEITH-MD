@@ -1,9 +1,9 @@
-const { getRandom } = require(__dirname + "/../../lib/botFunctions");
+
 const fs = require('fs');
 const { exec } = require('child_process');
 
 module.exports = async (context) => {
-  const { client, m, text, args } = context;
+  const { client, m, text, args, getRandom } = context;
 
   try {
     const quoted = m.quoted ? m.quoted : null;
