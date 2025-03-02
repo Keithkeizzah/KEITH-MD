@@ -1,57 +1,37 @@
 const fetch = require("node-fetch");
-const fs = require('fs');
 
 module.exports = async (context) => {
-  const { client, m, text } = context;
+  const { client, m, text, sendReply, sendMediaMessage } = context;
 
   const apis = [
     `https://dark.guruapi.tech/egpt?prompt=${encodeURIComponent(text)}`,
-    `https://lance-frank-asta.onrender.com/api/gpt?q=${encodeURIComponent(text)}`,
-    `https://api.gurusensei.workers.dev/llama?prompt=${encodeURIComponent(text)}`,
-    `https://api.ryzendesu.vip/api/ai/v2/chatgpt?text=${encodeURIComponent(text)}`,
-    `https://api.dreaded.site/api/chatgpt?text=${encodeURIComponent(text)}`,
-    `https://api.giftedtech.my.id/api/ai/gpt4?apikey=gifted&q=${encodeURIComponent(text)}`,
-    `https://api.giftedtech.my.id/api/ai/gpt4v2?apikey=gifted&q=${encodeURIComponent(text)}`,
-    `https://api.giftedtech.my.id/api/ai/gpt4-o?apikey=gifted&q=${encodeURIComponent(text)}`
+    `https://apis.davidcyriltech.my.id/ai/metaai?text=${encodeURIComponent(text)}`,
+    `https://api.siputzx.my.id/api/ai/metaai?query=${encodeURIComponent(text)}`
   ];
 
-  
-  let conversationData = [];
   try {
-    const rawData = fs.readFileSync('store.json');
-    conversationData = JSON.parse(rawData);
-  } catch (err) {
-    console.log('No previous conversation found, starting new one.');
-  }
-
-  const userMessage = { role: 'user', content: text };
-  conversationData.push(userMessage);
-
-  try {
-    if (!text) return m.reply("hello how can i assist you today");
+    if (!text) return sendReply(client, m, "provide a text ");
 
     for (const api of apis) {
       try {
         const data = await fetch(api);
         const msgg = await data.json();
 
-        if (msgg.message || msgg.response || msgg.result) {
-          const final = msgg.message || msgg.response?.response || msgg.result.prompt || msgg.result;
-          const aiMessage = { role: 'assistant', content: final };
-          conversationData.push(aiMessage);
-
-          fs.writeFileSync('store.json', JSON.stringify(conversationData, null, 2));
-
-          await m.reply(final);
+        // Checking if the API response is successful
+        if (msgg.message || msgg.data) {
+          const final = msgg.message || msgg.data;
+          await sendReply(client, m, final);
           return;
         }
       } catch (e) {
+        // Continue to the next API if one fails
         continue;
       }
     }
 
-    m.reply("An error occurred while communicating with the APIs. Please try again later.");
+    // If no APIs succeeded
+    sendReply(client, m, "An error occurred while communicating with the APIs. Please try again later.");
   } catch (e) {
-    m.reply('An error occurred while communicating with the APIs\n' + e);
+    sendReply(client, m, 'An error occurred while communicating with the APIs\n' + e);
   }
 };
