@@ -1,157 +1,77 @@
+const yts = require("yt-search");
 const axios = require("axios");
-const fg = require("api-dylux");
-const ytSearch = require("yt-search");
 
-async function downloadAudio(url) {
+module.exports = async (context) => {
+  const { client, m, text, fetchJson, botname, sendReply, sendMediaMessage } = context;
+
   try {
-    if (!url) {
-      throw new Error("URL parameter is required");
-    }
-    
-    const response = await fg.yta(url);
-    const title = response.title;
-    const downloadLink = response.dl_url;
+    if (!text) return sendReply(client, m, "What song do you want to download?");
 
-    return {
-      status: true,
-      createdBy: "Keithkeizzah ",
-      title: title,
-      downloadLink: downloadLink
-    };
-  } catch (error) {
-    console.error("Error fetching audio:", error);
-    return null;
-  }
-}
+    let search = await yts(text);
+    let link = search.all[0].url;
 
-async function downloadVideo(url, format) {
-  try {
-    if (!url || !format) {
-      throw new Error("URL and format parameters are required.");
-    }
-    
-    const formatValue = parseInt(format.replace('p', ''), 10);
-    const requestParams = {
-      button: 1,
-      start: 1,
-      end: 1,
-      format: formatValue,
-      url: url
-    };
+    const apis = [
+      `https://apis.davidcyriltech.my.id/youtube/mp4?url=${link}`,
+      `https://api.ryzendesu.vip/api/downloader/ytmp4?url=${link}`
+    ];
 
-    const headers = {
-      Accept: "*/*",
-      "Accept-Encoding": "gzip, deflate, br",
-      "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
-      Origin: "https://loader.to",
-      Referer: "https://loader.to",
-      "Sec-Ch-Ua": "\"Not-A.Brand\";v=\"99\", \"Chromium\";v=\"124\"",
-      "Sec-Ch-Ua-Mobile": '?1',
-      "Sec-Ch-Ua-Platform": "\"Android\"",
-      "Sec-Fetch-Dest": "empty",
-      "Sec-Fetch-Mode": "cors",
-      "Sec-Fetch-Site": "cross-site",
-      "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
-    };
+    for (const api of apis) {
+      try {
+        let data = await fetchJson(api);
 
-    const response = await axios.get("https://ab.cococococ.com/ajax/download.php", {
-      params: requestParams,
-      headers: headers
-    });
-    
-    const fileId = response.data.id;
+        // Checking if the API response is successful
+        if (data.status === 200 || data.success) {
+          let videoUrl = data.result?.downloadUrl || data.url;
 
-    // Poll for progress until download is complete
-    async function checkDownloadProgress() {
-      const progressResponse = await axios.get("https://p.oceansaver.in/ajax/progress.php", {
-        params: { id: fileId },
-        headers: headers
-      });
+          let songData = {
+            title: data.result?.title || search.all[0].title,
+            artist: data.result?.author || search.all[0].author.name,
+            thumbnail: data.result?.image || search.all[0].thumbnail,
+            videoUrl: link
+          };
 
-      const { progress, download_url, text } = progressResponse.data;
+          await sendMediaMessage(client, m, {
+            image: { url: songData.thumbnail },
+            caption: `
+     ╭═════════════════⊷
+     ║ *Title*: *${songData.title}*
+     ║ *Artist*: *${songData.artist}*
+     ║ *Url*: *${songData.videoUrl}*
+     ╰═════════════════⊷
+      *Powered by ${botname}*`
+          }, { quoted: m });
 
-      if (text === "Finished") {
-        return download_url;
-      } else {
-        // Wait for a second before checking progress again
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        return checkDownloadProgress();
+          await client.sendMessage(
+            m.chat,
+            {
+              video: { url: videoUrl },
+              mimetype: "video/mp4",
+             
+            },
+            { quoted: m }
+          );
+
+          await client.sendMessage(
+            m.chat,
+            {
+              document: { url: videoUrl },
+              mimetype: "video/mp4",
+              fileName: `${songData.title.replace(/[^a-zA-Z0-9 ]/g, "")}.mp4`,
+            },
+            { quoted: m }
+          );
+
+          return;
+        }
+      } catch (e) {
+        // Continue to the next API if one fails
+        continue;
       }
     }
 
-    return await checkDownloadProgress();
+    // If no APIs succeeded
+    sendReply(client, m, "An error occurred. All APIs might be down or unable to process the request.");
   } catch (error) {
-    console.error("Error fetching video:", error);
-    return null;
-  }
-}
-
-module.exports = async (messageDetails) => {
-  const { client, m: message, text: query } = messageDetails;
-  const chatId = message.chat;
-
-  try {
-    // Check if a query is provided
-    if (!query || query.trim().length === 0) {
-      return message.reply("What song or video do you want to download?");
-    }
-
-    // Perform a YouTube search based on the query
-    const searchResults = await ytSearch(query);
-
-    // If results are found
-    if (searchResults && searchResults.videos.length > 0) {
-      const firstVideo = searchResults.videos[0];
-      const videoUrl = firstVideo.url;
-
-      // Ask the user to choose the video format (e.g., 720p)
-      const format = '720p';  // You can dynamically choose the format, for example
-
-      // Use the downloadVideo function to get the download URL
-      const downloadUrl = await downloadVideo(videoUrl, format);
-
-      // If the download URL is successfully retrieved
-      if (downloadUrl) {
-      
-        // Send the video file to the user
-        await client.sendMessage(chatId, { video: { url: downloadUrl }, 
-mimetype: "video/mp4",
-    contextInfo: {
-            externalAdReply: {
-              title: firstVideo.title,
-              body: firstVideo.title,
-              mediaType: 1,
-              sourceUrl: "https://whatsapp.com/channel/0029Vaan9TF9Bb62l8wpoD47",
-              thumbnailUrl: firstVideo.thumbnail,
-              renderLargerThumbnail: false,
-              showAdAttribution: true
-            }
-          }
- }, { quoted: message });
-
-        // Send the video file as a document (optional)
-        await client.sendMessage(chatId, { document: { url: downloadUrl }, mimetype: "video/mp4",
-     contextInfo: {
-            externalAdReply: {
-              title: firstVideo.title,
-              body: firstVideo.title,
-              mediaType: 1,
-              sourceUrl: "https://whatsapp.com/channel/0029Vaan9TF9Bb62l8wpoD47",
-              thumbnailUrl: firstVideo.thumbnail,
-              renderLargerThumbnail: false,
-              showAdAttribution: true
-            }
-          }
- }, { quoted: message });
-
-    
-      } else {
-        message.reply("Failed to retrieve download URL.");
-      }
-    } else {
-      message.reply("No video found for the specified query.");
-    }
-  } catch (error) {
-    message.reply("Download failed\n" + error);
+    sendReply(client, m, "Download failed\n" + error.message);
   }
 };
