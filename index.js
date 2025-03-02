@@ -23,6 +23,7 @@ const {
 
 const { TelegraPh, UploadFileUgu } = require("./lib/toUrl");
 const uploadtoimgur = require("./lib/Imgur");
+const fancy = require("./lib/style");
 const { sendReply, sendMediaMessage } = require("./lib/context");
 const ytmp3 = require("./lib/ytmp3");
 const path = require("path");
@@ -282,7 +283,7 @@ async function startKeith() {
       if (command) {
         const commandObj = commands[command];
         if (commandObj) {
-          await commandObj.execute({ fetchJson, generateProfilePicture, args, client, m, mode,mime, Owner, qmsg, msgKeith, DevKeith, Tag, generateProfilePicture, text, totalCommands, botname, url, sendReply, sendMediaMessage, gurl, prefix, groupAdmin, getGroupAdmins, args, groupName, groupMetadata, herokuAppname, herokuapikey, packname, author, participants, isOwner, pushname, botNumber, itsMe, store, isAdmin, isBotAdmin });
+          await commandObj.execute({ fetchJson, style, generateProfilePicture, args, client, m, mode,mime, Owner, qmsg, msgKeith, DevKeith, Tag, generateProfilePicture, text, totalCommands, botname, url, sendReply, sendMediaMessage, gurl, prefix, groupAdmin, getGroupAdmins, args, groupName, groupMetadata, herokuAppname, herokuapikey, packname, author, participants, isOwner, pushname, botNumber, itsMe, store, isAdmin, isBotAdmin });
         }
       }
     } catch (err) {
