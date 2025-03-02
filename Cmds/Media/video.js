@@ -56,7 +56,7 @@ module.exports = async (context) => {
             {
               document: { url: videoUrl },
               mimetype: "video/mp4",
-              fileName: `${songData.title.replace(/[^a-zA-Z0-9 ]/g, "")}.mp4`,
+              fileName: `${songData.title.replace(/[^a-zA-Z0-9 ]/g, "")}`,
             },
             { quoted: m }
           );
