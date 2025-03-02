@@ -1,38 +1,72 @@
+const { downloadAndSaveMediaMessage } = require('@whiskeysockets/baileys');
 const { enhanceImage } = require(__dirname + "/../../lib/remini");
+const fs = require('fs').promises;
+const path = require('path');
 
 module.exports = async (context) => {
-  const { client, m, text: instructionText, mime: mimeType } = context;
+  const { client, m, text: instructionText } = context;
 
   try {
-    // Check if there is a quoted image
+    // Check if there is a quoted message
     if (!m.quoted) {
-      return await client.sendMessage(m.chat, { text: "Send the image and tag it with the instruction." }, { quoted: m });
+      return await client.sendMessage(m.chat, { 
+        text: "Please reply to an image message with your enhancement instruction." 
+      }, { quoted: m });
     }
 
-    // Ensure there is an instruction text provided
+    // Verify instruction text exists
     if (!instructionText) {
-      return await client.sendMessage(m.chat, { text: "Provide some instruction. This vision AI is powered by Gemini Pro Vision." }, { quoted: m });
+      return await client.sendMessage(m.chat, { 
+        text: "Please provide enhancement instructions. This feature uses Gemini Pro Vision." 
+      }, { quoted: m });
     }
 
-    // Check if the file is an image
-    if (!/image/.test(mimeType)) {
-      return await client.sendMessage(m.chat, { text: "That is not an image. Please quote an actual image." }, { quoted: m });
+    // Check if quoted message is an image
+    if (!m.quoted.mimetype.startsWith('image/')) {
+      return await client.sendMessage(m.chat, { 
+        text: "Quoted message is not an image. Please reply to an image." 
+      }, { quoted: m });
     }
 
     try {
-      const media = await m.quoted.download();
-      if (!media) {
-        return await client.sendMessage(m.chat, { text: "❌ *Failed to download media. Try again.*" }, { quoted: m });
+      // Download the quoted image
+      const mediaPath = path.join(__dirname, 'temp', `${Date.now()}.jpg`);
+      const downloadResult = await downloadAndSaveMediaMessage(
+        m.quoted,
+        { filename: mediaPath }
+      );
+
+      if (!downloadResult) {
+        return await client.sendMessage(m.chat, { 
+          text: "❌ Failed to download image. Please try again." 
+        }, { quoted: m });
       }
 
-      const enhancedImage = await remini(media, 'enhance');
-      await client.sendMessage(m.chat, { image: enhancedImage, caption: "✅ *Image enhancement successful!*" }, { quoted: m });
+      // Read the downloaded image
+      const imageBuffer = await fs.readFile(mediaPath);
+      
+      // Process the image
+      const enhancedImage = await enhanceImage(imageBuffer, 'enhance');
+      
+      // Clean up temporary file
+      await fs.unlink(mediaPath);
+
+      // Send result
+      await client.sendMessage(m.chat, { 
+        image: enhancedImage,
+        caption: "✅ Image enhanced successfully!" 
+      }, { quoted: m });
+
     } catch (error) {
-      console.error(error);
-      await client.sendMessage(m.chat, { text: "❌ *An error occurred while enhancing the image.*" }, { quoted: m });
+      console.error('Processing error:', error);
+      await client.sendMessage(m.chat, { 
+        text: "❌ Failed to process image. Please try again later." 
+      }, { quoted: m });
     }
   } catch (error) {
-    console.error(error);
-    await client.sendMessage(m.chat, { text: "❌ *An error occurred.*" }, { quoted: m });
+    console.error('General error:', error);
+    await client.sendMessage(m.chat, { 
+      text: "❌ An unexpected error occurred." 
+    }, { quoted: m });
   }
 };
