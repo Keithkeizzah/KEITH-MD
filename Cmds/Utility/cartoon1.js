@@ -1,5 +1,5 @@
+const axios = require('axios');
 const fs = require('fs');
-const sharp = require('sharp');
 const { exec } = require('child_process');
 const { getRandom } = require(__dirname + "/../../lib/botFunctions");
 
@@ -18,7 +18,7 @@ module.exports = async (context) => {
     const media = await client.downloadAndSaveMediaMessage(quoted);
     const outputPath = getRandom(".png");
 
-    // Enhance the image to a cartoon-like character
+    // Enhance the image to a cartoon-like character using ImageMagick
     exec(`convert ${media} -resize 1000x1000 -cartoon 0x2 ${outputPath}`, (err) => {
       fs.unlinkSync(media);
       if (err) {
