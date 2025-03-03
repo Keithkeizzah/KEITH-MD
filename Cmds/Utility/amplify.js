@@ -1,17 +1,17 @@
-const { getRandom } = require(__dirname + "/../../lib/botFunctions");
+
 const fs = require('fs');
 const { exec } = require('child_process');
 const axios = require('axios');
 
 module.exports = async (context) => {
-  const { client, m, text } = context;
+  const { client, m, text, getRandom } = context;
 
   try {
     const quoted = m.quoted ? m.quoted : null;
     const mime = quoted?.mimetype || "";
 
     if (!quoted || !/video/.test(mime)) {
-      await client.sendMessage(m.chat, { text: `Reply to a *video file* with the audio URL to add to the video.` }, { quoted: m });
+      await client.sendMessage(m.chat, { text: `Reply to a *video file* with the audio URL to replace the video's audio.` }, { quoted: m });
       return;
     }
 
@@ -34,8 +34,8 @@ module.exports = async (context) => {
 
     fs.writeFileSync(audioPath, response.data);
 
-    // Merge the downloaded audio with the quoted video
-    exec(`ffmpeg -i ${media} -i ${audioPath} -c:v copy -c:a aac -strict experimental ${outputPath}`, (err) => {
+    // Merge the downloaded audio with the quoted video and replace the original audio
+    exec(`ffmpeg -i ${media} -i ${audioPath} -c:v copy -map 0:v:0 -map 1:a:0 -shortest ${outputPath}`, (err) => {
       fs.unlinkSync(media);
       fs.unlinkSync(audioPath);
       if (err) {
