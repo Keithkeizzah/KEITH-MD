@@ -1,10 +1,17 @@
-const { addUserWithWarnCount, getWarnCountByJID, resetWarnCountByJID } = require(__dirname + "/../../lib/warn");
+const { addUserWithWarnCount, getWarnCountByJID, resetWarnCountByJID } = require(__dirname + "/../../database/warn");
 const middleware = require('../../utility/botUtil/middleware');
 
 module.exports = async (context) => {
   await middleware(context, async () => {
     const { client, m, text, args } = context;
-    const authorReplied = m.quoted ? m.quoted.participant : m.sender;
+
+    // Check if the message is quoted or mentioned
+    if (!m.quoted && (!m.mentionedJid || m.mentionedJid.length === 0)) {
+      m.reply('Reply to a user with ".warn" or ".warn reset" to warn or reset the warn count.');
+      return;
+    }
+
+    const authorReplied = m.quoted ? m.quoted.participant : m.mentionedJid[0];
     const warnLimit = 3;
 
     if (!args.length || args.join('') === '') {
