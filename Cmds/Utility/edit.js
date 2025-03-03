@@ -1,54 +1,32 @@
-const { getRandom } = require(__dirname + "/../../lib/botFunctions");
-const fs = require('fs');
-const { exec } = require('child_process');
 const axios = require('axios');
+const sharp = require('sharp');
 
 module.exports = async (context) => {
-  const { client, m, text } = context;
+  const { client, m } = context;
 
   try {
     const quoted = m.quoted ? m.quoted : null;
     const mime = quoted?.mimetype || "";
 
-    if (!quoted || !/video/.test(mime)) {
-      await client.sendMessage(m.chat, { text: `Reply to a *video file* with the audio URL to replace the video's audio.` }, { quoted: m });
+    if (!quoted || !/image/.test(mime)) {
+      await client.sendMessage(m.chat, { text: `Reply to an *image file* to enhance it.` }, { quoted: m });
       return;
     }
 
-    if (!text) {
-      await client.sendMessage(m.chat, { text: `Provide an audio URL.` }, { quoted: m });
-      return;
-    }
-
-    const audioUrl = text.trim();
     const media = await client.downloadAndSaveMediaMessage(quoted);
-    const audioPath = getRandom(".mp3");
-    const outputPath = getRandom(".mp4");
+    
+    // Enhance the image using sharp
+    const enhancedImageBuffer = await sharp(media)
+      .resize({ width: 1000 }) // Resize to 1000 pixels wide (maintains aspect ratio)
+      .sharpen()               // Sharpen the image
+      .toBuffer();
 
-    // Download the audio from the URL
-    const response = await axios({
-      method: 'get',
-      url: audioUrl,
-      responseType: 'arraybuffer'
-    });
+    await client.sendMessage(m.chat, { image: enhancedImageBuffer, caption: "✨ *Image enhancement successful!*" }, { quoted: m });
 
-    fs.writeFileSync(audioPath, response.data);
-
-    // Merge the downloaded audio with the quoted video and replace the original audio
-    exec(`ffmpeg -i ${media} -i ${audioPath} -c:v copy -map 0:v:0 -map 1:a:0 -shortest ${outputPath}`, (err) => {
-      fs.unlinkSync(media);
-      fs.unlinkSync(audioPath);
-      if (err) {
-        client.sendMessage(m.chat, { text: "*Error!*" }, { quoted: m });
-        return;
-      }
-
-      const videoBuffer = fs.readFileSync(outputPath);
-      client.sendMessage(m.chat, { video: videoBuffer, mimetype: "video/mp4" }, { quoted: m });
-      fs.unlinkSync(outputPath);
-    });
+    // Clean up: remove the downloaded media file
+    fs.unlinkSync(media);
   } catch (error) {
-    console.error('Error processing media:', error);
-    client.sendMessage(m.chat, { text: 'An error occurred while processing the media.' }, { quoted: m });
+    console.error('Error enhancing image:', error);
+    await client.sendMessage(m.chat, { text: 'An error occurred while enhancing the image.' }, { quoted: m });
   }
 };
