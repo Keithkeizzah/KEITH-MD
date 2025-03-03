@@ -1,4 +1,4 @@
-const { addUserWithWarnCount, getWarnCountByJID, resetWarnCountByJID } = require(__dirname + "/../../database/warn");
+const { addUserWithWarnCount, getWarnCountByJID, resetWarnCountByJID } = require(__dirname + "/../../lib/warn");
 const middleware = require('../../utility/botUtil/middleware');
 
 module.exports = async (context) => {
