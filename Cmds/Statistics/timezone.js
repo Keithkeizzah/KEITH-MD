@@ -1,8 +1,8 @@
 module.exports = async (context) => {
   try {
-    const { client, m, args } = context;
+    const { client, m, text } = context;
 
-    const timezone = args[0];
+    const timezone = text;
 
     if (!timezone) {
       return m.reply("❌ Please provide a timezone code. Example: .timezone TZ");
