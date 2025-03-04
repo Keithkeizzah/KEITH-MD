@@ -9,6 +9,13 @@ module.exports = async (context) => {
 
     // Search for lyrics
     const lyricsResponse = await fetch(`https://api.ryzendesu.vip/api/search/lyrics?query=${encodeURIComponent(text)}`);
+    
+    // Check if the response is JSON
+    const lyricsContentType = lyricsResponse.headers.get("content-type");
+    if (!lyricsContentType || !lyricsContentType.includes("application/json")) {
+      return m.reply("The API response is not in JSON format.");
+    }
+
     const lyricsData = await lyricsResponse.json();
 
     if (!lyricsData || lyricsData.length === 0) return m.reply("No lyrics found for your search.");
