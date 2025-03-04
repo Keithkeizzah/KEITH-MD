@@ -1,47 +1,46 @@
-const fetch = require("node-fetch");
-const yts = require("yt-search");
+const fetch = require('node-fetch');
 
 module.exports = async (context) => {
-  const { client, m, text } = context;
+    const { client, m, text, fetchJson, sendReply } = context;
 
-  try {
-    if (!text) return m.reply("Please provide a song name.");
+    const apiUrl = `https://api.dreaded.site/api/lyrics?title=${encodeURIComponent(text)}`;
 
-    // Search for lyrics
-    const lyricsResponse = await fetch(`https://api.ryzendesu.vip/api/search/lyrics?query=${encodeURIComponent(text)}`);
-    
-    // Check if the response is JSON
-    const lyricsContentType = lyricsResponse.headers.get("content-type");
-    if (!lyricsContentType || !lyricsContentType.includes("application/json")) {
-      return m.reply("The API response is not in JSON format.");
+    try {
+        if (!text) return sendReply(client, m, "Provide a song name!");
+
+        const data = await fetchJson(apiUrl);
+
+        if (!data.success || !data.result || !data.result.lyrics) {
+            return sendReply(client, m, `Sorry, I couldn't find any lyrics for "${text}".`);
+        }
+
+        const { title, artist, link, thumb, lyrics } = data.result;
+
+        const imageUrl = thumb || "https://i.imgur.com/Cgte666.jpeg";
+
+        const imageBuffer = await fetch(imageUrl)
+            .then(res => res.buffer())
+            .catch(err => {
+                console.error('Error fetching image:', err);
+                return null;
+            });
+
+        if (!imageBuffer) {
+            return sendReply(client, m, "An error occurred while fetching the image.");
+        }
+
+        const caption = `**Title**: ${title}\n**Artist**: ${artist}\n\n${lyrics}`;
+
+        await client.sendMessage(
+            m.chat,
+            {
+                image: imageBuffer,
+                caption: caption
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error(error);
+        sendReply(client, m, `An error occurred while fetching the lyrics for "${text}".`);
     }
-
-    const lyricsData = await lyricsResponse.json();
-
-    if (!lyricsData || lyricsData.length === 0) return m.reply("No lyrics found for your search.");
-
-    const song = lyricsData[0];
-
-    // Search for image using YTS
-    const search = await yts(song.trackName);
-    const image = search.all[0]?.image || "https://via.placeholder.com/150";
-
-    const caption = `
-      *${song.trackName}* by *${song.artistName}*
-      Album: ${song.albumName}
-      Duration: ${song.duration} seconds
-      Instrumental: ${song.instrumental ? "Yes" : "No"}
-
-      *Lyrics:*
-      ${song.plainLyrics}
-    `;
-
-    await client.sendMessage(m.chat, {
-      image: { url: image },
-      caption: caption
-    }, { quoted: m });
-
-  } catch (e) {
-    m.reply('An error occurred while processing your request\n' + e);
-  }
-};
+}
