@@ -36,7 +36,7 @@ const authenticationn = require("./auth.js");
 const daddy = "254748387615@s.whatsapp.net";
 
 const {
-  autoview, autoread, botname, autobio, mode, anticallmsg, reactemoji, prefix, presence,
+  autoview, autoread, botname, timezone, autobio, mode, anticallmsg, reactemoji, prefix, presence,
   mycode, author, antibad, packname, url, gurl, herokuAppname, herokuapikey, anticall, dev, antilink, gcpresence, antionce, antitag, antidelete, autolike,
 } = require("./settings");
 
