@@ -1,5 +1,5 @@
 const axios = require('axios');
-const traduction = require('traduction');
+const translatte = require('translatte');
 
 module.exports = async (context) => {
   try {
@@ -15,8 +15,9 @@ module.exports = async (context) => {
     const response = await axios.get(apiUrl);
     const data = response.data.data;
 
-    // Translate the explanation to English using traduction
-    const tafsirTranslated = await traduction(data.tafsir.id, { to: 'en' });
+    // Translate the explanation to English using translatte
+    const tafsirTranslated = await translatte(data.tafsir.id, { to: 'en' });
+    const translatedText = tafsirTranslated.text;
 
     const messageText = `
 *🕌 Quran: The Holy Book*
@@ -24,7 +25,7 @@ module.exports = async (context) => {
 Type: ${data.type.en}
 Number of verses: ${data.ayahCount}
 🔮 *Explanation (Urdu):* ${data.tafsir.id}
-🔮 *Explanation (Translated to English):* ${tafsirTranslated.text}
+🔮 *Explanation (Translated to English):* ${translatedText}
     `;
 
     m.reply(messageText.trim());
