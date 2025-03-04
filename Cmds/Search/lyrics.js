@@ -31,8 +31,7 @@ module.exports = async (context) => {
 
         const caption = `**Title**: ${title}\n**Artist**: ${artist}\n\n${lyrics}`;
 
-        await client.sendMessage(
-            m.chat,
+        await sendMediaMessage(client, m, 
             {
                 image: imageBuffer,
                 caption: caption
