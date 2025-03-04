@@ -1,4 +1,4 @@
-const textToImage = require('text-to-image');
+/*const textToImage = require('text-to-image');
 
 module.exports = async (context) => {
   const { client, m, text } = context;
@@ -17,3 +17,4 @@ module.exports = async (context) => {
     m.reply('An error occurred while converting text to image\n' + e);
   }
 };
+*/
