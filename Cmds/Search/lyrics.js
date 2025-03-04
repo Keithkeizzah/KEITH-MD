@@ -29,7 +29,7 @@ module.exports = async (context) => {
       return sendReply(client, m, "An error occurred while fetching the image.");
     }
 
-    const caption = `**Title**: ${title}\n**Artist**: ${artist}\n\n${lyrics}`;
+    const caption = `*Title*: ${title}\n*Artist*: ${artist}\n\n${lyrics}`;
 
     await sendMediaMessage(client, m, 
       {
