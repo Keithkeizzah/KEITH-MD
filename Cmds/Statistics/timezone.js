@@ -5,7 +5,7 @@ module.exports = async (context) => {
     const timezone = text;
 
     if (!timezone) {
-      return m.reply("❌ Please provide a timezone code. Example: .timezone TZ");
+      return m.reply("❌ Please provide a timezone code. Example: .timezone Africa/Nairobi");
     }
 
     // Get current date and time
