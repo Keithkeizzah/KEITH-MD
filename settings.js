@@ -27,6 +27,7 @@ const anticall = process.env.ANTICALL || 'true';
 const antidelete = process.env.ANTIDELETE || 'true';
 const autoview = process.env.AUTOVIEW_STATUS || 'true';
 const autolike = process.env.AUTOLIKE_STATUS || 'true';
+const timezone = process.env.TIMEZONE || 'Africa/Nairobi';
 const autoread = process.env.AUTOREAD || 'true';
 const anticallmsg = process.env.ANTICALL_MSG || 'Keith declined your 🤙 call';
 const autobio = process.env.AUTOBIO || 'false';
