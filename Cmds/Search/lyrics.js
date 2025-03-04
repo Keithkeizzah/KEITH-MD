@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 
 module.exports = async (context) => {
-    const { client, m, text, fetchJson, sendReply } = context;
+    const { client, m, text, fetchJson, sendReply, sendMediaMessage } = context;
 
     const apiUrl = `https://api.dreaded.site/api/lyrics?title=${encodeURIComponent(text)}`;
 
