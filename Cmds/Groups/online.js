@@ -10,7 +10,7 @@ module.exports = async (context) => {
       }
 
       const groupMetadata = await client.groupMetadata(m.chat); // Fetch the group metadata
-      const typingMembers = [];
+      const onlineMembers = [];
 
       // Request presence updates for each member and listen for their presence status
       for (const participant of groupMetadata.participants) {
@@ -21,26 +21,21 @@ module.exports = async (context) => {
       client.ev.on('presence.update', async (json) => {
         for (const participant of groupMetadata.participants) {
           const presence = json.presences[participant.id]?.lastKnownPresence;
-          if (presence === 'composing') {  // Check if the member is typing
-            if (!typingMembers.some(member => member.id === participant.id)) {
-              const contact = await client.getContact(participant.id);
-              typingMembers.push({ id: participant.id, pushname: contact.pushname || contact.notify });
+          if (presence === 'available') {  // Check if the member is online
+            if (!onlineMembers.some(member => member.id === participant.id)) {
+              onlineMembers.push(participant.id);
             }
           }
         }
 
-        if (typingMembers.length > 0) {
-          // Reply with the list of typing members in a single message
-          const typingMembersText = typingMembers.map((member, index) => `${index + 1}. @${member.pushname}`).join('\n');
-          m.reply(`${m.pushName}, there are ${typingMembers.length} members currently typing in this group:\n${typingMembersText}`, {
-            mentions: typingMembers.map(member => member.id)
-          });
-        }
+        // Reply with the list of online members in the desired format
+        const onlineMembersText = onlineMembers.map((member, index) => `${index + 1}. ${member}`).join('\n');
+        m.reply(`Online members:\n${onlineMembersText}`);
       });
 
     } catch (error) {
-      console.error("Error in listing typing members:", error);
-      m.reply("❌ An error occurred while listing typing members. Please try again later.");
+      console.error("Error in listing online members:", error);
+      m.reply("❌ An error occurred while listing online members. Please try again later.");
     }
   });
 };
