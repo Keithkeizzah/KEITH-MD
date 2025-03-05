@@ -12,9 +12,9 @@ module.exports = async (context) => {
 
     const name = text.trim();
     const jid = m.quoted.sender;
-    const number = jid.split('@')[0];  // Extracting the pure number from the quoted message's JID
+    const number = jid.split('@')[0];  
 
-    // Prepare VCard for the quoted message's number
+    
     const vcard = [
       'BEGIN:VCARD',
       'VERSION:3.0',
