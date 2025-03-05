@@ -285,7 +285,7 @@ async function startKeith() {
       if (command) {
         const commandObj = commands[command];
         if (commandObj) {
-          await commandObj.execute({ fetchJson, getRandom, generateProfilePicture, args, dev, client, m, mode,mime, Owner, qmsg, msgKeith, Tag, generateProfilePicture, text, totalCommands, botname, url, sendReply, sendMediaMessage, gurl, prefix, groupAdmin, getGroupAdmins, args, groupName, groupMetadata, herokuAppname, herokuapikey, packname, author, participants, isOwner, pushname, botNumber, itsMe, store, isAdmin, isBotAdmin });
+          await commandObj.execute({ fetchJson, getRandom, generateProfilePicture, args, dev, client, m, mode, mime, Owner, qmsg, msgKeith, Tag, generateProfilePicture, text, totalCommands, botname, url, sendReply, sendMediaMessage, gurl, prefix, groupAdmin, getGroupAdmins, args, groupName, groupMetadata, herokuAppname, herokuapikey, packname, author, participants, isOwner, pushname, botNumber, itsMe, store, isAdmin, isBotAdmin });
         }
       }
     } catch (err) {
