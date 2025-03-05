@@ -2,17 +2,10 @@ module.exports = async (context) => {
   try {
     const { client, m, text, botname, dev } = context;
 
-    if (!m.quoted) {
-      return m.reply("❌ Please quote a message to create a VCard.");
-    }
 
-    if (!text) {
-      return m.reply("❌ Please provide a name for the VCard. Example: `.vcard Brian`");
-    }
-
-    const name = text.trim();
-    const jid = m.quoted.sender;
-    const number = jid.split('@')[0];  // Extracting the pure number from the quoted message's JID
+    const name = botname;
+   // const jid = m.quoted.sender;
+    const number = dev;  // Extracting the pure number from the quoted message's JID
 
     // Prepare VCard for the quoted message's number
     const vcard = [
