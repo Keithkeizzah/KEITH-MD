@@ -1,24 +1,49 @@
 module.exports = async (context) => {
   try {
-    const { client, m, botname, dev } = context;
+    const { client, m, text, botname, dev } = context;
 
-    // Create a vCard with the bot's name and the owner's WhatsApp number
-    const vcard = 
-      `BEGIN:VCARD\n` +
-      `VERSION:3.0\n` +
-      `FN:${botname}\n` +  // Full name of the owner
-      `TEL;type=CELL;type=VOICE;waid=${dev}:+${dev}\n` +  // WhatsApp ID and phone number
-      `END:VCARD`;
+    if (!m.quoted) {
+      return m.reply("❌ Please quote a message to create a VCard.");
+    }
 
-    // Send the contact card to the chat
+    if (!text) {
+      return m.reply("❌ Please provide a name for the VCard. Example: `.vcard Brian`");
+    }
+
+    const name = text.trim();
+    const jid = m.quoted.sender;
+    const number = jid.split('@')[0];  // Extracting the pure number from the quoted message's JID
+
+    // Prepare VCard for the quoted message's number
+    const vcard = [
+      'BEGIN:VCARD',
+      'VERSION:3.0',
+      `FN:${name}`,
+      `ORG:${botname};`, // Using the botname from the context
+      `TEL;type=CELL;type=VOICE;waid=${number}:${number}`,
+      'END:VCARD'
+    ].join('\n');
+
+    // Inform about the developer contact
+    await client.sendMessage(m.chat, {
+      text: `Below is the VCard for ${name}:`,
+    }, { quoted: m });
+
+    // Send message with VCard contact
     await client.sendMessage(m.chat, {
       contacts: {
-        displayName: botname,
+        displayName: name,
         contacts: [{ vcard }],
       },
     }, { quoted: m });
-  } catch (error) {
-    console.error("Error sending contact card:", error);
+
+    // Inform about the developer contact
+    await client.sendMessage(m.chat, {
+      text: `If you need further assistance, please contact ${dev}`,
+    }, { quoted: m });
+
+  } catch (e) {
+    console.error("Error in creating VCard:", e);
+    m.reply("❌ An error occurred while creating the VCard. Please try again later.");
   }
 };
-
