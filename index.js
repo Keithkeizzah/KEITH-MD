@@ -181,7 +181,7 @@ async function startKeith() {
         if (isBotAdmin) await client.groupParticipantsUpdate(m.chat, [kid], 'remove');
       }
 
-      const forbiddenWords = ['kuma', 'mafi', 'kumbavu', 'ngombe', 'fala', 'asshole', 'cunt', 'cock', 'slut', 'fag'];
+      /*const forbiddenWords = ['kuma', 'mafi', 'kumbavu', 'ngombe', 'fala', 'asshole', 'cunt', 'cock', 'slut', 'fag'];
       if (body && forbiddenWords.some(word => body.toLowerCase().includes(word)) {
         if (m.isGroup && antibad === 'true' && isBotAdmin && !isOwner && !isAdmin) {
           const kid = m.sender;
@@ -192,7 +192,7 @@ async function startKeith() {
           await client.sendMessage(m.chat, { delete: { remoteJid: m.chat, id: m.key.id, participant: kid } });
           await client.groupParticipantsUpdate(m.chat, [kid], 'remove');
         }
-      }
+      }*/
 
       if (cmd && mode === "private" && !itsMe && !isOwner && m.sender !== daddy) return;
 
