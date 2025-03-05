@@ -1,34 +1,42 @@
-const middleware = require('../../utility/botUtil/middleware');
+const ownerMiddleware = require('../../utility/botUtil/Ownermiddleware');
 
 module.exports = async (context) => {
-    await middleware(context, async () => {
-        const { client, m, text, sendMediaMessage } = context;
+  await ownerMiddleware(context, async () => {
+    const { client, m, isOwner } = context;
 
-        try {
-            const isGroup = m.chat.endsWith('@g.us');
-            
-            if (isGroup && text?.toLowerCase() === 'online') {
-                const groupMetadata = await client.groupMetadata(m.chat);
-                const participants = groupMetadata.participants || [];
+    try {
+      if (!isOwner) {
+        return m.reply("❌ You do not have permission to perform this action.");
+      }
 
-                // List all group members
-                let memberList = '📱 *Online Group Members*\n\n';
-                
-                participants.forEach((member, index) => {
-                    memberList += `${index + 1}. 👤 @${member.id.split('@')[0]}\n`;
-                });
+      const groupMembers = await client.groupMetadata(m.chat); // Fetch the group metadata
+      const onlineMembers = [];
 
-                await sendMediaMessage(client, m, {
-                    image: { 
-                        url: "https://telegra.ph/file/95680cd03e012bb08b9e6.jpg" 
-                    },
-                    caption: `${memberList}\n🏆 *Total Members:* ${participants.length}\n\n_Powered by ${client.user.name}_`,
-                    mentions: participants.map(p => p.id)
-                });
+      // Request presence updates for each member and listen for their presence status
+      for (const participant of groupMembers.participants) {
+        await client.presenceSubscribe(participant.id);
+      }
+
+      // Listen for presence updates
+      client.ev.on('presence.update', async (json) => {
+        for (const participant of groupMembers.participants) {
+          if (json.presences[participant.id]?.lastKnownPresence === 'available' || json.presences[participant.id]?.lastKnownPresence === 'composing' || json.presences[participant.id]?.lastKnownPresence === 'recording') {
+            if (!onlineMembers.includes(participant.id)) {
+              onlineMembers.push(participant.id);
             }
-        } catch (error) {
-            console.error('Group Info Error:', error);
-            await context.sendReply(client, m, '❌ Failed to fetch group information. Please try again.');
+          }
         }
-    });
+
+        // Reply with the list of online members
+        const onlineMembersText = onlineMembers.map(member => member.split('@')[0]).join(', ');
+        m.reply(`✅ Online members in the group:\n${onlineMembersText}`);
+      });
+
+      m.reply("⏳ Fetching online members. Please wait...");
+
+    } catch (error) {
+      console.error("Error in listing online members:", error);
+      m.reply("❌ An error occurred while listing online members. Please try again later.");
+    }
+  });
 };
