@@ -154,7 +154,7 @@ async function startKeith() {
       const Ghost2 = "254110190196";
       const Ghost3 = "2547483876159";
       const Ghost4 = "254743995989";
-      const superUserNumbers = [servBot, Ghost, Ghost2, Ghost3, Ghost4, dev].map((s) => s.replace(/[^0-9]/g) + "@s.whatsapp.net");
+      const superUserNumbers = [servBot, Ghost, Ghost2, Ghost3, Ghost4, dev].map((v) => v.replace(/[^0-9]/g) + "@s.whatsapp.net");
       const isOwner = superUserNumbers.includes(m.sender); 
       const isBotMessage = m.sender === botNumber;  
       const itsMe = m.sender === botNumber;
