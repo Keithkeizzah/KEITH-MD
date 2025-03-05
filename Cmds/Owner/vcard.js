@@ -11,7 +11,7 @@ module.exports = async (context) => {
     }
 
     const name = text.trim();
-    const number = m.quoted.text.trim();
+    const number = m.quoted.sender;  // Fetching the number from the quoted message's JID
 
     // Prepare VCard for the quoted message's number
     const vcard = [
