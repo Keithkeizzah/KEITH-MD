@@ -1,4 +1,4 @@
-This code has some syntax errors maybe there are redundant codes in here kindly just correct the code but don't modify it hence give me a clean code
+
 const {
    default: KeithConnect, BufferJSON, WA_DEFAULT_EPHEMERAL, generateWAMessageFromContent, proto, generateWAMessageContent,
   generateWAMessage, prepareWAMessageMedia, areJidsSameUser, getContentType, useMultiFileAuthState,
