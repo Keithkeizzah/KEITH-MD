@@ -1,5 +1,5 @@
 module.exports = async (context) => {
-    const { client, m, text, budy, Owner } = context;
+    const { client, m, text, budy, isOwner } = context;
 
     try {
         
