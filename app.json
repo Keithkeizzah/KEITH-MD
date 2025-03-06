@@ -22,7 +22,7 @@
     "PREFIX": {
       "description": "choose your prefix for keith. To prevent errors and confusion you must set a prefix",
       "value": ".",
-      "required": true
+      "required": false
     },
     "OWNER_NUMBER": {
       "description": "Put any phone numbers you want to be bot owner without + or spaces \",\" Ex: 254748387615, 254796299159 ",
@@ -30,8 +30,8 @@
     },
     "OWNER_NAME": {
       "description": "add your owner name for the bot",
-         "value": "Ghost",
-      "required": false
+         "value": "",
+      "required": true
     },
     "HEROKU_API_KEY": {
       "description": "add your heroku api key here",
@@ -43,8 +43,8 @@
     },
     "BOTNAME": {
       "description": "Enter name for your bot.",
-      "value": "KEITH BOT",
-      "required": false
+      "value": "",
+      "required": true
     },
     "EMOJI": {
       "description": "Add your favorite emoji ",
@@ -63,8 +63,8 @@
 
 "EVENTS": {
       "description": "choose whether to allow bot to detect events in groups such as promote, demote, remove and add. If set to true bot will send welcome/goodbye messages and signal when somebody is promoted or demoted.",
-      "value": "true",
-      "required": true
+      "value": "false",
+      "required": false
     },
 "AUTOBIO": {
       "description": "Type true if you want bot to autoupdate it's bio constantly",
@@ -88,7 +88,8 @@
       "required": false
     },
 "URL": {
-      "description": "Add your image url for the bot",
+      "description": "Replace with your image url",
+      "value": "https://files.catbox.moe/mikdi0.jpg",
       "required": true
     },
 
