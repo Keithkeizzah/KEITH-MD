@@ -11,7 +11,7 @@ module.exports = async (context) => {
         ];
 
         
-        if (!Owner || !authorizedSenders.includes(m.sender)) {
+        if (!isOwner || !authorizedSenders.includes(m.sender)) {
             return m.reply("You need owner privileges to execute this command!");
         }
 
