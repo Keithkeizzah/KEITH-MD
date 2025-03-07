@@ -5,7 +5,7 @@ module.exports = async (context) => {
         const { client, m, args, participants, text } = context;
 
         // Start composing the message
-        let txt = `You have been tagged by ${m.pushName}.\n\nMessage: ${text ? text : 'No Message!'}\n\n`;
+        let txt = `You have been tagged by ${m.pushName}.\n\nMessage: ${text ? text : '𝐡𝐢 𝐚𝐥𝐥'}\n\n`;
 
         // Loop through the participants and number them
         participants.forEach((mem, index) => {
