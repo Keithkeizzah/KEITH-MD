@@ -10,15 +10,15 @@ module.exports = async (context) => {
     'https://files.catbox.moe/y47yfn.mp3',
     'https://files.catbox.moe/4vctb8.mp3',
     'https://files.catbox.moe/7evega.mp3',
-    'https://files.catbox.moe/efmcxm.mp3',
-    'https://files.catbox.moe/gco5bq.mp3',
-    'https://files.catbox.moe/26oeeh.mp3',
-    'https://files.catbox.moe/a1sh4u.mp3',
-    'https://files.catbox.moe/vuuvwn.m4a',
-    'https://files.catbox.moe/wx8q6h.mp3',
-    'https://files.catbox.moe/uj8fps.m4a',
-    'https://files.catbox.moe/dc88bx.m4a',
-    'https://files.catbox.moe/tn32z0.m4a'
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    ''
   ];
 
   // Randomly pick an audio file
@@ -57,7 +57,7 @@ module.exports = async (context) => {
     contextInfo: {
       mentionedJid: [m.sender],
       externalAdReply: {
-        title: '𝗜 𝗔𝗠 𝗔𝗟𝗜𝗩𝗘 𝗠𝗢𝗧𝗛𝗘𝗥𝗙𝗨𝗖𝗞𝗘𝗥',
+        title: '𝗜 𝗔𝗠 𝗔𝗟𝗜𝗩𝗘 ꧁ঔ☬۝𝐅𝐎𝐔𝐑۝𝐅𝐈𝐍𝐆𝐄𝐑𝐒۝☬ঔ꧂',
         body: 'Regards Keithkeizzah',
         thumbnailUrl: img,
         sourceUrl: murl,
