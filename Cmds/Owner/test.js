@@ -3,13 +3,13 @@ module.exports = async (context) => {
 
   // Sound file URLs
   const audioFiles = [
-    'https://files.catbox.moe/hpwsi2.mp3',
-    'https://files.catbox.moe/xci982.mp3',
-    'https://files.catbox.moe/utbujd.mp3',
-    'https://files.catbox.moe/w2j17k.m4a',
-    'https://files.catbox.moe/851skv.m4a',
-    'https://files.catbox.moe/qnhtbu.m4a',
-    'https://files.catbox.moe/lb0x7w.mp3',
+    'https://files.catbox.moe/fr8og5.mp3',
+    'https://files.catbox.moe/xfggav.mp3',
+    'https://files.catbox.moe/i55yzl.m4a',
+    'https://files.catbox.moe/g62ba2.mp3',
+    'https://files.catbox.moe/y47yfn.mp3',
+    'https://files.catbox.moe/4vctb8.mp3',
+    'https://files.catbox.moe/7evega.mp3',
     'https://files.catbox.moe/efmcxm.mp3',
     'https://files.catbox.moe/gco5bq.mp3',
     'https://files.catbox.moe/26oeeh.mp3',
@@ -28,7 +28,7 @@ module.exports = async (context) => {
   const name = m.pushName || client.getName(m.sender);
   const url = 'https://github.com/Keithkeizzah/KEITH-MD2';
   const murl = 'https://whatsapp.com/channel/0029Vaan9TF9Bb62l8wpoD47';
-  const img = 'https://i.imgur.com/vTs9acV.jpeg';
+  const img = 'https://files.catbox.moe/ax92lq.jpg';
 
   // Constructing the contact message
   const con = {
