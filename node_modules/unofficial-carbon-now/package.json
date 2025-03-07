@@ -1,0 +1,19 @@
+{
+  "name": "unofficial-carbon-now",
+  "version": "1.0.6",
+  "description": "es un módulo que facilita la interacción con carbon.now.sh",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "carbon-now",
+    "carbon",
+    "images"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  }
+}

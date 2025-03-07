@@ -1,0 +1,39 @@
+{
+  "name": "ip-location",
+  "version": "1.0.1",
+  "description": "Get an IP or hostname location.",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard && tape test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jprichardson/ip-location.git"
+  },
+  "keywords": [
+    "ip",
+    "location",
+    "coordinates",
+    "latitude",
+    "longitude",
+    "host",
+    "name",
+    "networking",
+    "maxmind"
+  ],
+  "author": "JP Richardson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jprichardson/ip-location/issues"
+  },
+  "homepage": "https://github.com/jprichardson/ip-location#readme",
+  "devDependencies": {
+    "standard": "5.x",
+    "tape": "^4.4.0"
+  },
+  "browser": {
+    "http": false,
+    "https": false,
+    "url": false
+  }
+}

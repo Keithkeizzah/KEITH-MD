@@ -1,0 +1,43 @@
+{
+  "name": "lyrics-finder",
+  "author": {
+    "email": "rahil.kabani.4@gmail.com",
+    "name": "Rahil Kabani",
+    "url": "https://alias-rahil.github.io/"
+  },
+  "version": "21.7.0",
+  "description": "A Simple Lyrics Finder That Just Works!",
+  "main": "src/index.js",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alias-rahil/lyrics-finder/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alias-rahil/lyrics-finder.git"
+  },
+  "homepage": "https://github.com/alias-rahil/lyrics-finder#readme",
+  "dependencies": {
+    "html-to-text": "^5.1.1",
+    "node-fetch": "^2.6.0",
+    "encoding": "^0.1.13"
+  },
+  "scripts": {
+    "releaseminor": "git add . && git commit -m 'update' --allow-empty && npm version minor && git push && npm publish"
+  },
+  "keywords": [
+    "song",
+    "lyrics",
+    "rapidapi",
+    "azlyrics",
+    "findlyrics",
+    "google",
+    "genius",
+    "musixmatch",
+    "scrape",
+    "api"
+  ],
+  "bin": {
+    "lyrics-finder": "src/bin.js"
+  }
+}

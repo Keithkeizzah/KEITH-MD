@@ -1,0 +1,51 @@
+{
+  "name": "html-to-text",
+  "version": "5.1.1",
+  "description": "Advanced html to plain text converter",
+  "main": "index.js",
+  "scripts": {
+    "test": "istanbul cover _mocha && eslint .",
+    "example": "node ./example/html-to-text.js",
+    "lint": "eslint .",
+    "prepublish": "npm test"
+  },
+  "author": {
+    "name": "Malte Legenhausen",
+    "email": "legenhausen@werk85.de"
+  },
+  "homepage": "https://github.com/werk85/node-html-to-text",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/werk85/node-html-to-text.git"
+  },
+  "bugs": {
+    "url": "https://github.com/werk85/node-html-to-text/issues"
+  },
+  "dependencies": {
+    "he": "^1.2.0",
+    "htmlparser2": "^3.10.1",
+    "minimist": "^1.2.0",
+    "lodash": "^4.17.11"
+  },
+  "keywords": [
+    "html",
+    "node",
+    "text",
+    "mail",
+    "plain",
+    "converter"
+  ],
+  "engines": {
+    "node": ">= 4.0.0"
+  },
+  "bin": {
+    "html-to-text": "./bin/cli.js"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^5.15.3",
+    "istanbul": "^0.4.5",
+    "mocha": "^6.0.2"
+  }
+}

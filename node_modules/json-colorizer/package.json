@@ -1,0 +1,54 @@
+{
+  "name": "json-colorizer",
+  "version": "2.2.2",
+  "description": "A library to format JSON with colors for display in the console",
+  "main": "src/lib/index.js",
+  "files": [
+    "src/lib"
+  ],
+  "types": "src/lib/index.d.ts",
+  "scripts": {
+    "test": "mocha src/test",
+    "test:watch": "mocha -w src/test",
+    "prettify": "prettier --write src/**/*.js",
+    "lint": "eslint src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:joeattardi/json-colorizer.git"
+  },
+  "keywords": [
+    "json",
+    "colorize",
+    "console"
+  ],
+  "author": "Joe Attardi <jattardi@gmail.com> (http://joeattardi.codes)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joeattardi/json-colorizer/issues"
+  },
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "lodash.get": "^4.4.2"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^5.9.0",
+    "eslint-plugin-prettier": "^3.0.0",
+    "husky": "^1.1.4",
+    "lint-staged": "^8.0.5",
+    "mocha": "^5.2.0",
+    "prettier": "^1.15.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.js": [
+      "prettier --write",
+      "git add"
+    ]
+  }
+}

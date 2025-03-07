@@ -1,0 +1,47 @@
+{
+  "name": "g4f",
+  "version": "1.4.6",
+  "description": "GPT4 for free, No API key, no auth required.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "repository": {
+    "url": "https://github.com/VictorMRojas/g4f-ts"
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "jest"
+  },
+  "keywords": [
+    "gpt4free",
+    "gpt-free",
+    "free-gpt",
+    "gpt",
+    "gpt-3",
+    "gpt-3.5",
+    "gpt-4",
+    "bing",
+    "dalle",
+    "stable-diffusion",
+    "ai",
+    "completion",
+    "chat completion"
+  ],
+  "author": "victormrojas",
+  "license": "MIT",
+  "dependencies": {
+    "@types/signale": "^1.4.7",
+    "axios": "^1.6.5",
+    "signale": "^1.4.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.9",
+    "@babel/preset-env": "^7.23.9",
+    "@babel/preset-typescript": "^7.23.3",
+    "@types/jest": "^29.5.12",
+    "jest": "^29.7.0",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3"
+  }
+}

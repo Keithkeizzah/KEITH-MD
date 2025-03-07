@@ -1,0 +1,35 @@
+{
+  "name": "wanakana",
+  "version": "5.3.1",
+  "license": "MIT",
+  "homepage": "http://www.wanakana.com",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/WaniKani/WanaKana"
+  },
+  "description": "Utility library for converting between Kanji, Hiragana, Katakana, and Romaji",
+  "keywords": [
+    "english",
+    "japanese",
+    "hiragana",
+    "katakana",
+    "kana",
+    "romaji",
+    "conversion",
+    "transliteration",
+    "input",
+    "ime",
+    "wanikani"
+  ],
+  "bugs": {
+    "url": "https://github.com/WaniKani/WanaKana/issues"
+  },
+  "main": "cjs/index.js",
+  "types": "cjs/index.d.ts",
+  "react-native": "cjs/index.js",
+  "module": "esm/index.js",
+  "unpkg": "wanakana.min.js",
+  "engines": {
+    "node": ">=12"
+  }
+}

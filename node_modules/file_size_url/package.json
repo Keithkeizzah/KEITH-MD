@@ -1,0 +1,38 @@
+{
+  "name": "file_size_url",
+  "version": "1.0.6",
+  "description": "A lightweight Node.js library to fetch the file size from a remote URL without downloading the file. Zero dependencies. Returns a Promise with the file size formatted as 'B', 'KB', 'MB', 'GB', or 'TB'.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "push": "npm publish",
+    "test": "node example/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rn0x/file_size_url.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "keywords": [
+    "url",
+    "file",
+    "size",
+    "remote",
+    "fetch",
+    "file size",
+    "http",
+    "https",
+    "head request",
+    "filesize",
+    "nodejs",
+    "utility"
+  ],
+  "author": "Rayan Almalki (rn0x)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rn0x/file_size_url/issues"
+  },
+  "homepage": "https://github.com/rn0x/file_size_url#readme"
+}

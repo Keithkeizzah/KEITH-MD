@@ -1,0 +1,81 @@
+{
+  "name": "quickmongo",
+  "version": "5.2.0",
+  "description": "Quick Mongodb wrapper for beginners that provides key-value based interface.",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    "require": "./dist/index.js",
+    "import": "./dist/index.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "docs": "typedoc --json docs/typedoc.json src/index.ts && node scripts/docgen.js",
+    "dev": "cd test && ts-node demo.ts",
+    "build": "tsup",
+    "build:check": "tsc --noEmit --incremental false",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "format": "prettier --write src/**/*.{ts,js,json,yaml,yml} __tests__/**/*.{ts,js,json,yaml,yml}",
+    "prepare": "husky install",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CesiumLabs/quickmongo.git"
+  },
+  "keywords": [
+    "quickmongo",
+    "mongodb",
+    "mongoose",
+    "schema",
+    "api",
+    "database",
+    "quick.db",
+    "enmap",
+    "endb"
+  ],
+  "author": "Archaeopteryx1 <contact@dhunganakunjan.com.np>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CesiumLabs/quickmongo/issues"
+  },
+  "homepage": "https://github.com/CesiumLabs/quickmongo#readme",
+  "contributors": [
+    "Archaeopteryx1 <contact@dhunganakunjan.com.np>",
+    "Zyrouge <zyrouge@hotmail.com>",
+    "DevSynth <synth@snowflakedev.org>"
+  ],
+  "devDependencies": {
+    "@babel/cli": "^7.14.8",
+    "@babel/core": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
+    "@babel/preset-typescript": "^7.15.0",
+    "@discordjs/ts-docgen": "^0.4.1",
+    "@shelf/jest-mongodb": "^2.0.3",
+    "@types/jest": "^27.0.1",
+    "@types/lodash": "^4.14.178",
+    "@types/node": "^16.7.10",
+    "@typescript-eslint/eslint-plugin": "^4.30.0",
+    "@typescript-eslint/parser": "^4.30.0",
+    "eslint": "^7.32.0",
+    "husky": "^7.0.2",
+    "jest": "^27.1.0",
+    "jsdoc-babel": "^0.5.0",
+    "prettier": "^2.3.2",
+    "quick.db": "^9.0.6",
+    "rimraf": "^3.0.2",
+    "ts-node": "^10.2.1",
+    "tsup": "^5.11.11",
+    "typedoc": "^0.23.14",
+    "typescript": "^4.4.2"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "mongoose": "^6.6.1",
+    "tiny-typed-emitter": "^2.1.0"
+  }
+}

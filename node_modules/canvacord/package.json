@@ -1,0 +1,65 @@
+{
+  "name": "canvacord",
+  "version": "5.4.10",
+  "description": "Powerful image manipulation package for beginners.",
+  "main": "index.js",
+  "types": "./typings/index.d.ts",
+  "bin": "./bin/canvacord.js",
+  "files": [
+    "bin",
+    "scripts",
+    "libs",
+    "plugins",
+    "src",
+    "index.js",
+    "typings"
+  ],
+  "scripts": {
+    "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
+    "docs:test": "docgen --source src --custom docs/index.yml",
+    "test": "cd test && node .",
+    "types": "tsc",
+    "postinstall": "node scripts/postinstall.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neplextech/Canvacord.git"
+  },
+  "keywords": [
+    "canvacord",
+    "canvas",
+    "image",
+    "manipulation",
+    "easy",
+    "simple",
+    "fast",
+    "api",
+    "rank",
+    "card",
+    "rankcard",
+    "welcomer",
+    "leaver",
+    "spotify",
+    "memegen"
+  ],
+  "author": "neplextech",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/neplextech/canvacord/issues"
+  },
+  "homepage": "https://canvacord.js.org",
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.29",
+    "@skyra/gifenc": "^1.0.0",
+    "chalk": "^5.0.1",
+    "moment": "^2.29.4",
+    "moment-duration-format": "^2.3.2",
+    "node-fetch": "2.6.7"
+  },
+  "devDependencies": {
+    "@discordjs/docgen": "^0.11.1",
+    "@types/node": "^16.4.7",
+    "typescript": "^4.7.4"
+  },
+  "packageManager": "yarn@3.6.0"
+}

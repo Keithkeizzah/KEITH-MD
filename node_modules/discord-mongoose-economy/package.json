@@ -1,0 +1,48 @@
+{
+  "_from": "discord-mongoose-economy",
+  "_id": "discord-mongoose-economy@1.0.0",
+  "_inBundle": false,
+  "_integrity": "sha512-/gqUk/PvKpOdF2dwdySnZIVeO+7eaa7vrZOh7qwYfK4CwUkpcterxoUMZl3TGo47Pzo0xP88UXMWsPPpft/XQA==",
+  "_location": "/discord-mongoose-economy",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "discord-mongoose-economy",
+    "name": "discord-mongoose-economy",
+    "escapedName": "discord-mongoose-economy",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/discord-mongoose-economy/-/discord-mongoose-economy-1.0.0.tgz",
+  "_shasum": "7472c21f38f4d4307f9e1373cda564bb49f5b1db",
+  "_spec": "discord-mongoose-economy",
+  "_where": "C:\\Users\\Shuncey Balba\\shuncey",
+  "author": {
+    "name": "Shuncey Balba"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "mongoose": "^5.10.11"
+  },
+  "deprecated": false,
+  "description": "Very Simple, and Fast Mongoose Economy System",
+  "keywords": [
+    "mongoose",
+    "discord",
+    "economy",
+    "money"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "name": "discord-mongoose-economy",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.2.0"
+}

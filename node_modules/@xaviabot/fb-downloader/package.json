@@ -1,0 +1,23 @@
+{
+  "name": "@xaviabot/fb-downloader",
+  "version": "1.0.14",
+  "description": "Downloads HD videos from Facebook.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "fb",
+    "facebook",
+    "downloader",
+    "fb-downloader",
+    "video-downloader",
+    "facebook-downloader"
+  ],
+  "author": "TIKAM CHAND MEGHWANSHI <https://www.tcmhack.in>, RFS-ADRENO",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.26.1"
+  },
+	"types": "index.d.ts"
+}
