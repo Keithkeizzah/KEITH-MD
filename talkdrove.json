@@ -1,0 +1,94 @@
+{
+  "bot-name": "KEITH-MD",
+  "description": "Have a better experience in WhatsApp with the KEITH-MD bot.",
+  "logo": "https://i.imgur.com/dAtHp2k.jpeg",
+  "keywords": ["bot"],
+  "documentation-link": "https://keithmd-l4qc.onrender.com",
+  "owner-verification": "keizzahketh@gmail.com",
+
+  "env": {
+    "PREFIX": {
+      "description": "Choose your prefix for KEITH. To prevent errors and confusion, you must set a prefix.",
+      "value": ".",
+      "required": false
+    },
+    "OWNER_NUMBER": {
+      "description": "Enter the phone numbers of the bot owners without '+' or spaces. Separate multiple numbers with commas. Example: 254748387615,254796299159",
+      "required": false
+    },
+    "OWNER_NAME": {
+      "description": "Add the owner's name for the bot.",
+      "value": "",
+      "required": true
+    },
+    "BOTNAME": {
+      "description": "Enter a name for your bot.",
+      "value": "",
+      "required": true
+    },
+    "EMOJI": {
+      "description": "Add your favorite emoji.",
+      "value": "💚",
+      "required": false
+    },
+    "SESSION": {
+      "description": "Paste the session ID that you received in WhatsApp after linking the bot. It's used for authentication.",
+      "required": true
+    },
+    "AUTOVIEW_STATUS": {
+      "description": "Type 'true' if you want the bot to automatically read all status updates.",
+      "value": "true",
+      "required": false
+    },
+    "EVENTS": {
+      "description": "Choose whether to allow the bot to detect events in groups, such as promote, demote, remove, and add. If set to 'true', the bot will send welcome/goodbye messages and signal when somebody is promoted or demoted.",
+      "value": "true",
+      "required": false
+    },
+    "AUTOBIO": {
+      "description": "Type 'true' if you want the bot to auto-update its bio constantly.",
+      "value": "true",
+      "required": false
+    },
+    "ANTICALL_MSG": {
+      "description": "Add your anti-call message. This works when anti-call is enabled.",
+      "value": "Call 🤙 declined successfully.",
+      "required": false
+    },
+    "ANTICALL": {
+      "description": "Type 'true' if you want the bot to reject unnecessary calls.",
+      "value": "true",
+      "required": false
+    },
+    "GROUP_CONTROL": {
+      "description": "Type 'true' if you want the bot to kick users who send links or bad words in the group.",
+      "value": "true",
+      "required": false
+    },
+    "URL": {
+      "description": "Replace with your image URL.",
+      "value": "https://files.catbox.moe/mikdi0.jpg",
+      "required": true
+    },
+    "AUTOLIKE_STATUS": {
+      "description": "Type 'true' if you want the bot to automatically like status updates. This will only work if AUTOVIEW_STATUS is 'true'.",
+      "value": "true",
+      "required": false
+    },
+    "AUTOREAD": {
+      "description": "Set to 'true' if you want the bot to automatically blue-tick messages in private chats.",
+      "value": "false",
+      "required": false
+    },
+    "WA_PRESENCE": {
+      "description": "Set your WhatsApp presence status. Options: 'typing' (shows typing), 'recording' (shows recording), 'online' (always online), or leave blank to show the actual presence.",
+      "value": "typing",
+      "required": false
+    },
+    "MODE": {
+      "description": "Set to 'private' if you don't want other people to use the bot, or 'public' if you want everyone to access it.",
+      "value": "public",
+      "required": false
+    }
+  }
+}
