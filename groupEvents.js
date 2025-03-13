@@ -47,7 +47,7 @@ const Events = async (client, keizzah) => {
             } else if (keizzah.action === "remove") {
                 let userName2 = num;
 
-                let Lefttext = `Goodbye to this idiot another fallen soldier @${userName2.split("@")[0]}!You will be remembered. We are now ${groupMembersCount} members in this group😭.`;
+                let Lefttext = `Goodbye to this idiot\n\nanother fallen soldier \n@${userName2.split("@")[0]}!You will be remembered. \n\nWe are now ${groupMembersCount} members in this group😭.`;
                 if (events === 'true') {
                     await client.sendMessage(keizzah.id, {
                         image: { url: dpuser },
