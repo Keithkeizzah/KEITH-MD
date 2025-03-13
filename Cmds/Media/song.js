@@ -51,8 +51,7 @@ module.exports = async (context) => {
         m.chat,
         {
           audio: { url: audioData.downloadUrl },
-          mimetype: "audio/mp3",
-          caption: `Here is your song: ${audioData.title}`,
+          mimetype: "audio/mp4",
         },
         { quoted: m }
       );
