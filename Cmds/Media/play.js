@@ -74,6 +74,6 @@ module.exports = async (context) => {
     }
   } catch (error) {
     
-    return sendReply(client, m, `An error occurred: ${error.message}`);
+    return sendReply(client, m, `An error occurred: `);
   }
 };
