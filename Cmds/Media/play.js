@@ -1,7 +1,7 @@
 const yts = require("yt-search");
 
 module.exports = async (context) => {
-  const { client, m, text, sendReply, sendMediaMessage } = context;
+  const { client, m, text, botname, sendReply, sendMediaMessage } = context;
 
   try {
     if (!text) return sendReply(client, m, "What song do you want to download?");
@@ -28,17 +28,19 @@ module.exports = async (context) => {
         await sendMediaMessage(client, m, {
           image: { url: songData.thumbnail },
           caption: `
+       
      ╭═════════════════⊷
      ║ *Title*: *${songData.title}*
-     ║ *Url*: *${songData.videoUrl}*
-     ╰═════════════════⊷`
+     ║
+     ╰═════════════════⊷
+     *powered by ${botname}*`
         }, { quoted: m });
 
         await client.sendMessage(
           m.chat,
           {
             audio: { url: songData.downloadUrl },
-            mimetype: "audio/mp3",
+            mimetype: "audio/mp4",
           },
           { quoted: m }
         );
