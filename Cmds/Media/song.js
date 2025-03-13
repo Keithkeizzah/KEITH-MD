@@ -10,7 +10,7 @@ module.exports = async (context) => {
     let link = search.all[0].url;
 
     // Construct the API URL with the given format
-    const apiUrl = `https://keithapi.vercel.app/download/dlmp3?url=${link}`;
+    const apiUrl = `https://keith-api.vercel.app/download/dlmp3?url=${link}`;
 
     try {
       let response = await fetch(apiUrl);
