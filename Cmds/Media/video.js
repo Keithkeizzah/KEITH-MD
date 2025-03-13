@@ -1,66 +1,69 @@
 const yts = require("yt-search");
+const fetch = require("node-fetch"); // Ensure 'node-fetch' is imported for API calls
 
 module.exports = async (context) => {
   const { client, m, text, botname, sendReply, sendMediaMessage } = context;
 
   try {
-    if (!text) return sendReply(client, m, "What song do you want to download?");
+    // Check if a query is provided
+    if (!text) {
+      return sendReply(client, m, "Please specify the video you want to download.");
+    }
 
+    // Perform a YouTube search with the query
     let search = await yts(text);
-    let link = search.all[0].url;
+    if (!search.all.length) {
+      return sendReply(client, m, "No results found for your query.");
+    }
+    let link = search.all[0].url; // Get the first result's URL
 
-    // Construct the API URL with the given format
+    // Construct the API URL for video download
     const apiUrl = `https://keith-api.vercel.app/download/dlmp4?url=${link}`;
 
-    try {
-      let response = await fetch(apiUrl);
-      let data = await response.json();
+    // Fetch video details from the API
+    let response = await fetch(apiUrl);
+    let data = await response.json();
 
-      if (data.status) {
-        let songData = {
-          title: data.result.title,
-          thumbnail: search.all[0].thumbnail,
-          videoUrl: link,
-          downloadUrl: data.result.downloadUrl
-        };
+    // Check the API response status
+    if (data.status && data.result) {
+      const videoData = {
+        title: data.result.title,
+        downloadUrl: data.result.downloadUrl,
+        thumbnail: search.all[0].thumbnail,
+        format: data.result.format,
+        quality: data.result.quality,
+      };
 
-        // Send song details and media
-        await sendMediaMessage(client, m, {
-          image: { url: songData.thumbnail },
-          caption: `
-       
-     ╭═════════════════⊷
-     ║ *Title*: *${songData.title}*
-     ║
-     ╰═════════════════⊷
-     *powered by ${botname}*`
-        }, { quoted: m });
+      // Send video details and thumbnail to the user
+      await sendMediaMessage(client, m, {
+        image: { url: videoData.thumbnail },
+        caption: `
+╭═════════════════⊷
+║ *Title*: ${videoData.title}
+║ *Format*: ${videoData.format}
+║ *Quality*: ${videoData.quality}
+╰═════════════════⊷
+*Powered by ${botname}*`,
+      }, { quoted: m });
 
-        await client.sendMessage(
-          m.chat,
-          {
-            video: { url: songData.downloadUrl },
-            mimetype: "video/mp4",
-          },
-          { quoted: m }
-        );
+      // Send the video to the user
+      await client.sendMessage(
+        m.chat,
+        {
+          video: { url: videoData.downloadUrl },
+          mimetype: "video/mp4",
+          caption: `Here is your video: ${videoData.title}`,
+        },
+        { quoted: m }
+      );
 
-        await client.sendMessage(
-          m.chat,
-          {
-            document: { url: songData.downloadUrl },
-            mimetype: "video/mp4",
-            fileName: `${songData.title.replace(/[^a-zA-Z0-9 ]/g, "")}.mp3`,
-          },
-          { quoted: m }
-        );
-
-        return;
-      }
-    } catch (error) {
-      sendReply(client, m, "An error occurred while fetching the song. Please try again later.");
+      return;
+    } else {
+      // If API returns an error or invalid data
+      return sendReply(client, m, "Unable to fetch the video. Please try again later.");
     }
   } catch (error) {
-    sendReply(client, m, "Download failed\n" + error.message);
+    // Handle any unexpected errors
+    return sendReply(client, m, `An error occurred: ${error.message}`);
   }
 };
