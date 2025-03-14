@@ -31,12 +31,31 @@ const timezone = process.env.TIMEZONE || 'Africa/Nairobi';
 const autoread = process.env.AUTOREAD || 'true';
 const anticallmsg = process.env.ANTICALL_MSG || 'Keith declined your 🤙 call';
 const autobio = process.env.AUTOBIO || 'false';
+const database:
+		DATABASE_URL === './database.db'
+			? new Sequelize({
+					dialect: 'sqlite',
+					storage: DATABASE_URL,
+					logging: false,
+			  })
+			: new Sequelize(DATABASE_URL, {
+					dialect: 'postgres',
+					ssl: true,
+					protocol: 'postgres',
+					dialectOptions: {
+						native: true,
+						ssl: { require: true, rejectUnauthorized: false },
+					},
+					logging: false,
+			  }),
+};
 
 module.exports = {
   sessionName,
   presence,
   autoview,
   autoread,
+  database,
   botname,
   reactemoji,
   autobio,
