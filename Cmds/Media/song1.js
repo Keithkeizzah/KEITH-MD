@@ -1,5 +1,6 @@
 const yts = require("yt-search");
 const fetch = require("node-fetch");
+const axios = require("axios"); // Import axios
 
 // Base URLs for the API
 const INFO_URL = 'https://cdn59.savetube.su/info';
