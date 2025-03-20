@@ -7,10 +7,9 @@
 <!-- Centering the Image and Adding Separator Line -->
 <div style="text-align: center;">
   <a href="https://ibb.co/N6NMDtn">
-    <img src="https://i.imgur.com/XlQIFIF.jpeg" alt="01" border="0" width="400"/>
+    <img src="https://i.imgur.com/XlQIFIF.jpeg" alt="01" border="0" /></a>
   </a>
-  <a>
-    <img src='https://i.imgur.com/LyHic3i.gif' width="200"/>
+
   </a>
   <hr style="margin-top: 20px; margin-bottom: 20px;"/>
 </div>
