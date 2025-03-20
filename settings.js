@@ -1,6 +1,4 @@
-// Bot settings
-
-// You don't have to set this if you deploy using Heroku because you can simply set them in environment variables. Also, don't forget to sleep.
+/*I wrote a script to automate my job. Now I just sit back and watch Netflix while it runs.*/
 
 const session = process.env.SESSION || '';
 
