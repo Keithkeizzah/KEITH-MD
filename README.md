@@ -21,7 +21,7 @@
       Fork the repository to customize and use the bot for your needs.
       <br><br>
       <a href="https://github.com/keithkeizzah/KEITH-MD/fork">
-        <img src="https://img.shields.io/badge/CLICK%20HERE-purple" alt="FORK KEITH" width="150">
+        <img src="https://img.shields.io/badge/FORK-purple" alt="FORK KEITH" width="150">
       </a>
     </td>
     <td align="center">
@@ -36,7 +36,7 @@
   <tr>
     <td align="center">
       <b>KEITH APIs</b><br>
-      Visit our website for Keith APIs and integrations.
+      Visit our website for Keith APIs and integrations though still updating.
       <br><br>
       <a href="https://apis-keith.vercel.app/">
         <img src="https://img.shields.io/badge/Visit%20KEITH%20APIs-blue" alt="Visit KEITH APIs" width="200">
