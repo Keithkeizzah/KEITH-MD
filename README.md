@@ -1,3 +1,5 @@
+
+
 <h1 align="center">𝗞𝗘𝗜𝗧𝗛-𝗠𝗗</h1>
 
 <h1 align="center">Survival is winning, frankline everything else is bullshit, fairy tales spun by people afraid to look life in the eye, do whatever it takes kid, survive 😏🙏</h1>
@@ -34,7 +36,15 @@
     </td>
   </tr>
   <tr>
-    <td colspan="2" align="center">
+    <td align="center">
+      <b>KEITH APIs</b><br>
+      Visit our website for Keith APIs and integrations.
+      <br><br>
+      <a href="https://apis-keith.vercel.app/">
+        <img src="https://img.shields.io/badge/Visit%20KEITH%20APIs-blue" alt="Visit KEITH APIs" width="200">
+      </a>
+    </td>
+    <td align="center">
       <b>DEPLOY</b><br>
       Deploy the bot to your server or platform of choice using the button below.
       <br><br>
@@ -45,7 +55,6 @@
   </tr>
 </table>
 
-<h1 align="center">𝐆𝐄𝐓 𝐘𝐎𝐔𝐑 𝐒𝐄𝐒𝐒𝐈𝐎𝐍</h1>
 
 <p align="center">
   <i>This bot is still under maintenance, and sometimes APIs might be down. Apologies for the inconvenience; we are working to make it better!</i>
@@ -61,16 +70,17 @@
   <li>If the issue persists, don’t give up! Just keep relinking the session until it works. 🙏🙏</li>
 </ol>
 
-<h1 align="center">𝗧𝗛𝗔𝗡𝗞𝗦 𝗧𝗢 𝗠𝗬 𝗟𝗢𝗩𝗘𝗟𝗬 𝗙𝗔𝗡𝗦</h1>
+<h1 align="center">Thanks to our loyal folowers</h1>
 
 <p align="center">
   <a href="https://github.com/Keithkeizzah/KEITH-MD/stargazers">
-    <img src="http://reporoster.com/stars/dark/Keithkeizzah/ALPHA-MD" alt="Stargazers repo roster for @Keithkeizzah/ALPHA-MD">
+    <img src="http://reporoster.com/stars/dark/Keithkeizzah/KEITH-MD" alt="Stargazers repo roster for @Keithkeizzah/KEITH-MD">
   </a>
 </p>
 
 <p align="center">
   <a href="https://github.com/Keithkeizzah/KEITH-MD/network/members">
-    <img src="http://reporoster.com/forks/dark/Keithkeizzah/ALPHA-MD" alt="Forkers repo roster for @Keithkeizzah/ALPHA-MD">
+    <img src="http://reporoster.com/forks/dark/Keithkeizzah/KEITH-MD" alt="Forkers repo roster for @Keithkeizzah/KEITH-MD">
   </a>
 </p>
+
