@@ -61,6 +61,11 @@ async function authenticationn() {
 
 authenticationn();
 
+//Why do we call it "open source" when it feels more like "open wounds"?🗿🗿
+
+//Because sharing is caring... and crying is healing🗿🗿
+
+
 
 const {
   default: KeithConnect, BufferJSON, WA_DEFAULT_EPHEMERAL, generateWAMessageFromContent, proto, generateWAMessageContent,
