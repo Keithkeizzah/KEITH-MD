@@ -4,7 +4,7 @@
 
 <h1 align="center">Survival is winning, frankline everything else is bullshit, fairy tales spun by people afraid to look life in the eye, do whatever it takes kid, survive 😏🙏</h1>
 
-<!-- Centering the Image and Adding Separator Line -->
+
 <div style="text-align: center;">
   <a href="https://ibb.co/N6NMDtn">
     <img src="https://i.imgur.com/XlQIFIF.jpeg" alt="01" border="0" /></a>
@@ -14,7 +14,6 @@
   <hr style="margin-top: 20px; margin-bottom: 20px;"/>
 </div>
 
-<!-- Fork Section, Session, and Deploy Section in a Table -->
 <table align="center" cellpadding="10" border="1">
   <tr>
     <td align="center">
