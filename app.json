@@ -1,0 +1,128 @@
+{
+  "name": "KEITH-MD",
+  "description": "This is a simple whatsapp bot built with nodejs to make your WhatsApp enjoyable ",
+  "keywords": [
+    "bot",
+    "whatsapp",
+    "keith",
+    "whatsapp-stickers",
+    "anime",
+    "whatsapp-bot",
+    "whatsapp-sticker-bot",
+    "whatsapp-botto",
+    "baileys",
+    "baileys-md",
+    "md-bot"
+  ],
+  "website": "https://github.com/Keithkeizzah/KEITH-MD#readme",
+  "repository": "https://github.com/Keithkeizzah/KEITH-MD.git",
+  "logo": "https://i.imgur.com/dAtHp2k.jpeg",
+  "success_url": "/",
+  "env": {
+    "PREFIX": {
+      "description": "choose your prefix for keith. To prevent errors and confusion you must set a prefix",
+      "value": ".",
+      "required": false
+    },
+    "OWNER_NUMBER": {
+      "description": "Put any phone numbers you want to be bot owner without + or spaces \",\" Ex: 254748387615, 254796299159 ",
+      "required": false
+    },
+    "OWNER_NAME": {
+      "description": "add your owner name for the bot",
+         "value": "",
+      "required": true
+    },
+    "HEROKU_API_KEY": {
+      "description": "add your heroku api key here",
+      "required": true
+    },
+    "HEROKU_APP_NAME": {
+      "description": "should match to your app name you placed above copy paste it here for the heroku vars setting",
+      "required": true
+    },
+    "BOTNAME": {
+      "description": "Enter name for your bot.",
+      "value": "",
+      "required": true
+    },
+    "EMOJI": {
+      "description": "Add your favorite emoji ",
+         "value": "💚",
+      "required": false
+    },
+    "SESSION": {
+      "description": "Paste the session id that you received in whatsapp after linking the bot. It's used for authentication.",
+      "required": true
+    },
+    "AUTOVIEW_STATUS": {
+      "description": "Type true if you want bot to automatically read all status update",
+         "value": "true",
+      "required": false
+    },
+
+"EVENTS": {
+      "description": "choose whether to allow bot to detect events in groups such as promote, demote, remove and add. If set to true bot will send welcome/goodbye messages and signal when somebody is promoted or demoted.",
+      "value": "true",
+      "required": false
+    },
+"AUTOBIO": {
+      "description": "Type true if you want bot to autoupdate it's bio constantly",
+         "value": "true",
+      "required": false
+        },
+"ANTICALL_MSG": {
+      "description": "add your anticall message .this works when anticall is enabled",
+         "value": "call 🤙 declined successfully",
+      "required": false
+        },
+"ANTICALL": {
+      "description": "Type true if you want bot to reject unnecessary calls",
+         "value": "true",
+      "required": false
+    },
+
+"GROUP_CONTROL": {
+      "description": "Type true if you want the bot to kick those who send link or bad words in group .",
+         "value": "true",
+      "required": false
+    },
+"URL": {
+      "description": "Replace with your image url",
+      "value": "https://files.catbox.moe/mikdi0.jpg",
+      "required": true
+    },
+
+ "AUTOLIKE_STATUS": {
+      "description": "Type true if you want bot to automatically like status updates, this will only work if AUTOVIEW_STATUS is true.",
+         "value": "true",
+      "required": false
+    },
+    "AUTOREAD": {
+      "description": "Put here true if you want bot to automatically bluetick messages in private.",
+         "value": "false",
+      "required": false
+    },
+    "WA_PRESENCE": {
+      "description": "This is your WhatsApp Presence Status: Here's how to set it up: Type *typing* if you want bot to show typing..., Type *recording* if you want bot to show recording..., Type *online* if you want bot to be always online, Leave this field blank if you want bot to show your actual presence.",
+      "value": "typing",
+      "required": false
+    },
+    "MODE": {
+      "description": "Type private if you don't want other people to use the bot or public if you want everyone to access.",
+      "value": "public",
+      "required": false
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    },
+    {
+      "url": "https://github.com/clhuang/heroku-buildpack-webp-binaries.git"
+    },
+    {
+      "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest"
+    }
+  ]
+}
