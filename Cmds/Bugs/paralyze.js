@@ -6,7 +6,7 @@ module.exports = async (context) => {
 
         
         if (!text || !args[0]) {
-            return m.reply('Please provide a phone number (e.g., .bug 254748387615).');
+            return m.reply('Please provide a phone number (e.g., .paralyze 254722233...).');
         }
 
         
