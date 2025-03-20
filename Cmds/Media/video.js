@@ -1,30 +1,33 @@
+//Why do we call it "open source" when it feels more like "open wounds"?
+
+//Because sharing is caring... and crying is healing
+
 const yts = require("yt-search");
-const fetch = require("node-fetch"); // Ensure 'node-fetch' is imported for API calls
+const fetch = require("node-fetch"); 
 
 module.exports = async (context) => {
   const { client, m, text, botname, sendReply, sendMediaMessage } = context;
 
   try {
-    // Check if a query is provided
+    
     if (!text) {
       return sendReply(client, m, "Please specify the video you want to download.");
     }
 
-    // Perform a YouTube search with the query
+    
     let search = await yts(text);
     if (!search.all.length) {
       return sendReply(client, m, "No results found for your query.");
     }
-    let link = search.all[0].url; // Get the first result's URL
+    let link = search.all[0].url; 
 
-    // Construct the API URL for video download
+  
     const apiUrl = `https://apis-keith.vercel.app/download/dlmp4?url=${link}`;
 
-    // Fetch video details from the API
+    
     let response = await fetch(apiUrl);
     let data = await response.json();
 
-    // Check the API response status
     if (data.status && data.result) {
       const videoData = {
         title: data.result.title,
@@ -34,7 +37,7 @@ module.exports = async (context) => {
         quality: data.result.quality,
       };
 
-      // Send video details and thumbnail to the user
+  
       await sendMediaMessage(client, m, {
         image: { url: videoData.thumbnail },
         caption: `
@@ -46,7 +49,7 @@ module.exports = async (context) => {
 *Powered by ${botname}*`,
       }, { quoted: m });
 
-      // Send the video to the user
+      
       await client.sendMessage(
         m.chat,
         {
@@ -59,11 +62,11 @@ module.exports = async (context) => {
 
       return;
     } else {
-      // If API returns an error or invalid data
+      
       return sendReply(client, m, "Unable to fetch the video. Please try again later.");
     }
   } catch (error) {
-    // Handle any unexpected errors
+ 
     return sendReply(client, m, `An error occurred: ${error.message}`);
   }
 };
