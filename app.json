@@ -46,6 +46,11 @@
       "value": "",
       "required": true
     },
+    "PM_PERMIT": {
+      "description": "type true if you don't want anyone to access your bot in pm.",
+      "value": "true",
+      "required": false
+    },
     "EMOJI": {
       "description": "Add your favorite emoji ",
          "value": "💚",
