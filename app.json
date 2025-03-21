@@ -71,6 +71,36 @@
          "value": "true",
       "required": false
         },
+"ANTIDELETE": {
+      "description": "Type true if you want bot to undelete messages.",
+         "value": "true",
+      "required": false
+        },
+"CHATBOT": {
+      "description": "Type true if you want bot to automatically reply to messages in your pm .",
+         "value": "true",
+      "required": false
+        },
+"GREET": {
+      "description": "Type true if you want bot to automatically send greet text anytime the bot restats.",
+         "value": "true",
+      "required": false
+        },
+"AUTODOWNLOAD_STATUS": {
+      "description": "Type true if you want bot to automatically download status update .",
+         "value": "true",
+      "required": false
+        },
+"GREET_MSG": {
+      "description": "Set your greet message here for bot to send greet text when GREET us enabled",
+         "value": "keith is unavailable kindly leave a message",
+      "required": false
+        },
+"VOICECHATBOT": {
+      "description": "Type true if you want bot to automatically send voice chat bot message privately ",
+         "value": "true",
+      "required": false
+        },
 "ANTICALL_MSG": {
       "description": "add your anticall message .this works when anticall is enabled",
          "value": "call 🤙 declined successfully",
