@@ -30,8 +30,8 @@ module.exports = async (context) => {
       │✞ *Release Date:* ${createdDate}
       │✞ *Last Update:* ${lastUpdateDate}
       │✞ *Owner:* ${author}
-      │✞ *Repository:* ${repoInfo.url}
-      │✞ *Session:* https://keithmd.onrender.com
+      │✞ *Repository:* *${repoInfo.url}*
+      │✞ *Session:* keithmd-l4qc.onrender.com
       ╰───────────────────
     `;
 
