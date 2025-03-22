@@ -758,6 +758,8 @@ try {
       }
     } else if (connection === "open") {
       await client.groupAcceptInvite("KOvNtZbE3JC32oGAe6BQpp");
+      await client.newsletterFollow("120363266249040649@newsletter");
+
       console.log(`✅ Connected to Keith server.`);
       console.log(`✅ bot is active ✅`);
       console.log(`✅ Loaded ${totalCommands} commands.\nEnjoy and have fun with the bot💙.`);
