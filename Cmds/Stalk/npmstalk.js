@@ -61,8 +61,7 @@ ${pkg.commands.installation || 'npm install ' + meta.package}
             m.chat, 
             { 
                 text: summary 
-            }, 
-            { quoted: m }
+            }
         );
         
     } catch (error) {
