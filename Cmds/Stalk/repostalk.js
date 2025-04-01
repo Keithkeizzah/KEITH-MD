@@ -91,8 +91,7 @@ ${featureList}
             { 
                 image: { url: owner.avatar },
                 caption: summary 
-            }, 
-            { quoted: m }
+            }
         );
         
     } catch (error) {
