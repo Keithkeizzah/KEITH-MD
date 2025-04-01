@@ -3,76 +3,89 @@ module.exports = async (context) => {
     
     try {
         // Validate input
-        if (!text) return sendReply(client, m, 'Please provide a TikTok username to search');
+        if (!text) return sendReply(client, m, '🔍 Please provide a TikTok username to search');
         
         const fetch = require("node-fetch");
-        const username = text.trim().replace('@', ''); // Normalize username
-        
-        // Fetch TikTok data
+        const username = text.trim().replace('@', '').replace(/\s+/g, ''); // Clean username input
+
+        // Fetch TikTok data with timeout
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000); // 10-second timeout
         const apiUrl = `https://apis-keith.vercel.app/search/tiktoksearch?query=${encodeURIComponent(username)}`;
-        const response = await fetch(apiUrl);
         
-        if (!response.ok) throw new Error('API request failed');
+        const response = await fetch(apiUrl, { signal: controller.signal });
+        clearTimeout(timeout);
+
+        if (!response.ok) throw new Error(`API responded with ${response.status}`);
         
         const data = await response.json();
         
         // Validate response
-        if (!data?.status || !Array.isArray(data.result) || data.result.length === 0) {
-            return sendReply(client, m, "No TikTok videos found. Please check the username and try again.");
+        if (!data?.status || !Array.isArray(data.result)) {
+            return sendReply(client, m, "❌ Invalid response from TikTok API");
+        }
+
+        if (data.result.length === 0) {
+            return sendReply(client, m, `🔎 No videos found for @${username}`);
         }
 
         // Helper functions
         const formatDuration = (sec) => {
+            if (!sec) return 'N/A';
             const mins = Math.floor(sec / 60);
             const secs = sec % 60;
-            return mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+            return `${mins > 0 ? mins + 'm ' : ''}${secs}s`;
         };
 
         const formatTimeAgo = (timestamp) => {
+            if (!timestamp) return 'Unknown';
             const seconds = Math.floor((Date.now() - timestamp * 1000) / 1000);
-            const intervals = {
-                year: 31536000,
-                month: 2592000,
-                week: 604800,
-                day: 86400,
-                hour: 3600,
-                minute: 60
-            };
             
-            for (const [unit, secondsInUnit] of Object.entries(intervals)) {
-                const interval = Math.floor(seconds / secondsInUnit);
+            const periods = [
+                { name: 'year', seconds: 31536000 },
+                { name: 'month', seconds: 2592000 },
+                { name: 'week', seconds: 604800 },
+                { name: 'day', seconds: 86400 },
+                { name: 'hour', seconds: 3600 },
+                { name: 'minute', seconds: 60 }
+            ];
+
+            for (const period of periods) {
+                const interval = Math.floor(seconds / period.seconds);
                 if (interval >= 1) {
-                    return `${interval} ${unit}${interval === 1 ? '' : 's'} ago`;
+                    return `${interval} ${period.name}${interval === 1 ? '' : 's'} ago`;
                 }
             }
-            return `${seconds} second${seconds === 1 ? '' : 's'} ago`;
+            return 'Just now';
         };
 
-        // Build results message
-        let message = `🎬 *TikTok Search Results for @${username}*\n`;
-        message += `📌 Found ${data.result.length} videos\n\n`;
+        // Build results message with all videos
+        let message = `🎬 *TikTok Results for @${username}* (${data.result.length} videos)\n\n`;
         
-        data.result.slice(0, 10).forEach((video, index) => { // Limit to 10 results
-            message += `*${index + 1}. ${video.title || 'Untitled video'}*\n`;
-            message += `👤 @${video.author} • 👀 ${(video.views || 0).toLocaleString()} views\n`;
-            message += `❤️ ${(video.likes || 0).toLocaleString()} • 💬 ${(video.comments || 0).toLocaleString()} • ↗️ ${(video.shares || 0).toLocaleString()}\n`;
-            message += `⏱ ${formatDuration(video.duration)} • 🕒 ${formatTimeAgo(video.created)}\n`;
-            message += `🔗 ${video.url}\n\n`;
+        data.result.forEach((video, index) => {
+            message += `▫️ *${index + 1}. ${video.title || 'Untitled'}*\n`;
+            message += `   👤 @${video.author || 'unknown'}\n`;
+            message += `   👀 ${(video.views || 0).toLocaleString()} views\n`;
+            message += `   ❤️ ${(video.likes || 0).toLocaleString()}  💬 ${(video.comments || 0).toLocaleString()}  ↗️ ${(video.shares || 0).toLocaleString()}\n`;
+            message += `   ⏱ ${formatDuration(video.duration)}  🕒 ${formatTimeAgo(video.created)}\n`;
+            message += `   🔗 ${video.url}\n\n`;
         });
 
-        if (data.result.length > 10) {
-            message += `\nℹ️ Showing 10 of ${data.result.length} results`;
-        }
+        // Get best available cover image (first with cover or default)
+        const coverImage = data.result.find(v => v.cover)?.cover || 
+                         'https://i.imgur.com/3QZQZ9Q.png'; // Default TikTok icon
 
-        // Send results with first video's cover
-        const firstVideo = data.result[0];
+        // Send results with cover image
         await sendMediaMessage(client, m, {
-            image: firstVideo?.cover ? { url: firstVideo.cover } : undefined,
+            image: { url: coverImage },
             caption: message.trim()
         }, { quoted: m });
 
     } catch (error) {
         console.error('TikTok search error:', error);
-        sendReply(client, m, "⚠️ Failed to search TikTok. Please try again later.");
+        const errorMsg = error.name === 'AbortError' 
+            ? '⌛ Search timed out (10s)' 
+            : '⚠️ Failed to search TikTok. Please try again later.';
+        sendReply(client, m, errorMsg);
     }
 };
