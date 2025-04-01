@@ -82,8 +82,7 @@ module.exports = async (context) => {
             { 
                 image: { url: basic.flag },
                 caption: summary 
-            }, 
-            { quoted: m }
+            }
         );
         
     } catch (error) {
