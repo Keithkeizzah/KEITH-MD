@@ -45,8 +45,7 @@ module.exports = async (context) => {
             { 
                 image: { url: channel.avatar.replace('=s72-c-k-c0x00ffffff-no-rj', '=s800-c-k-c0x00ffffff-no-rj') }, // Higher resolution
                 caption: summary 
-            }, 
-            { quoted: m }
+            }
         );
         
         // Send video thumbnails if available
@@ -57,7 +56,7 @@ module.exports = async (context) => {
             }));
             
             for (const thumb of videoThumbnails) {
-                await client.sendMessage(m.chat, thumb, { quoted: m });
+                await client.sendMessage(m.chat, thumb);
             }
         }
         
