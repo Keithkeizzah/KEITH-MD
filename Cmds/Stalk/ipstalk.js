@@ -78,16 +78,14 @@ module.exports = async (context) => {
             m.chat, 
             { 
                 text: summary 
-            }, 
-            { quoted: m }
+            }
         );
         
         await client.sendMessage(
             m.chat,
             {
                 text: `🗺️ *Location Map:* ${mapsUrl}`
-            },
-            { quoted: m }
+            }
         );
         
     } catch (error) {
