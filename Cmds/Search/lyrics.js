@@ -1,72 +1,76 @@
 module.exports = async (context) => {
-    const { client, m, text } = context;
+    const { client, m, text, sendReply, sendMediaMessage } = context;
     
     try {
-        if (!text) return m.reply('Please provide a song title to search lyrics');
+        // Validate input
+        if (!text) return sendReply(client, m, '🎵 Please provide a song title to search');
         
         const fetch = require("node-fetch");
         const query = text.trim();
         
+        // Fetch lyrics with timeout
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000);
         const apiUrl = `https://apis-keith.vercel.app/search/lyrics?query=${encodeURIComponent(query)}`;
-        const response = await fetch(apiUrl);
+        
+        const response = await fetch(apiUrl, { signal: controller.signal });
+        clearTimeout(timeout);
+
+        if (!response.ok) throw new Error(`API responded with ${response.status}`);
+        
         const data = await response.json();
         
-        if (!data.status || !data.result.length) {
-            return m.reply("No lyrics found. Please try a different search term.");
+        // Validate response
+        if (!data?.status || !Array.isArray(data.result)) {
+            return sendReply(client, m, "❌ Invalid response from lyrics API");
         }
-        
-        // Format duration from seconds to minutes:seconds
+
+        if (data.result.length === 0) {
+            return sendReply(client, m, `🔎 No lyrics found for "${query}"`);
+        }
+
+        // Helper functions
         const formatDuration = (seconds) => {
+            if (!seconds) return 'N/A';
             const mins = Math.floor(seconds / 60);
             const secs = seconds % 60;
             return `${mins}:${secs.toString().padStart(2, '0')}`;
         };
-        
-        // Process each result
-        for (const [index, song] of data.result.slice(0, 3).entries()) {
-            const lyricsPreview = song.lyrics.split('\n').slice(0, 4).join('\n');
-            
-            const songInfo = `
-🎵 *${index + 1}. ${song.song}* - ${song.artist}
-💿 *Album:* ${song.album || 'Single'}
-⏱ *Duration:* ${formatDuration(song.duration)}
 
-📜 *Lyrics Preview:*
-${lyricsPreview}...
-`.trim();
-            
-            await client.sendMessage(
-                m.chat,
-                { 
-                    text: songInfo 
-                },
-                { quoted: m }
-            );
-            
-            // Send full lyrics as a separate message if requested
-            if (index === 0) {
-                await client.sendMessage(
-                    m.chat,
-                    {
-                        text: `🎤 *Full Lyrics for "${song.song}":*\n\n${song.lyrics}`
-                    },
-                    { quoted: m }
-                );
-            }
-        }
+        // Build combined results message
+        let message = `🎶 *Lyrics Search Results for "${query}"*\n`;
+        message += `📌 Found ${data.result.length} matches\n\n`;
         
+        // Show top 3 results with preview
+        data.result.slice(0, 3).forEach((song, index) => {
+            const previewLines = song.lyrics.split('\n').slice(0, 4).join('\n');
+            
+            message += `▫️ *${index + 1}. ${song.song}* - ${song.artist}\n`;
+            message += `   💿 ${song.album || 'Single'}\n`;
+            message += `   ⏱ ${formatDuration(song.duration)}\n`;
+            message += `   📜 ${previewLines}...\n\n`;
+        });
+
+        // Add full lyrics of first result
+        if (data.result[0].lyrics) {
+            message += `🎤 *Full Lyrics for "${data.result[0].song}":*\n\n`;
+            message += `${data.result[0].lyrics}\n\n`;
+        }
+
         if (data.result.length > 3) {
-            await client.sendMessage(
-                m.chat,
-                {
-                    text: `🔍 Found ${data.result.length} results. Showing top 3.`
-                },
-                { quoted: m }
-            );
+            message += `ℹ️ Showing 3 of ${data.result.length} results`;
         }
-        
+
+        // Send as single message
+        await sendMediaMessage(client, m, {
+            text: message.trim()
+        }, { quoted: m });
+
     } catch (error) {
         console.error('Lyrics search error:', error);
-        m.reply("An error occurred while searching for lyrics.");
+        const errorMsg = error.name === 'AbortError' 
+            ? '⌛ Search timed out (10s)' 
+            : '⚠️ Failed to search lyrics. Please try again later.';
+        sendReply(client, m, errorMsg);
     }
-}
+};
