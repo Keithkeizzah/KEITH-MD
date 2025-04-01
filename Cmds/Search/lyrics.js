@@ -1,45 +1,72 @@
-const fetch = require('node-fetch');
-
 module.exports = async (context) => {
-  const { client, m, text, fetchJson, sendReply, sendMediaMessage } = context;
+    const { client, m, text } = context;
+    
+    try {
+        if (!text) return m.reply('Please provide a song title to search lyrics');
+        
+        const fetch = require("node-fetch");
+        const query = text.trim();
+        
+        const apiUrl = `https://apis-keith.vercel.app/search/lyrics?query=${encodeURIComponent(query)}`;
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        
+        if (!data.status || !data.result.length) {
+            return m.reply("No lyrics found. Please try a different search term.");
+        }
+        
+        // Format duration from seconds to minutes:seconds
+        const formatDuration = (seconds) => {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        };
+        
+        // Process each result
+        for (const [index, song] of data.result.slice(0, 3).entries()) {
+            const lyricsPreview = song.lyrics.split('\n').slice(0, 4).join('\n');
+            
+            const songInfo = `
+🎵 *${index + 1}. ${song.song}* - ${song.artist}
+💿 *Album:* ${song.album || 'Single'}
+⏱ *Duration:* ${formatDuration(song.duration)}
 
-  const apiUrl = `https://api.dreaded.site/api/lyrics?title=${encodeURIComponent(text)}`;
-
-  try {
-    if (!text) return sendReply(client, m, "Provide a song name!");
-
-    const data = await fetchJson(apiUrl);
-
-    if (!data.success || !data.result || !data.result.lyrics) {
-      return sendReply(client, m, `Sorry, I couldn't find any lyrics for "${text}".`);
+📜 *Lyrics Preview:*
+${lyricsPreview}...
+`.trim();
+            
+            await client.sendMessage(
+                m.chat,
+                { 
+                    text: songInfo 
+                },
+                { quoted: m }
+            );
+            
+            // Send full lyrics as a separate message if requested
+            if (index === 0) {
+                await client.sendMessage(
+                    m.chat,
+                    {
+                        text: `🎤 *Full Lyrics for "${song.song}":*\n\n${song.lyrics}`
+                    },
+                    { quoted: m }
+                );
+            }
+        }
+        
+        if (data.result.length > 3) {
+            await client.sendMessage(
+                m.chat,
+                {
+                    text: `🔍 Found ${data.result.length} results. Showing top 3.`
+                },
+                { quoted: m }
+            );
+        }
+        
+    } catch (error) {
+        console.error('Lyrics search error:', error);
+        m.reply("An error occurred while searching for lyrics.");
     }
-
-    const { title, artist, link, thumb, lyrics } = data.result;
-
-    const imageUrl = thumb || "https://i.imgur.com/Cgte666.jpeg";
-
-    const imageBuffer = await fetch(imageUrl)
-      .then(res => res.buffer())
-      .catch(err => {
-        console.error('Error fetching image:', err);
-        return null;
-      });
-
-    if (!imageBuffer) {
-      return sendReply(client, m, "An error occurred while fetching the image.");
-    }
-
-    const caption = `*Title*: ${title}\n*Artist*: ${artist}\n\n${lyrics}`;
-
-    await sendMediaMessage(client, m, 
-      {
-        image: imageBuffer,
-        caption: caption
-      },
-      { quoted: m }
-    );
-  } catch (error) {
-    console.error(error);
-    sendReply(client, m, `An error occurred while fetching the lyrics for "${text}".`);
-  }
 }
