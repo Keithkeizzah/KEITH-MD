@@ -50,8 +50,7 @@ module.exports = async (context) => {
             { 
                 image: { url: profile.avatars.large }, 
                 caption: summary 
-            }, 
-            { quoted: m }
+            }
         );
         
     } catch (error) {
