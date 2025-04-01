@@ -42,8 +42,7 @@ module.exports = async (context) => {
             { 
                 image: { url: profile.images.avatar.replace('_normal', '') }, // Get higher resolution image
                 caption: summary 
-            }, 
-            { quoted: m }
+            }
         );
         
     } catch (error) {
