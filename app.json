@@ -83,7 +83,7 @@
         },
 "CHATBOT": {
       "description": "Type true if you want bot to automatically reply to messages in your pm .",
-         "value": "true",
+         "value": "false",
       "required": false
         },
 "GREET": {
@@ -103,7 +103,7 @@
         },
 "VOICECHATBOT": {
       "description": "Type true if you want bot to automatically send voice chat bot message privately ",
-         "value": "true",
+         "value": "false",
       "required": false
         },
 "ANTICALL_MSG": {
