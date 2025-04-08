@@ -4,9 +4,8 @@
 
 <div style="text-align: center;">
   <a href="https://ibb.co/N6NMDtn">
-    <img src="https://i.imgur.com/XlQIFIF.jpeg" alt="01" border="0" /></a>
-  </a>
-  <hr style="margin-top: 20px; margin-bottom: 20px;"/>
+    <img src="https://i.imgur.com/XlQIFIF.jpeg" alt="01" border="0"></a>
+  <hr style="margin-top: 20px; margin-bottom: 20px;">
 </div>
 
 <table align="center" cellpadding="10" border="1">
@@ -34,7 +33,7 @@
       Visit our website for Keith APIs and integrations (under development).
       <br><br>
       <a href="https://apis-keith.vercel.app/">
-        <img src="https://img.shields.io/badge/KEITH%20APIs-orange" alt="KEITH APIs" width="200">
+        <img src="https://img.shields.io/badge/KEITH%20APIs-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="KEITH APIs" width="200">
       </a>
     </td>
     <td align="center">
@@ -42,7 +41,7 @@
       Join our official support group for help and updates.
       <br><br>
       <a href="https://t.me/keithmd">
-        <img src="https://img.shields.io/badge/Support%20Group-blue" alt="Telegram Group" width="200">
+        <img src="https://img.shields.io/badge/Support%20Group-0088cc?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram Group" width="200">
       </a>
     </td>
   </tr>
