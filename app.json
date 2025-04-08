@@ -93,7 +93,7 @@
         },
 "AUTODOWNLOAD_STATUS": {
       "description": "Type true if you want bot to automatically download status update .",
-         "value": "true",
+         "value": "false",
       "required": false
         },
 "GREET_MSG": {
