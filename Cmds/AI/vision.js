@@ -1,52 +1,61 @@
+const { Catbox } = require("node-catbox");
 const fs = require('fs-extra');
 const axios = require('axios');
-const { downloadAndSaveMediaMessage } = require('@whiskeysockets/baileys');
+
+
+const catbox = new Catbox();
+
+
+async function uploadToCatbox(filePath) {
+  if (!fs.existsSync(filePath)) {
+    throw new Error("File does not exist");
+  }
+  try {
+    const uploadResult = await catbox.uploadFile({ path: filePath });
+    return uploadResult;
+  } catch (error) {
+    throw new Error(`Catbox upload failed: ${error.message}`);
+  }
+}
+
+async function analyzeImage(imageUrl, question) {
+  try {
+    const apiUrl = `https://apis-keith.vercel.app/ai/gemini-vision?image=${encodeURIComponent(imageUrl)}&q=${encodeURIComponent(question)}`;
+    const response = await axios.get(apiUrl);
+    
+    if (response.data.status && response.data.result) {
+      return response.data.result;
+    }
+    throw new Error("API response was not successful");
+  } catch (error) {
+    throw new Error(`Vision API error: ${error.message}`);
+  }
+}
 
 module.exports = async (context) => {
   const { client, m, text, sendReply } = context;
-
   const quotedMessage = m.message?.extendedTextMessage?.contextInfo?.quotedMessage;
-  
-  if (!quotedMessage) {
-    return sendReply(client, m, "Please quote an image to analyze.");
-  }
 
   
-  if (!quotedMessage.imageMessage) {
-    return sendReply(client, m, "Only images can be analyzed. Please quote an image.");
+  if (!quotedMessage?.imageMessage || !text) {
+    return sendReply(client, m, "Please quote an image and provide a question/text for analysis.\nExample: /vision What's in this image?");
   }
-
- 
-  const question = text.trim() || "What's in this image?";
 
   try {
     
     const filePath = await client.downloadAndSaveMediaMessage(quotedMessage.imageMessage);
+    const imageUrl = await uploadToCatbox(filePath);
     
-    
-    const catbox = new (require("node-catbox"))();
-    const imageUrl = await catbox.uploadFile({ path: filePath });
-    
-    
-    await fs.unlink(filePath);
+   
+    await fs.unlink(filePath).catch(() => {});
 
-    if (!imageUrl) {
-      throw new Error("Failed to upload image");
-    }
-
+  
+    const analysis = await analyzeImage(imageUrl, text);
     
-    const apiUrl = `https://apis-keith.vercel.app/ai/gemini-vision?image=${encodeURIComponent(imageUrl)}&q=${encodeURIComponent(question)}`;
-    const response = await axios.get(apiUrl);
-
-    if (!response.data?.status || !response.data?.result) {
-      throw new Error("Invalid response from vision API");
-    }
-
     
-    await sendReply(client, m, `🔍 Vision Analysis:\n\n${response.data.result}`);
-
+    await sendReply(client, m, `🔍 Vision Analysis:\n\n${analysis}\n\n🖼️ Image URL: ${imageUrl}`);
   } catch (error) {
-    console.error("Vision analysis error:", error);
-    await sendReply(client, m, `Error analyzing image: ${error.message}`);
+    console.error("Vision command error:", error);
+    await sendReply(client, m, `❌ Error: ${error.message}`);
   }
 };
