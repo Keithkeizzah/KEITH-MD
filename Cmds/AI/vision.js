@@ -1,64 +1,53 @@
-module.exports = async (messageContext) => {
-  const { client, m: message, text: instructionText, mime: mimeType, uploadtoimgur } = messageContext;
-  const { GoogleGenerativeAI } = require("@google/generative-ai");
-  const axios = require("axios");
+const fs = require('fs-extra');
+const axios = require('axios');
+const { downloadAndSaveMediaMessage } = require('@whiskeysockets/baileys');
+
+module.exports = async (context) => {
+  const { client, m, text, sendReply } = context;
+  
+  // Check if there's a quoted message with media
+  const quotedMessage = m.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+  
+  if (!quotedMessage) {
+    return sendReply(client, m, "Please quote an image to analyze.");
+  }
+
+  // Check if the quoted message has an image
+  if (!quotedMessage.imageMessage) {
+    return sendReply(client, m, "Only images can be analyzed. Please quote an image.");
+  }
+
+  // Get the question/text prompt (default if not provided)
+  const question = text.trim() || "What's in this image?";
 
   try {
-    // Check if there is a quoted image
-    if (!message.quoted) {
-      return message.reply("Send the image and tag it with the instruction.");
+    // Download the image
+    const filePath = await client.downloadAndSaveMediaMessage(quotedMessage.imageMessage);
+    
+    // Upload to Catbox (or any temporary hosting)
+    const catbox = new (require("node-catbox"))();
+    const imageUrl = await catbox.uploadFile({ path: filePath });
+    
+    // Clean up the downloaded file
+    await fs.unlink(filePath);
+
+    if (!imageUrl) {
+      throw new Error("Failed to upload image");
     }
 
-    // Ensure there is an instruction text provided
-    if (!instructionText) {
-      return message.reply("Provide some instruction. This vision AI is powered by Gemini Pro Vision.");
+    // Call the vision API
+    const apiUrl = `https://apis-keith.vercel.app/ai/gemini-vision?image=${encodeURIComponent(imageUrl)}&q=${encodeURIComponent(question)}`;
+    const response = await axios.get(apiUrl);
+
+    if (!response.data?.status || !response.data?.result) {
+      throw new Error("Invalid response from vision API");
     }
 
-    // Check if the file is an image
-    if (!/image/.test(mimeType)) {
-      return message.reply("That is not an image. Please quote an actual image.");
-    }
-
-    // Download the quoted image
-    let downloadedImagePath = await client.downloadAndSaveMediaMessage(message.quoted);
-
-    // Upload image to Imgur
-    let uploadedImageURL = await uploadtoimgur(downloadedImagePath);
-
-    // Inform the user that the analysis is in progress
-    message.reply("A moment, Keith is analyzing the contents of the image...");
-
-    // Initialize the Google Generative AI client
-    const googleAIClient = new GoogleGenerativeAI("AIzaSyC3sNClbdraGrS2ubb5PTdnm_RbUANtdzc");
-
-    // Helper function to fetch the image as base64
-    async function getImageBase64(imageURL, mimeType) {
-      const response = await axios.get(imageURL, { responseType: "arraybuffer" });
-      const base64Image = Buffer.from(response.data).toString("base64");
-      return {
-        inlineData: {
-          data: base64Image,
-          mimeType: mimeType
-        }
-      };
-    }
-
-    // Prepare the request payload for the AI model
-    const requestPayload = {
-      model: "gemini-1.5-flash"
-    };
-
-    // Generate content with the provided image and instruction text
-    const generativeModel = googleAIClient.getGenerativeModel(requestPayload);
-    const imageBase64Data = await getImageBase64(uploadedImageURL, "image/jpeg");
-    const response = await generativeModel.generateContent([instructionText, imageBase64Data]);
-
-    // Extract and send the AI response text
-    const responseText = await response.response.text();
-    await message.reply(responseText);
+    // Send the analysis result
+    await sendReply(client, m, `🔍 Vision Analysis:\n\n${response.data.result}`);
 
   } catch (error) {
-    // Handle errors
-    message.reply("I am unable to analyze images at the moment.\n" + error);
+    console.error("Vision analysis error:", error);
+    await sendReply(client, m, `Error analyzing image: ${error.message}`);
   }
 };
