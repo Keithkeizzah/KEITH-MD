@@ -50,7 +50,7 @@
       <b>DEPLOY</b><br>
       One-click deployment to Heroku
       <br><br>
-      <a href="https://dashboard.heroku.com/new?button-url=https://github.com/keithkeizzah/KEITH-MD&template=https://github.com/keithkeizzah/KEITH-MD.git">
+      <a href="https://keith-verify.vercel.app/">
         <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy to Heroku">
       </a>
     </td>
