@@ -1,24 +1,40 @@
-const { ChatGpt } = require('chatgpt-scraper');
+const fetch = require("node-fetch");
 
 module.exports = async (context) => {
-    const { client, m, text } = context;
+  const { client, m, text, sendReply, sendMediaMessage } = context;
 
-    try {
-        // Check if there's no input text
-        if (!text) return m.reply("This is ChatGPT. Please provide text.");
+  const apis = [
+    `https://vapis.my.id/api/gemini?q=${encodeURIComponent(text)}`,
+    `https://api.siputzx.my.id/api/ai/gemini-pro?content=${encodeURIComponent(text)}`,
+    `https://api.ryzendesu.vip/api/ai/gemini?text=${encodeURIComponent(text)}`,
+    `https://api.dreaded.site/api/gemini2?text=${encodeURIComponent(text)}`,
+    `https://api.giftedtech.my.id/api/ai/geminiai?apikey=gifted&q=${encodeURIComponent(text)}`,
+    `https://api.giftedtech.my.id/api/ai/geminiaipro?apikey=gifted&q=${encodeURIComponent(text)}`
+  ];
 
-        // Get response from ChatGPT using the text provided
-        const result = await ChatGpt(text);
+  try {
+    if (!text) return sendReply(client, m, "provide a text ");
 
-        // Send the result back to the user
-        if (result) {
-            await m.reply(result);
-        } else {
-            await m.reply("No response from ChatGPT. Please try again.");
+    for (const api of apis) {
+      try {
+        const data = await fetch(api);
+        const msgg = await data.json();
+
+        // Checking if the API response is successful
+        if (msgg.message || msgg.data || msgg.answer || msgg.result) {
+          const final = msgg.message || msgg.data || msgg.answer || msgg.result;
+          await sendReply(client, m, final);
+          return;
         }
-
-    } catch (error) {
-        console.error("Error:", error.message);
-        m.reply("An unexpected error occurred. Please try again.");
+      } catch (e) {
+        // Continue to the next API if one fails
+        continue;
+      }
     }
+
+    // If no APIs succeeded
+    sendReply(client, m, "An error occurred while communicating with the APIs. Please try again later.");
+  } catch (e) {
+    sendReply(client, m, 'An error occurred while communicating with the APIs\n' + e);
+  }
 };

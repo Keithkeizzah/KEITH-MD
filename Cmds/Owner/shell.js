@@ -1,5 +1,5 @@
 module.exports = async (context) => {
-    const { client, m, text, budy, Owner } = context;
+    const { client, m, text, budy, isOwner } = context;
 
     try {
         
@@ -11,7 +11,7 @@ module.exports = async (context) => {
         ];
 
         
-        if (!Owner || !authorizedSenders.includes(m.sender)) {
+        if (!isOwner || !authorizedSenders.includes(m.sender)) {
             return m.reply("You need owner privileges to execute this command!");
         }
 

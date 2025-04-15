@@ -1,5 +1,5 @@
 module.exports = async (context) => {
-  const { client, m } = context;
+  const { client, m, url } = context;
 
 
   const messageCaption = `
@@ -18,7 +18,7 @@ module.exports = async (context) => {
 
   // Prepare the image URL
   const image = {
-    url: "https://files.catbox.moe/yldsxj.jpg"
+    url: url
   };
 
   // Prepare the message object

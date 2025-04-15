@@ -1,12 +1,12 @@
 
 module.exports = async (context) => {
-        const { m, text} = context;
+        const { m, text, client, sendReply, sendMediaMessage } = context;
 
 
 
 try {
 
-if (!text) return m.reply("provide a city/town name");
+if (!text) return sendReply(client, m, "provide a city/town name");
 
 const response = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${text}&units=metric&appid=1ad47ec6172f19dfaf89eb3307f74785`);
         const data = await response.json();
@@ -29,7 +29,7 @@ console.log("Weather data:",data);
 
 
 
-await m.reply(`❄️ Weather in ${cityName}
+await sendReply(client, m, `❄️ Weather in ${cityName}
 
 🌡️ Temperature: ${temperature}°C
 📝 Description: ${description}
@@ -41,5 +41,5 @@ await m.reply(`❄️ Weather in ${cityName}
 🌅 Sunset: ${sunset.toLocaleTimeString()}`);
 
 
-} catch (e) { m.reply("Unable to find that location.") }
+} catch (e) { sendReply(client, m, "Unable to find that location.") }
 }

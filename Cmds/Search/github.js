@@ -1,39 +1,48 @@
 module.exports = async (context) => {
+    const { client, m, text, sendReply, sendMediaMessage } = context;
 
-const { client, m, text } = context;
+    try {
+        if (!text) {
+            return await sendReply(client, m, "❌ Please provide a GitHub username\nExample: *github Keithkeizzah*");
+        }
 
-try {
-if (!text) return m.reply("provide a gitHub username to fetch profile !")
+        const apiUrl = `https://api.github.com/users/${encodeURIComponent(text)}`;
+        const response = await fetch(apiUrl);
+        
+        if (!response.ok) throw new Error('User not found');
+        const data = await response.json();
 
-const response = await fetch(`https://api.github.com/users/${text}`);
-const data = await response.json();
+        // Handle null values in API response
+        const nullSafe = (value) => value ?? 'Not specified';
 
-const pic = `https://github.com/${data.login}.png`;
+        const userInfo = `💻 𝗚𝗜𝗧𝗛𝗨𝗕 𝗨𝗦𝗘𝗥 𝗜𝗡𝗙𝗢
 
+🌟 *Name:* ${nullSafe(data.name)}
+🔖 *Username:* @${data.login}
+📝 *Bio:* ${nullSafe(data.bio)}
 
-const userInfo = `
-°GITHUB USER INFO°
+🏢 *Company:* ${nullSafe(data.company)}
+📍 *Location:* ${nullSafe(data.location)}
+📧 *Email:* ${nullSafe(data.email)}
+🌐 *Blog/Website:* ${nullSafe(data.blog)}
 
-♦️ Name: ${data.name}
-🔖 Username: ${data.login}
-✨ Bio: ${data.bio}
-🏢 Company: ${data.company}
-📍 Location: ${data.location}
-📧 Email: ${data.email}
-📰 Blog: ${data.blog}
-🔓 Public Repo: ${data.public_repos}
-👪 Followers: ${data.followers}
-🫶 Following: ${data.following}
-`;
+📦 *Public Repos:* ${data.public_repos}
+👥 *Followers:* ${data.followers}
+🤝 *Following:* ${data.following}
 
-await client.sendMessage(m.chat, { image: { url: pic }, caption: userInfo }, { quoted: m });
+⏰ *Created:* ${new Date(data.created_at).toLocaleDateString()}
+🔄 *Last Updated:* ${new Date(data.updated_at).toLocaleDateString()}`;
 
+        await sendMediaMessage(client, m, {
+            image: { url: data.avatar_url },
+            caption: userInfo
+        });
 
-
-} catch (e) {
-
-m.reply("I did not find that user, try again");
-
-}
-
-}
+    } catch (error) {
+        console.error('GitHub Module Error:', error);
+        const errorMessage = error.message.includes('not found') 
+            ? `🔍 GitHub user "${text}" not found\nCheck spelling and try again`
+            : '⚠️ Error fetching GitHub profile. Please try again later.';
+        await sendReply(client, m, errorMessage);
+    }
+};

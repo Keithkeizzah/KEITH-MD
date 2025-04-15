@@ -1,22 +1,25 @@
-const middleware = require('../../utility/botUtil/Ownermiddleware');
+const ownerMiddleware = require('../../utility/botUtil/Ownermiddleware');
 
 module.exports = async (context) => {
-    await middleware(context, async () => {
-        const { client, m, text } = context;
+  await ownerMiddleware(context, async () => {
+    const { client, m, text, isOwner } = context;
 
-        // Determine the new profile name (from text or reply message)
-        const newName = text || m.reply_message?.text;
-        if (!newName) {
-            return m.reply('_Please provide a new name._');
-        }
+    try {
+      if (!text) {
+        return m.reply("❌ Please provide a name to update the profile.");
+      }
 
-        try {
-            // Update the owner's profile name (not the group name)
-            await client.updateProfileName(newName);
-            return m.reply('_Profile name updated successfully._');
-        } catch (error) {
-            console.error('Error updating profile name:', error);
-            return m.reply('_Failed to update the profile name. Please try again later._');
-        }
-    });
+      if (!isOwner) {
+        return m.reply("❌ You do not have permission to perform this action.");
+      }
+
+      const name = text.trim();
+
+      await client.updateProfileName(name);
+      m.reply(`✅ Profile name updated to: ${name}`);
+    } catch (error) {
+      console.error("Error in updating profile name:", error);
+      m.reply("❌ An error occurred while updating profile name. Please try again later.");
+    }
+  });
 };

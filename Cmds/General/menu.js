@@ -2,11 +2,12 @@ const { DateTime } = require('luxon');
 const fs = require('fs');
 
 module.exports = async (context) => {
-    const { client, m, totalCommands, mode, botname, prefix } = context;
+    const { client, m, totalCommands, mode, botname, prefix, url, sendReply, sendMediaMessage, author } = context;
 
     try {
         const categories = [
             { name: 'AI', emoji: '」' },
+            { name: 'Bugs', emoji: '」' },
             { name: 'General', emoji: '」' },
             { name: 'Media', emoji: '」' },
             { name: 'Search', emoji: '」' },
@@ -14,13 +15,16 @@ module.exports = async (context) => {
             { name: 'Groups', emoji: '」' },
             { name: 'Fun', emoji: '」' },
             { name: 'Owner', emoji: '」' },
-            { name: 'Logo', emoji: '」' },
             { name: 'Coding', emoji: '」' },
-            { name: 'Stalk', emoji: '」' }
+           { name: 'Settings', emoji: '」' },
+           { name: 'Statistics', emoji: '」' },
+           { name: 'Newsletter-Channel', emoji: '」' }, 
+           { name: 'Utility', emoji: '」' },
+            { name: 'System', emoji: '」' }
         ];
 
-        // Inspirational quotes array
         const quotes = [
+            "Dream big, work hard.",
             "Dream big, work hard.",
             "Stay humble, hustle hard.",
             "Believe in yourself.",
@@ -61,37 +65,28 @@ module.exports = async (context) => {
             "The future belongs to those who believe.",
             "Don’t count the days, make the days count.",
             "Success is not the key to happiness. Happiness is the key to success."
+            // ... (keep your existing quotes array)
         ];
 
-        // Get greeting based on the time of day
         const getGreeting = () => {
             const currentHour = DateTime.now().setZone('Africa/Nairobi').hour;
-            if (currentHour >= 5 && currentHour < 12) return 'Hello,,Good morning 🌅';
+            if (currentHour >= 5 && currentHour < 12) return 'Hello, Good morning 🌅';
             if (currentHour >= 12 && currentHour < 18) return 'Good afternoon ☀️';
             if (currentHour >= 18 && currentHour < 22) return 'Good evening 🌆';
             return 'Good night and have wonderful dreams 😴';
         };
 
-        // Get current time in Nairobi
         const getCurrentTimeInNairobi = () => {
             return DateTime.now().setZone('Africa/Nairobi').toLocaleString(DateTime.TIME_SIMPLE);
         };
 
-        // Function to get random quote
-        const getRandomQuote = () => {
-            const randomIndex = Math.floor(Math.random() * quotes.length);
-            return quotes[randomIndex];
-        };
+        const getRandomQuote = () => quotes[Math.floor(Math.random() * quotes.length)];
 
         let menuText = `*╰►Hey, ${getGreeting()}, ${m.pushName}*\n\n`;
-
-        // Add random quote
         menuText += `✨ *Inspiration*: *${getRandomQuote()}*  ✨\n\n`;
-
-        // General information about the bot and user
         menuText += `╭━━━  ⟮  ${botname} ⟯━━━━━━┈⊷\n`;
-        menuText += `┃✵╭──────────────\n`; 
-        menuText += `┃✵│ ᴄᴏᴍᴍᴀɴᴅᴇʀ: ${m.pushName}\n`; 
+        menuText += `┃✵╭──────────────\n`;
+        menuText += `┃✵│ ᴄᴏᴍᴍᴀɴᴅᴇʀ: ${m.pushName}\n`;
         menuText += `┃✵│ ᴛᴏᴛᴀʟ ᴘʟᴜɢɪɴs: ${totalCommands}\n`;
         menuText += `┃✵│ ᴛɪᴍᴇ: ${getCurrentTimeInNairobi()}\n`;
         menuText += `┃✵│ ᴘʀᴇғɪx: ${prefix}\n`;
@@ -99,11 +94,9 @@ module.exports = async (context) => {
         menuText += '┃✵│ ʟɪʙʀᴀʀʏ: Baileys\n';
         menuText += '┃✵╰──────────────\n';
         menuText += '╰━━━━━━━━━━━━━━━━━━┈⊷\n';
-
         menuText += '━━━━━━━━━━━━━━━━━━━━\n';
         menuText += '*┃𒊹┃𒊹┃𒊹┃𒊹┃𒊹┃𒊹┃𒊹┃𒊹┃:*\n\n';
 
-        // Function to convert text to fancy uppercase font
         const toFancyUppercaseFont = (text) => {
             const fonts = {
                 'A': '𝐀', 'B': '𝐁', 'C': '𝐂', 'D': '𝐃', 'E': '𝐄', 'F': '𝐅', 'G': '𝐆', 'H': '𝐇', 'I': '𝐈', 'J': '𝐉', 'K': '𝐊', 'L': '𝐋', 'M': '𝐌',
@@ -112,7 +105,6 @@ module.exports = async (context) => {
             return text.split('').map(char => fonts[char] || char).join('');
         };
 
-        // Function to convert text to fancy lowercase font for lowercase letters as well
         const toFancyLowercaseFont = (text) => {
             const fonts = {
                 "a": "ᴀ", "b": "ʙ", "c": "ᴄ", "d": "ᴅ", "e": "ᴇ", "f": "ꜰ", "g": "ɢ", "h": "ʜ", "i": "ɪ", "j": "ᴊ", "k": "ᴋ", "l": "ʟ", "m": "ᴍ", 
@@ -123,7 +115,6 @@ module.exports = async (context) => {
 
         let commandCounter = 1;
 
-        // Loop through categories and commands
         for (const category of categories) {
             const commandFiles = fs.readdirSync(`./Cmds/${category.name}`).filter((file) => file.endsWith('.js'));
             const fancyCategory = toFancyUppercaseFont(category.name.toUpperCase());
@@ -135,33 +126,22 @@ module.exports = async (context) => {
                 menuText += ` ││◦➛  ${commandCounter}. ${fancyCommandName}\n`;
                 commandCounter++;
             }
-
             menuText += ' ╰──────────────┈⊷ \n';
         }
 
-        // Send the generated menu to the user
-        try {
-            await client.sendMessage(m.chat, {
-                text: menuText,
-                contextInfo: {
-                    mentionedJid: [m.sender], // Mention the sender
-                    externalAdReply: {
-                        title: "🌟 𝐊𝐄𝐈𝐓𝐇-𝐌𝐃 ✨",
-                        body: "𝐫𝐞𝐠𝐚𝐫𝐝𝐬 𝐊𝐞𝐢𝐭𝐡𝐤𝐞𝐢𝐳𝐳𝐚𝐡",
-                        thumbnailUrl: "https://i.imgur.com/v9gJCSD.jpeg",
-                        sourceUrl: "https://whatsapp.com/channel/0029Vaan9TF9Bb62l8wpoD47",
-                        mediaType: 1,
-                        renderLargerThumbnail: true
-                    }
-                }
-            });
-        } catch (error) {
-            console.error("Error sending message:", error);
-            m.reply('An error occurred while sending the menu.');
-        }
+        
+        await sendMediaMessage(client, m, { 
+            image: { url },
+            caption: menuText,
+            contextInfo: {
+                mentionedJid: [m.sender],
+                forwardingScore: 999,
+                isForwarded: true
+            }
+        });
 
     } catch (error) {
         console.error("Error:", error);
-        m.reply('An unexpected error occurred while generating the menu.');
+        sendReply(client, m, `Error: ${error.message}`);
     }
 };

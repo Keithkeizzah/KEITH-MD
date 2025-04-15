@@ -1,37 +1,75 @@
 const middleware = require('../../utility/botUtil/middleware');
+const { S_WHATSAPP_NET } = require('@whiskeysockets/baileys');
 
 module.exports = async (context) => {
     await middleware(context, async () => {
-        const { client, m } = context;
-
-        
-        let quotedMessage = m.quoted ? m.quoted : m;
-
-      
-        let mime = quotedMessage.mimetype || '';
-
-        
-        if (!mime.startsWith('image/')) {
-            return m.reply('Please quote an image to set as the group profile picture.');
-        }
+        const { client, m, sendReply, sendMediaMessage, botname, author } = context;
 
         try {
-            
-            const imgBuffer = await quotedMessage.downloadMedia();
+            const isGroup = m.chat.endsWith('@g.us');
+            let profileInfo;
 
-            
-            if (!imgBuffer) {
-                return m.reply('Failed to download the image. Please try again.');
+            if (isGroup) {
+                // Handle group profile
+                const groupMetadata = await client.groupMetadata(m.chat);
+                const participants = groupMetadata.participants || [];
+                
+                let ppUrl;
+                try {
+                    ppUrl = await client.profilePictureUrl(m.chat, 'image');
+                } catch {
+                    ppUrl = "https://telegra.ph/file/95680cd03e012bb08b9e6.jpg";
+                }
+
+                profileInfo = {
+                    image: { url: ppUrl },
+                    caption: `👥 *Group Information*\n\n` +
+                             `🔖 *Name:* ${groupMetadata.subject}\n` +
+                             `📝 *Description:* ${groupMetadata.desc || 'No description'}\n` +
+                             `📅 *Created:* ${new Date(groupMetadata.creation * 1000).toLocaleDateString()}\n` +
+                             `👤 *Members:* ${participants.length}\n` +
+                             `👑 *Admins:* ${participants.filter(p => p.admin).length}\n` +
+                             `🔒 *Restricted:* ${groupMetadata.restrict ? 'Yes' : 'No'}\n` +
+                             `🆔 *ID:* ${groupMetadata.id}\n\n` +
+                             `_Powered by ${author}_`
+                };
+            } else {
+                // Handle user profile
+                const sender = m.quoted ? m.quoted.sender : m.sender;
+                const contact = await client.getContact(sender, 'full');
+                const name = contact.notify || contact.name || sender.split('@')[0];
+
+                let ppUrl;
+                try {
+                    ppUrl = await client.profilePictureUrl(sender, 'image');
+                } catch {
+                    ppUrl = "https://telegra.ph/file/95680cd03e012bb08b9e6.jpg";
+                }
+
+                let status;
+                try {
+                    status = await client.fetchStatus(sender);
+                } catch {
+                    status = { status: "🔒 Private (status not available)" };
+                }
+
+                profileInfo = {
+                    image: { url: ppUrl },
+                    caption: `👤 *User Profile*\n\n` +
+                             `🔖 *Name:* ${name}\n` +
+                             `📝 *About:* ${status.status}\n` +
+                             `📱 *Number:* ${sender.split('@')[0]}\n` +
+                             `🆔 *ID:* ${sender}\n\n` +
+                             `_Powered by ${author}_`,
+                    mentions: [sender]
+                };
             }
 
-            
-            await client.updateProfilePicture(m.chat, imgBuffer);
+            await sendMediaMessage(client, m, profileInfo);
 
-            
-            return m.reply('_Group image updated successfully._');
         } catch (error) {
-            console.error('Error updating group image:', error);
-            return m.reply('_Failed to update the group image. Please try again later._' + error);
+            console.error('Profile Check Error:', error);
+            await sendReply(client, m, '❌ Failed to fetch profile information. Please try again.');
         }
     });
 };

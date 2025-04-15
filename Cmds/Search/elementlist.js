@@ -1,9 +1,8 @@
 module.exports = async (context) => {
-  const { client, m } = context;
-
+  const { client, m, botname, author, url, sendReply, sendMediaMessage } = context;
 
   const messageCaption = `
- 𝐊𝐄𝐈𝐓𝐇-𝐌𝐃 𝐄𝐋𝐄𝐌𝐄𝐍𝐓 𝐋𝐈𝐒𝐓
+ ${botname} 𝐄𝐋𝐄𝐌𝐄𝐍𝐓 𝐋𝐈𝐒𝐓
 
 1. Hydrogen (H)
 2. Helium (He)
@@ -124,21 +123,18 @@ module.exports = async (context) => {
 117. Tennessine (Ts)
 118. Oganesson (Og)
 
-*Regards keithkeizzah*
+*Regards ${author}*
   `;
 
-  // Prepare the image URL
-  const image = {
-    url: "https://files.catbox.moe/yldsxj.jpg"
-  };
-
-  // Prepare the message object
-  const message = {
-    image: image,
-    caption: messageCaption
-  };
-
-  // Send the message
-  await client.sendMessage(m.chat, message, { quoted: m });
+  try {
+    await sendMediaMessage(client, m, {
+      image: { 
+        url: url 
+      },
+      caption: messageCaption
+    });
+  } catch (error) {
+    console.error('Element List Error:', error);
+    await sendReply(client, m, '❌ Failed to send element list. Please try again later.');
+  }
 };
-

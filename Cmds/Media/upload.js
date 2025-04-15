@@ -1,43 +1,51 @@
+const uploadtoimgur = require(__dirname + "/../../lib/Imgur");
+const fs = require("fs");
+const path = require("path");
+const util = require("util");
+
 module.exports = async (context) => {
-    const { client, m, uploadtoimgur } = context;
-    const fs = require("fs");
-    const path = require("path");
+  const { client, m, sendReply, sendMediaMessage } = context;
 
-    let q = m.quoted ? m.quoted : m;
-    let mime = (q.msg || q).mimetype || '';
+  // Get quoted media or current message
+  let q = m.quoted ? m.quoted : m;
+  let mime = (q.msg || q).mimetype || '';
 
-    if (!mime) return m.reply('Quote an image, video, or audio file.');
+  // Check if mime type exists
+  if (!mime) return sendReply(client, m, 'Please quote or send a media file.');
 
-    let mediaBuffer = await q.download();
+  // Download media buffer
+  let mediaBuffer = await q.download();
 
-    // Check if the media file is too large
-    if (mediaBuffer.length > 10 * 1024 * 1024) return m.reply('Media is too large.');
+  // Check if media is too large
+  if (mediaBuffer.length > 10 * 1024 * 1024) {
+    return sendReply(client, m, 'Media is too large. Please upload a file smaller than 10MB.');
+  }
 
-    // Define regex patterns for different media types
-    let isImageOrVideo = /image\/(png|jpe?g|gif)|video\/mp4/.test(mime);
-    let isAudio = /audio\//.test(mime); // This regex matches any audio MIME type
+  // Supported MIME types
+  const supportedMimeTypes = [
+    'image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'video/mp4',
+    'audio/mpeg', 'audio/ogg', 'audio/wav', 'audio/webm', 'image/webp'
+  ];
 
-    if (isImageOrVideo) {
-        // Handle image or video files
-        let fta2 = await client.downloadAndSaveMediaMessage(q);
-        let link = await uploadtoimgur(fta2);
-        const fileSizeMB = (mediaBuffer.length / (1024 * 1024)).toFixed(2);
+  // Check if the media is supported
+  if (supportedMimeTypes.includes(mime)) {
+    try {
+      // Download and save the media file
+      let filePath = await client.downloadAndSaveMediaMessage(q);
 
-        m.reply(`Media Link:\n\n${link}`);
-    } else if (isAudio) {
-        // Handle audio files (including voice notes)
-        let audioFilePath = path.join(__dirname, 'temp_audio', `${Date.now()}.audio`); // Save audio file temporarily
-        fs.writeFileSync(audioFilePath, mediaBuffer);
+      // Upload to Imgur
+      let link = await uploadtoimgur(filePath, mime);
 
-        // Assuming uploadtoimgur is capable of handling audio (if not, you might need another service like SoundCloud or a file hosting service)
-        let audioLink = await uploadtoimgur(audioFilePath);
+      // Calculate file size
+      const fileSizeMB = (mediaBuffer.length / (1024 * 1024)).toFixed(2);
 
-        // Optionally remove the temporary audio file after upload
-        fs.unlinkSync(audioFilePath);
-
-        m.reply(`Audio Link:\n\n${audioLink}`);
-    } else {
-        // Error message if it's neither a valid image, video, nor audio
-        m.reply('Unsupported media type.');
+      // Send media link to user
+      sendReply(client, m, `Media Link:\n\n${link}`);
+    } catch (error) {
+      sendReply(client, m, 'Error uploading media. Please try again later.');
+      console.error(error);  // Log any error to the console for debugging
     }
+  } else {
+    sendReply(client, m, 'Unsupported media format. Please send a supported file.');
+  }
 };

@@ -2,11 +2,11 @@ const { DateTime } = require('luxon');
 const fs = require('fs');
 
 module.exports = async (context) => {
-    const { client, m, totalCommands, mode, botname, prefix } = context;
+    const { client, m, totalCommands, mode, botname, prefix, url, sendReply, sendMediaMessage, gurl, author } = context;
 
     try {
         const categories = [
-            { name: 'AI', emoji: '」' },
+            { name: 'Ai', emoji: '」' },
             { name: 'General', emoji: '」' },
             { name: 'Media', emoji: '」' },
             { name: 'Search', emoji: '」' },
@@ -14,8 +14,11 @@ module.exports = async (context) => {
             { name: 'Groups', emoji: '」' },
             { name: 'Fun', emoji: '」' },
             { name: 'Owner', emoji: '」' },
-            { name: 'Logo', emoji: '」' },
             { name: 'Coding', emoji: '」' },
+            { name: 'Utility', emoji: '」' },
+            { name: 'Statistics', emoji: '」' },
+            { name: 'Settings', emoji: '」' },
+            { name: 'System', emoji: '」' },
             { name: 'Stalk', emoji: '」' }
         ];
 
@@ -86,7 +89,7 @@ module.exports = async (context) => {
         let menuText = `*╰►Hey, ${getGreeting()}, ${m.pushName}*\n\n`;
 
         // Add random quote
-        menuText += `✨ *Inspiration*: "${getRandomQuote()}" ✨\n\n`;
+        menuText += `✨ *Inspiration*: *${getRandomQuote()}*  ✨\n\n`;
 
         // General information about the bot and user
         menuText += `╭━━━  ⟮  ${botname} ⟯━━━━━━┈⊷\n`;
@@ -141,15 +144,15 @@ module.exports = async (context) => {
 
         // Send the generated menu to the user
         try {
-            await client.sendMessage(m.chat, {
+            await sendMediaMessage(client, m, {
                 text: menuText,
                 contextInfo: {
                     mentionedJid: [m.sender], // Mention the sender
                     externalAdReply: {
-                        title: "🌟 𝐊𝐄𝐈𝐓𝐇-𝐌𝐃 ✨",
-                        body: "𝐫𝐞𝐠𝐚𝐫𝐝𝐬 𝐊𝐞𝐢𝐭𝐡𝐤𝐞𝐢𝐳𝐳𝐚𝐡",
-                        thumbnailUrl: "https://i.imgur.com/v9gJCSD.jpeg",
-                        sourceUrl: "https://whatsapp.com/channel/0029Vaan9TF9Bb62l8wpoD47",
+                        title: botname,
+                        body: author,
+                        thumbnailUrl: url,
+                        sourceUrl: gurl,
                         mediaType: 1,
                         renderLargerThumbnail: true
                     }
@@ -157,11 +160,11 @@ module.exports = async (context) => {
             });
         } catch (error) {
             console.error("Error sending message:", error);
-            m.reply('An error occurred while sending the menu.');
+            sendReply(client, m, 'An error occurred while sending the menu.');
         }
 
     } catch (error) {
         console.error("Error:", error);
-        m.reply('An unexpected error occurred while generating the menu.');
+        sendReply(client, m, 'An unexpected error occurred while generating the menu.' + error);
     }
 };

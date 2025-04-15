@@ -1,43 +1,36 @@
-const { exec } = require("child_process");
+ const simpleGit = require("simple-git");
+
+const ownerMiddleware = require('../../utility/botUtil/Ownermiddleware'); 
 
 module.exports = async (context) => {
-    const { client, m, budy, Owner } = context;
+  await ownerMiddleware(context, async () => {
 
-    // Ensure that only the owner can execute this command
-    if (!Owner) {
-        return m.reply("You need owner privileges to execute this command!");
-    }
+    const { client, m, text, isOwner } = context;
 
+const git = simpleGit();
     try {
-        // Inform the user that the bot is restarting and updating
-        await m.reply("*Restarting and updating...*");
-
-        // Sleep function to delay the restart process
-        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-        // Wait for 3 seconds before starting the update
-        await sleep(3000);
-
-        // Pull the latest updates from the repository
-        exec("git pull origin main", { cwd: "./" }, (err, stdout, stderr) => {
-            if (err) {
-                console.error("Error pulling updates:", err);
-                return m.reply("Failed to update the bot. Please check the logs.");
-            }
-
-            if (stderr) {
-                console.error("Error pulling updates (stderr):", stderr);
-                return m.reply("Failed to update the bot. Please check the logs.");
-            }
-
-            // Successfully pulled updates
-            console.log("Update successful:", stdout);
-
-            // Restart the bot
-            process.exit();  // This will restart the bot after update
-        });
+        
+        await git.addRemote('upstream', 'https://github.com/Keithkeizzah/KEITH-MD.git').catch(() => {});
+        
+        
+        await git.fetch('upstream');
+        
+       
+        const commits = await git.log(['main' + '..upstream/main']);
+        if (commits.total > 0) {
+            let updateMessage = `Updates available: ${commits.total} commits\n\n`;
+            commits.all.forEach(commit => {
+                updateMessage += `● ${commit.date.substring(0, 10)}: ${commit.message} - By: ${commit.author_name}\n`;
+            });
+            await m.reply(updateMessage);
+        } else {
+            await m.reply('You are already using the latest version.');
+        }
     } catch (error) {
-        console.error("Error during restart and update:", error);
-        m.reply("An error occurred while updating the bot.");
-    }
+        await m.reply('Failed to check for updates. ' + error.message);
+}
+
+
+    
+  });
 };

@@ -3,7 +3,7 @@ module.exports = async (context) => {
 const ownerMiddleware = require('../../utility/botUtil/Ownermiddleware'); 
 const fs = require('fs');
     await ownerMiddleware(context, async () => {
-        const { client, m, text, Owner, prefix } = context;
+        const { client, m, text, isOwner, prefix } = context;
 
         if (!text) return m.reply(`Provide name of command to fetch it's code. Like, ${prefix}getcmd fullpp`);
 
@@ -15,9 +15,13 @@ const fs = require('fs');
             { name: 'Logo' },
             { name: 'Search' },
             { name: 'Editting' },
-            { name: 'groups' },
-            { name: 'stalk' },
+            { name: 'Groups' },
+            { name: 'Stalk' },
+            { name: 'System' },
             { name: 'Owner' },
+            { name: 'Statistics' },
+            { name: 'Settings' },
+            { name: 'Utility' },
             { name: 'Coding' }
         ];
 

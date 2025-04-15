@@ -1,37 +1,34 @@
 module.exports = async (context) => {
-    const { client, m, text } = context;
+    const { client, m, text, sendReply, botname, sendMediaMessage } = context;
 
     try {
-        // Check if the book name was provided
         if (!text) {
-            return m.reply('Please specify the book, chapter, and verse you want to read. Example: bible john 3:16');
+            return await sendReply(client, m, '📖 Please specify the book, chapter, and verse you want to read.\nExample: bible john 3:16');
         }
 
-        // Set the reference for the API call
         const reference = encodeURIComponent(text);
-
-        // Fetch element data from the API
-        const response = await fetch(`https://bible-api.com/${reference}`);
+        const apiUrl = `https://bible-api.com/${reference}?translation=kjv`;
+        
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error('API request failed');
+        
         const data = await response.json();
+        if (!data?.reference) throw new Error('Invalid scripture reference');
 
-        // Check if the data is valid
-        if (!data || !data.reference) {
-            return m.reply('Invalid reference. Example: bible john 3:16.');
-        }
+        const bibleText = `📖 ${botname} 𝗠𝗗 𝗕𝗜𝗕𝗟𝗘\n
+*Reference:* ${data.reference}
+*Verses:* ${data.verses.length}
+*Translation:* ${data.translation_name}
 
-        // Extract element information
-        const verses = data.verses.length;
-        const contentText = data.text;
-        const language = data.translation_name;
+${data.text.trim()}`;
 
-        // Create the message
-        const message = `𝗞𝗘𝗜𝗧𝗛 𝗠𝗗 𝗕𝗜𝗕𝗟𝗘\n\nWe are reading: ${data.reference}\n\nNumber of verses: ${verses}\n\nNow Read: ${contentText}\n\nTranslation: ${language}`;
-
-        // Send the message
-        await client.sendMessage(m.chat, { text: message }, { quoted: m });
+        await sendMediaMessage(client, m, { text: bibleText });
 
     } catch (error) {
-        console.error("Error occurred:", error);
-        m.reply('An error occurred while fetching the data. Please try again later.');
+        console.error('Bible Module Error:', error);
+        const errorMessage = error.message.includes('Invalid') 
+            ? '❌ Invalid scripture reference. Example: bible john 3:16' 
+            : '⛔ Error fetching Bible text. Please try again later.';
+        await sendReply(client, m, errorMessage);
     }
 };
