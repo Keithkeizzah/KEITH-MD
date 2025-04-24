@@ -1,6 +1,6 @@
 <h1 align="center">𝗞𝗘𝗜𝗧𝗛-𝗠𝗗</h1>
 
-<h1 align="center">Survival is winning, frankline everything else is bullshit, fairy tales spun by people afraid to look life in the eye, do whatever it takes kid, survive 😏🙏</h1>
+<h1 align="center">I don't care about how many followers I have, Nor do I care about how many deploy my bot. I write these bot scripts to make my WhatsApp enjoyable, And to assist me with my daily tasks. What brings me happiness is ensuring all my scripts are fixed, So I can sit back, relax, and watch Netflix</h1>
 
 <div style="text-align: center;">
   <a href="https://ibb.co/N6NMDtn">
@@ -58,18 +58,9 @@
 </table>
 
 <p align="center">
-  <i>This bot is still under maintenance, and sometimes APIs might be down. Apologies for the inconvenience; we are working to make it better!</i>
+  <i>Bot upgrade in process stay tune👍!</i>
 </p>
 
-<p align="center">
-  <i>Due to recent WhatsApp updates and issues with Baileys, your bot may fail to start. Here are the steps to follow if you encounter this problem:</i>
-</p>
-
-<ol>
-  <li>Relink your session ID by changing the session to the app you deployed.</li>
-  <li>If that doesn't work, try updating your WhatsApp.</li>
-  <li>If the issue persists, don't give up! Just keep relinking the session until it works. 🙏🙏</li>
-</ol>
 
 <h1 align="center">Thanks to our loyal followers</h1>
 
