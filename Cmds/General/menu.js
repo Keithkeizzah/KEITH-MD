@@ -7,7 +7,7 @@ module.exports = async (context) => {
     try {
         const categories = [
             { name: 'AI', emoji: '」' },
-            { name: 'Bugs', emoji: '」' },
+            //{ name: 'Bugs', emoji: '」' },
             { name: 'General', emoji: '」' },
             { name: 'Media', emoji: '」' },
             { name: 'Search', emoji: '」' },
@@ -18,7 +18,7 @@ module.exports = async (context) => {
             { name: 'Coding', emoji: '」' },
            { name: 'Settings', emoji: '」' },
            { name: 'Statistics', emoji: '」' },
-           { name: 'Newsletter-Channel', emoji: '」' }, 
+         //  { name: 'Newsletter-Channel', emoji: '」' }, 
            { name: 'Utility', emoji: '」' },
             { name: 'System', emoji: '」' }
         ];
