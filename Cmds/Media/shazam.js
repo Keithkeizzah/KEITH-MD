@@ -1,6 +1,6 @@
 const acrcloud = require("acrcloud");
 const yts = require("yt-search");
-const ytdl = require("ytdl-core");
+//const ytdl = require("ytdl-core");
 const fs = require("fs");
 
 module.exports = async (context) => {
