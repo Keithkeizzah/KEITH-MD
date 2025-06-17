@@ -1,7 +1,7 @@
-const config = require("../set");
+const { database } = require('../settings');
 const { DataTypes } = require('sequelize');
 
-const SudoDB = config.DATABASE.define('sudo', {
+const SudoDB = database.define('sudo', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -16,7 +16,6 @@ const SudoDB = config.DATABASE.define('sudo', {
     timestamps: false,
 });
 
-// Initialize table
 async function initSudoDB() {
     try {
         await SudoDB.sync({ alter: true });
@@ -27,7 +26,6 @@ async function initSudoDB() {
     }
 }
 
-// Check if JID is sudo
 async function isSudo(jid) {
     try {
         const count = await SudoDB.count({ where: { jid } });
@@ -38,7 +36,6 @@ async function isSudo(jid) {
     }
 }
 
-// Add sudo number
 async function addSudoNumber(jid) {
     try {
         await SudoDB.findOrCreate({
@@ -53,7 +50,6 @@ async function addSudoNumber(jid) {
     }
 }
 
-// Remove sudo number
 async function removeSudoNumber(jid) {
     try {
         const deleted = await SudoDB.destroy({ where: { jid } });
@@ -67,7 +63,6 @@ async function removeSudoNumber(jid) {
     }
 }
 
-// Get all sudo numbers
 async function getAllSudoNumbers() {
     try {
         const results = await SudoDB.findAll({
@@ -81,7 +76,6 @@ async function getAllSudoNumbers() {
     }
 }
 
-// Check if sudo table has entries
 async function isSudoTableNotEmpty() {
     try {
         const count = await SudoDB.count();
@@ -92,7 +86,6 @@ async function isSudoTableNotEmpty() {
     }
 }
 
-// Initialize the table
 initSudoDB().catch(err => {
     console.error('Failed to initialize sudo database:', err);
 });
