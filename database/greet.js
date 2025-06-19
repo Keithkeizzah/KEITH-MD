@@ -1,25 +1,23 @@
-const config = require("../set");
 const { DataTypes } = require('sequelize');
+const { database } = require('../settings');
 
-const GreetDB = config.DATABASE.define('greet', {
-    status: {
-        type: DataTypes.ENUM('on', 'off'),
-        defaultValue: 'on',
+const GreetDB = database.define('greet', {
+    enabled: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
         allowNull: false
     },
     message: {
         type: DataTypes.TEXT,
-        defaultValue: 'Hello! Thanks for messaging me. I\'ll respond soon.',
-        allowNull: false
-    },
-    replied_contacts: {
-        type: DataTypes.JSON,
-        defaultValue: [],
+        defaultValue: "Hello @user 👋\nWelcome to my chat!\nHow can I help you today?",
         allowNull: false
     }
 }, {
-    timestamps: false
+    timestamps: true
 });
+
+// Store replied contacts in memory
+const repliedContacts = new Set();
 
 async function initGreetDB() {
     try {
@@ -33,14 +31,17 @@ async function initGreetDB() {
 
 async function getGreetSettings() {
     try {
-        const [settings] = await GreetDB.findOrCreate({
-            where: {},
-            defaults: {}
-        });
+        const settings = await GreetDB.findOne();
+        if (!settings) {
+            return await GreetDB.create({});
+        }
         return settings;
     } catch (error) {
-        console.error('Error getting Greet settings:', error);
-        return { status: 'on', message: 'Hello! Thanks for messaging me.', replied_contacts: [] };
+        console.error('Error getting greet settings:', error);
+        return { 
+            enabled: false,
+            message: "Hello @user 👋\nWelcome to my chat!"
+        };
     }
 }
 
@@ -49,36 +50,20 @@ async function updateGreetSettings(updates) {
         const settings = await getGreetSettings();
         return await settings.update(updates);
     } catch (error) {
-        console.error('Error updating Greet settings:', error);
+        console.error('Error updating greet settings:', error);
         return null;
     }
 }
 
-async function addRepliedContact(jid) {
-    try {
-        const settings = await getGreetSettings();
-        const repliedContacts = new Set(settings.replied_contacts);
-        repliedContacts.add(jid);
-        await settings.update({ replied_contacts: [...repliedContacts] });
-    } catch (error) {
-        console.error('Error adding replied contact:', error);
-    }
-}
-
-async function clearRepliedContacts() {
-    try {
-        const settings = await getGreetSettings();
-        await settings.update({ replied_contacts: [] });
-    } catch (error) {
-        console.error('Error clearing replied contacts:', error);
-    }
+function clearRepliedContacts() {
+    repliedContacts.clear();
 }
 
 module.exports = {
     initGreetDB,
     getGreetSettings,
     updateGreetSettings,
-    addRepliedContact,
     clearRepliedContacts,
+    repliedContacts,
     GreetDB
 };
