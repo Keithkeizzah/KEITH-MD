@@ -2,25 +2,21 @@ const { DataTypes } = require('sequelize');
 const { database } = require('../settings');
 
 const PresenceDB = database.define('presence', {
-    typing: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-        allowNull: false
+    privateChat: {
+        type: DataTypes.STRING,
+        defaultValue: 'off',
+        allowNull: false,
+        validate: {
+            isIn: [['off', 'online', 'typing', 'recording']]
+        }
     },
-    recording: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-        allowNull: false
-    },
-    online: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-        allowNull: false
-    },
-    chatTypes: {
-        type: DataTypes.JSON,
-        defaultValue: ['private', 'group'],
-        allowNull: false
+    groupChat: {
+        type: DataTypes.STRING,
+        defaultValue: 'off',
+        allowNull: false,
+        validate: {
+            isIn: [['off', 'online', 'typing', 'recording']]
+        }
     }
 }, {
     timestamps: true
@@ -45,12 +41,7 @@ async function getPresenceSettings() {
         return settings;
     } catch (error) {
         console.error('Error getting presence settings:', error);
-        return {
-            typing: false,
-            recording: false,
-            online: false,
-            chatTypes: ['private', 'group']
-        };
+        return { privateChat: 'off', groupChat: 'off' };
     }
 }
 
