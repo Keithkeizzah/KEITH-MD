@@ -7,14 +7,23 @@ const AntiLinkDB = database.define('antilink', {
         defaultValue: false,
         allowNull: false
     },
-    action: {
-        type: DataTypes.ENUM('delete', 'warn', 'remove'),
+    groupAction: {
+        type: DataTypes.ENUM('warn', 'remove'),
         defaultValue: 'warn',
         allowNull: false
     },
-    exemptDomains: {
+    warnLimit: {
+        type: DataTypes.INTEGER,
+        defaultValue: 3,
+        allowNull: false,
+        validate: {
+            min: 1,
+            max: 10
+        }
+    },
+    allowedDomains: {
         type: DataTypes.JSON,
-        defaultValue: ['whatsapp.com', 'youtube.com', 'instagram.com'],
+        defaultValue: ['whatsapp.com', 'wa.me'],
         allowNull: false
     }
 }, {
@@ -42,8 +51,9 @@ async function getAntiLinkSettings() {
         console.error('Error getting anti-link settings:', error);
         return {
             status: false,
-            action: 'warn',
-            exemptDomains: ['whatsapp.com', 'youtube.com', 'instagram.com']
+            groupAction: 'warn',
+            warnLimit: 3,
+            allowedDomains: ['whatsapp.com', 'wa.me']
         };
     }
 }
