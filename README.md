@@ -75,7 +75,7 @@
     </td>
     <td align="center" style="border:none">
       <a href="https://katabump.com/">
-        <img src="https://img.shields.io/badge/Katbump-FF6B00?style=for-the-badge&logo=firefox&logoColor=white" width="180">
+        <img src="https://img.shields.io/badge/Katabump-FF6B00?style=for-the-badge&logo=firefox&logoColor=white" width="180">
       </a>
     </td>
     <td align="center" style="border:none">
