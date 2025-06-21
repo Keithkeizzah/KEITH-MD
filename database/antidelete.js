@@ -18,6 +18,11 @@ const AntiDeleteDB = database.define('antidelete', {
         defaultValue: true,
         allowNull: false
     },
+    sendToOwner: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false
+    },
     includeMedia: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
