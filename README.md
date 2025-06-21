@@ -35,8 +35,8 @@
   </tr>
   <tr>
     <td align="center" style="border:none">
-      <a href="https://t.me/keithmd">
-        <img src="https://img.shields.io/badge/Telegram_Group-0088cc?style=for-the-badge&logo=telegram&logoColor=white" width="200">
+      <a href="https://keith-site.vercel.app/contact">
+        <img src="https://img.shields.io/badge/Contact_Us-0088cc?style=for-the-badge&logo=telegram&logoColor=white" width="200">
       </a>
     </td>
     <td align="center" style="border:none">
