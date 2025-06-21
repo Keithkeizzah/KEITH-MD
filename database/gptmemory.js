@@ -1,7 +1,7 @@
-const config = require("../set");
+const { database } = require("../settings");
 const { DataTypes } = require('sequelize');
 
-const GPTMemoryDB = config.DATABASE.define('gptmemory', {
+const GPTMemoryDB = database.define('gptmemory', {
     conversationId: {
         type: DataTypes.STRING,
         primaryKey: true,
@@ -19,11 +19,20 @@ const GPTMemoryDB = config.DATABASE.define('gptmemory', {
     lastUpdated: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
+    },
+    title: {  // Added title field for better conversation management
+        type: DataTypes.STRING,
+        defaultValue: "New Conversation"
+    },
+    isArchived: {  // Added archive status
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     }
 }, {
     indexes: [
         { fields: ['jid'] },
-        { fields: ['lastUpdated'] }
+        { fields: ['lastUpdated'] },
+        { fields: ['isArchived'] }
     ],
     timestamps: false
 });
@@ -38,31 +47,30 @@ async function initGPTMemoryDB() {
     }
 }
 
-async function saveConversation(jid, conversationId, messages) {
+async function saveConversation(jid, conversationId, messages, title = null) {
     try {
-        await GPTMemoryDB.upsert({
-            conversationId,
+        const updateData = {
             jid,
             history: messages,
             lastUpdated: new Date()
+        };
+        
+        if (title) {
+            updateData.title = title;
+        } else if (messages.length > 0) {
+            // Auto-generate title from first message if not provided
+            const firstMessage = messages[0].content.substring(0, 30);
+            updateData.title = firstMessage + (messages[0].content.length > 30 ? '...' : '');
+        }
+
+        await GPTMemoryDB.upsert({
+            conversationId,
+            ...updateData
         });
         return true;
     } catch (error) {
         console.error('Error saving conversation:', error);
         return false;
-    }
-}
-// Add this to your existing gptmemory.js exports
-async function getAllConversations(limit = 20) {
-    try {
-        return await GPTMemoryDB.findAll({
-            order: [['lastUpdated', 'DESC']],
-            limit,
-            raw: true
-        });
-    } catch (error) {
-        console.error('Error getting all conversations:', error);
-        return [];
     }
 }
 
@@ -72,17 +80,22 @@ async function getConversation(conversationId) {
             where: { conversationId },
             raw: true
         });
-        return conv?.history || [];
+        return conv || null;
     } catch (error) {
         console.error('Error getting conversation:', error);
-        return [];
+        return null;
     }
 }
 
-async function getUserConversations(jid, limit = 5) {
+async function getUserConversations(jid, limit = 5, includeArchived = false) {
     try {
+        const where = { jid };
+        if (!includeArchived) {
+            where.isArchived = false;
+        }
+
         return await GPTMemoryDB.findAll({
-            where: { jid },
+            where,
             order: [['lastUpdated', 'DESC']],
             limit,
             raw: true
@@ -103,11 +116,61 @@ async function clearConversation(conversationId) {
     }
 }
 
+async function updateConversationTitle(conversationId, title) {
+    try {
+        const [updated] = await GPTMemoryDB.update(
+            { title },
+            { where: { conversationId } }
+        );
+        return updated > 0;
+    } catch (error) {
+        console.error('Error updating conversation title:', error);
+        return false;
+    }
+}
+
+async function archiveConversation(conversationId, archive = true) {
+    try {
+        const [updated] = await GPTMemoryDB.update(
+            { isArchived: archive },
+            { where: { conversationId } }
+        );
+        return updated > 0;
+    } catch (error) {
+        console.error('Error archiving conversation:', error);
+        return false;
+    }
+}
+
+async function cleanupOldConversations(maxAgeDays = 30, limit = 1000) {
+    try {
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - maxAgeDays);
+
+        const deleted = await GPTMemoryDB.destroy({
+            where: {
+                lastUpdated: { [database.Op.lt]: cutoffDate },
+                isArchived: true
+            },
+            limit
+        });
+
+        console.log(`Cleaned up ${deleted} old conversations`);
+        return deleted;
+    } catch (error) {
+        console.error('Error cleaning up old conversations:', error);
+        return 0;
+    }
+}
+
 module.exports = {
     initGPTMemoryDB,
     saveConversation,
     getConversation,
     getUserConversations,
     clearConversation,
+    updateConversationTitle,
+    archiveConversation,
+    cleanupOldConversations,
     GPTMemoryDB
 };
