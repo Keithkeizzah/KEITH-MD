@@ -1,34 +1,19 @@
+const { database } = require("../settings");
 const { DataTypes } = require('sequelize');
-const { database } = require('../settings');
 
 const ChatbotDB = database.define('chatbot', {
-    textPrivate: {
+    status: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
         allowNull: false
     },
-    textGroup: {
+    inbox_status: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
-        allowNull: false
-    },
-    voicePrivate: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-        allowNull: false
-    },
-    voiceGroup: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-        allowNull: false
-    },
-    messageDelay: {
-        type: DataTypes.INTEGER,
-        defaultValue: 1000,
         allowNull: false
     }
 }, {
-    timestamps: true
+    timestamps: false
 });
 
 async function initChatbotDB() {
@@ -43,20 +28,14 @@ async function initChatbotDB() {
 
 async function getChatbotSettings() {
     try {
-        const settings = await ChatbotDB.findOne();
-        if (!settings) {
-            return await ChatbotDB.create({});
-        }
+        const [settings] = await ChatbotDB.findOrCreate({
+            where: {},
+            defaults: {}
+        });
         return settings;
     } catch (error) {
         console.error('Error getting chatbot settings:', error);
-        return { 
-            textPrivate: false,
-            textGroup: false,
-            voicePrivate: false,
-            voiceGroup: false,
-            messageDelay: 1000
-        };
+        return { status: true, inbox_status: true }; // Default fallback as booleans
     }
 }
 
