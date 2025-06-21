@@ -1,60 +1,8 @@
-/*const config = require("../set");
+
+const { database } = require('../settings');
 const { DataTypes } = require('sequelize');
 
-const NotesDB = config.DATABASE.define(
-    'notes',
-    {
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true,
-        },
-        title: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        content: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-        },
-        createdAt: {
-            type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW,
-        },
-    },
-    {
-        timestamps: false,
-    }
-);
-
-// Add this function to sync the model with database
-async function syncNotesDB() {
-    try {
-        await NotesDB.sync({ alter: true }); // This will create the table if it doesn't exist
-        console.log('Notes table synchronized successfully');
-    } catch (error) {
-        console.error('Error synchronizing notes table:', error);
-        throw error;
-    }
-}
-
-module.exports = {
-    NotesDB,
-    syncNotesDB,
-    addNote: async (title, content) => {
-        try {
-            return await NotesDB.create({ title, content });
-        } catch (error) {
-            throw new Error(`Failed to add note: ${error.message}`);
-        }
-    },
-    // ... keep all your other existing functions ...
-};*/
-
-const config = require("../set");
-const { DataTypes } = require('sequelize');
-
-const NotesDB = config.DATABASE.define('notes', {
+const NotesDB = database.define('notes', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -111,6 +59,7 @@ async function getNotes() {
         throw new Error(`Failed to get notes: ${error.message}`);
     }
 }
+
 async function getNote(id) {
     try {
         return await NotesDB.findByPk(id);
