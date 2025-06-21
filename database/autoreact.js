@@ -1,10 +1,10 @@
-const config = require("../set");
+const { database } = require('../settings');
 const { DataTypes } = require('sequelize');
 
-const AutoReactDB = config.DATABASE.define('autoreact', {
+const AutoReactDB = database.define('autoreact', {
     status: {
-        type: DataTypes.ENUM('on', 'off'),
-        defaultValue: 'off',
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
         allowNull: false
     },
     emojis: {
@@ -35,7 +35,7 @@ async function getAutoReactSettings() {
         return settings;
     } catch (error) {
         console.error('Error getting AutoReact settings:', error);
-        return { status: 'on', emojis: ['❤', '💕', '😻'] }; // Default fallback
+        return { status: false, emojis: ['❤', '💕', '😻'] }; // Default fallback with boolean status
     }
 }
 
