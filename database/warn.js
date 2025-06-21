@@ -1,10 +1,14 @@
-const config = require("../set");
+const { database } = require("../settings");
 const { DataTypes } = require('sequelize');
 
-const WarnDB = config.DATABASE.define('warn', {
+const WarnDB = database.define('warn', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
     jid: {
         type: DataTypes.STRING,
-        primaryKey: true,
         allowNull: false
     },
     groupJid: {
@@ -16,14 +20,25 @@ const WarnDB = config.DATABASE.define('warn', {
         defaultValue: 0,
         allowNull: false
     },
+    reasons: {
+        type: DataTypes.JSON,
+        defaultValue: [],
+        allowNull: false
+    },
     lastWarned: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
+    },
+    warnedBy: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 }, {
     indexes: [
+        { fields: ['jid'] },
         { fields: ['groupJid'] },
-        { fields: ['lastWarned'] }
+        { fields: ['lastWarned'] },
+        { fields: ['jid', 'groupJid'], unique: true }
     ],
     timestamps: false
 });
@@ -38,47 +53,106 @@ async function initWarnDB() {
     }
 }
 
-async function addWarning(jid, groupJid) {
+async function addWarning(jid, groupJid, reason = null, warnedBy = null) {
     try {
         const [warn, created] = await WarnDB.findOrCreate({
             where: { jid, groupJid },
-            defaults: { count: 1 }
+            defaults: { 
+                count: 1,
+                reasons: reason ? [reason] : [],
+                warnedBy
+            }
         });
         
         if (!created) {
             warn.count += 1;
             warn.lastWarned = new Date();
+            if (reason) {
+                warn.reasons = [...warn.reasons, reason];
+            }
+            if (warnedBy) {
+                warn.warnedBy = warnedBy;
+            }
             await warn.save();
         }
         
-        return warn.count;
+        return {
+            count: warn.count,
+            reasons: warn.reasons,
+            lastWarned: warn.lastWarned
+        };
     } catch (error) {
         console.error('Error adding warning:', error);
-        return 0;
+        return null;
     }
 }
 
 async function getWarnings(jid, groupJid) {
     try {
         const warn = await WarnDB.findOne({ 
-            where: { jid, groupJid },
-            raw: true
+            where: { jid, groupJid }
         });
-        return warn?.count || 0;
+        return warn ? {
+            count: warn.count,
+            reasons: warn.reasons,
+            lastWarned: warn.lastWarned,
+            warnedBy: warn.warnedBy
+        } : {
+            count: 0,
+            reasons: [],
+            lastWarned: null,
+            warnedBy: null
+        };
     } catch (error) {
         console.error('Error getting warnings:', error);
-        return 0;
+        return {
+            count: 0,
+            reasons: [],
+            lastWarned: null,
+            warnedBy: null
+        };
     }
 }
 
 async function resetWarnings(jid, groupJid) {
     try {
-        const deleted = await WarnDB.destroy({ 
+        const result = await WarnDB.destroy({ 
             where: { jid, groupJid } 
         });
-        return deleted > 0;
+        return result > 0;
     } catch (error) {
         console.error('Error resetting warnings:', error);
+        return false;
+    }
+}
+
+async function getGroupWarnings(groupJid, limit = 20) {
+    try {
+        return await WarnDB.findAll({
+            where: { groupJid },
+            order: [['count', 'DESC']],
+            limit
+        });
+    } catch (error) {
+        console.error('Error getting group warnings:', error);
+        return [];
+    }
+}
+
+async function reduceWarning(jid, groupJid, amount = 1) {
+    try {
+        const warn = await WarnDB.findOne({ 
+            where: { jid, groupJid }
+        });
+        
+        if (!warn) return false;
+        
+        warn.count = Math.max(0, warn.count - amount);
+        await warn.save();
+        
+        return warn.count;
+    } catch (error) {
+        console.error('Error reducing warning:', error);
         return false;
     }
 }
@@ -88,5 +162,7 @@ module.exports = {
     addWarning,
     getWarnings,
     resetWarnings,
+    getGroupWarnings,
+    reduceWarning,
     WarnDB
 };
