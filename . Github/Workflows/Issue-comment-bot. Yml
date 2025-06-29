@@ -1,0 +1,21 @@
+name: Issue Comment Bot
+
+on:
+  issues:
+    types: [opened]  # Run when a new issue is opened
+
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Leave a comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "Hi there! Thanks for opening an issue. We'll look into it soon!"
+            })
