@@ -52,7 +52,7 @@
 <table align="center" cellpadding="10" style="border-radius:15px;background:#1a1a1a;border:none">
   <tr>
     <td align="center" style="border:none">
-      <a href="https://dashboard.heroku.com/new?button-url=https://github.com/keithkeizzah/KEITH-MD&template=https://github.com/keithkeizzah/KEITH-MD.git">
+      <a href="/">
         <img src="https://img.shields.io/badge/Heroku-430098?style=for-the-badge&logo=heroku&logoColor=white" width="180">
       </a>
     </td>
