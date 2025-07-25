@@ -1,5 +1,11 @@
 /*I wrote a script to automate my job. Now I just sit back and watch Netflix while it runs.*/
+const fs = require('fs-extra');
 
+const path = require('path');
+
+if (fs.existsSync('set.env')) {
+    require('dotenv').config({ path: __dirname + '/set.env' });
+}
 const session = process.env.SESSION || '';
 
 const prefix = process.env.PREFIX || '.';
