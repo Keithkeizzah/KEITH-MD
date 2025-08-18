@@ -62,6 +62,8 @@ module.exports = {
   botname, 
   mode,
   prefix,
+megaEmail,
+ megaPassword,
   timezone,
   author,  
   url,
