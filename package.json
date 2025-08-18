@@ -43,6 +43,9 @@
     "compile-run": "^2.3.4",    
     "crypto": "^1.0.1",  
     "express": "latest",    
+    
+    "mime-types": "latest",    
+    "megajs": "latest",    
     "file-type": "^16.5.3",
     "form-data": "^4.0.0",
     "fluent-ffmpeg": "^2.1.2",
