@@ -3,3 +3,6 @@
 
 ### Note
 - when deploying via panel always edit your variables in set.env 
+
+
+ - heroku deployment fixed 
