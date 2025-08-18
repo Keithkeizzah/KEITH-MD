@@ -32,6 +32,10 @@ const gurl = process.env.GURL || 'https://whatsapp.com/channel/0029Vaan9TF9Bb62l
 
 const timezone = process.env.TIMEZONE || 'Africa/Nairobi';
 
+//fo mega users only
+const megaEmail = process.env.MEGA_EMAIL || '';
+const megaPassword = process.env.MEGA_PASSWORD || '';
+
 const { Sequelize } = require('sequelize'); // Ensure Sequelize is imported
 const DATABASE_URL = process.env.DATABASE_URL || './database.db'; // Define DATABASE_URL properly
 
