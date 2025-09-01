@@ -12,7 +12,7 @@ const prefix = process.env.PREFIX || '.';
 
 const author = process.env.OWNER_NAME || 'Hillary';
 
-const packname = process.env.PACKNAME || 'Hillary⁩;
+const packname = process.env.PACKNAME || 'hillary';
 
 const dev = process.env.OWNER_NUMBER || '254740277957';
 
