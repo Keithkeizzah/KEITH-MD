@@ -12,3 +12,4 @@
    - making our bot flawless
    - cleaning all errors and reducing bot storage weight
      
+- Updates will be synced remotically 
