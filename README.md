@@ -6,3 +6,9 @@
 
 
  - heroku deployment fixed 
+   ## what's to be added??
+   - updating more cool command
+   - fixing lid issues
+   - making our bot flawless
+   - cleaning all errors and reducing bot storage weight
+     
