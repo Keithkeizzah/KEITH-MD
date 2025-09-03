@@ -5,7 +5,7 @@ const Ownermiddleware = async (context, next) => {
 
     
     if (!isOwner) {
-        return sendReply(client, m, "You need owner privileges to execute this command."); 
+        return sendReply(client, m, "*You need owner privileges to execute this command.*"); 
     }
 
     
