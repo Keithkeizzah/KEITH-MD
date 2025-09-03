@@ -13,9 +13,9 @@ function keith(info, func) {
         dontAddCommandList: false,
         desc: '',
         fromMe: false,
-        category: 'misc',
+        category: 'General',
         filename: 'Not Provided',
-        react: null,
+        react: '🗿',
         alias: []
     };
     
