@@ -28,7 +28,7 @@
     "@babel/traverse": "latest",
     "@xaviabot/fb-downloader": "^1.0.14",
     "imgur": "^2.3.0",
-    "@whiskeysockets/baileys":"npm:asitha-new-v99",
+    "@whiskeysockets/baileys": "npm:@faouzkk/baileys@4.0.0",
     "acrcloud": "^1.4.0",    
     "axios": "^1.3.6",
     "sqlite3": "^5.1.6",
