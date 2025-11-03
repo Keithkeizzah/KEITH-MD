@@ -1,3 +1,5 @@
+/*Must Run*/
+
 let commands = [];
 
 const tabCmds = [];
