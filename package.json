@@ -1,56 +1,29 @@
 {
   "name": "KEITH-MD",
   "version": "2.0.0",
-  "description": "Keithmd bot",
-  "main": "./index.js",
+  "description": "",
+  "main": "index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node index.js",
-    "stop": "node -e \"process.exit(0)\"",
-    "restart": "npm stop && sleep 3 && npm start"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "s": "node index.js", 
+    "start": "node index.js", 
+    "keith": "pm2 start index.js --attach --max-memory-restart 490M",
+    "c": "tsc"
   },
   "keywords": [
-    "keith-md",
+    "bot",
+    "Baileys",
+    "keith-Md",
+    "whatsapp",
     "whatsapp-bot",
     "keithkeizzah"
   ],
-  "author": "Keithkeizzah",
-  "license": "MIT",
+  "author": "keithkeizzah",
+  "license": "ISC",
   "dependencies": {
-    "@whiskeysockets/baileys": "npm:gifted-baileys",
-    "axios": "^1.2.5",
-    "gifted-btns": "latest",
-    "adm-zip": "latest",
-    "body-parser": "latest",
-    "buffer": "^6.0.3",
-    "dotenv": "^16.3.1",
-    "express": "^4.19.2",
-    "file-type": "17.1.6",
-    "ffmpeg-static": "latest",
-    "fluent-ffmpeg": "latest",
-    "@hapi/boom": "latest",
-    "@ffmpeg-installer/ffmpeg": "latest",
-    "stream": "latest",
-    "form-data": "^4.0.1",
-    "fs": "^0.0.1-security",
-    "fs-extra": "^11.1.0",
-    "jimp": "^0.16.3",
-    "sharp": "^0.34.1",
-    "mime-types": "^2.1.35",
-    "node-fetch": "^3.3.2",
-    "path": "latest",
-    "cheerio": "latest",
-    "pino": "^7.0.5",
-    "pm2": "latest",
-    "sequelize": "latest",
-    "sqlite3": "latest",
-    "util": "latest",
-    "wa-sticker-formatter": "latest"
-  },
-  "overrides": {
-    "sharp": "^0.34.1"
-  },
-  "resolutions": {
-    "sharp": "^0.34.1"
+
+    
+   
   }
 }
