@@ -44,9 +44,9 @@ async function getAntiLinkSettings() {
     } catch (error) {
         console.error('Error getting antilink settings:', error);
         return { 
-            status: 'off', 
+            status: 'on', 
             action: 'warn', 
-            warn_limit: 3
+            warn_limit: 5
         };
     }
 }
