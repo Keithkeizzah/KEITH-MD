@@ -19,7 +19,10 @@
   "logo": "https://i.imgur.com/dAtHp2k.jpeg",
   "success_url": "/",
   "env": {
-    
+    "OWNER_NUMBER": {
+      "description": "Put any phone numbers you want to be bot owner without + or spaces \",\" Ex: 254748387615, 254796299159",
+      "required": false
+    },
     "SESSION": {
       "description": "add your session id here",
       "required": true
