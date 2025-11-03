@@ -4,7 +4,7 @@ const { database } = require('../settings');
 const AutoStatusDB = database.define('autostatus', {
   autoviewStatus: {
     type: DataTypes.STRING,
-    defaultValue: 'false',
+    defaultValue: 'true',
     allowNull: false,
     validate: { isIn: [['true', 'false']] }
   },
