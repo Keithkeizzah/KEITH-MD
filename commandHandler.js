@@ -1,57 +1,65 @@
+let commands = [];
 
-/* fixed module for keith command handler */
+const tabCmds = [];
 
-const fs = require('fs');
-const path = require('path');
-
-
-const commands = [];
-
-
-function keith(info, func) {
-    const defaults = {
-        dontAddCommandList: false,
-        desc: '',
-        fromMe: false,
-        category: 'General',
-        filename: 'Not Provided',
-        react: '🗿',
-        alias: []
-    };
-    
-    const command = {
-        ...defaults,
-        ...info,
-        function: func
-    };
-    
-    
-    if (!command.pattern) {
-        throw new Error(`Command in ${command.filename} is missing required 'pattern' property`);
-    }
-    
-    commands.push(command);
-    return command;
-}
-
-
-function getCommands() {
-    return commands;
-}
-
-
-function findCommand(input) {
-    return commands.find(cmd => 
-        cmd.pattern === input || 
-        (cmd.alias && cmd.alias.includes(input))
-    );
-}
-
-module.exports = {
-    keith,
-    commands: getCommands(),
-    findCommand,
-    AddCommand: keith,
-    Function: keith,
-    Module: keith
+const evt = {
+    events: {},
+    on(event, callback) {
+        if (!this.events[event]) {
+            this.events[event] = [];
+        }
+        this.events[event].push(callback);
+    },
+    emit(event, data) {
+        if (this.events[event]) {
+            this.events[event].forEach((callback) => callback(data));
+        }
+    },
 };
+
+
+const randomEmojis = [
+    "😊", "😎", "🔥", "⭐", "💫", "✨", "🌟", "💥", "🚀", "🎯",
+    "💯", "❤️", "💕", "💖", "💝", "🎉", "🎊", "🏆", "👑", "💎",
+    "📌", "📍", "🛎️", "🔔", "🎵", "🎶", "📢", "🔊", "👀", "👁️",
+    "🧠", "💡", "🔋", "🔌", "💻", "📱", "⌚", "📷", "🎥", "📹",
+    "☀️", "🌙", "⭐", "🌟", "🌈", "☁️", "⚡", "🔥", "💧", "🌊",
+    "🎮", "👾", "🕹️", "🎲", "♠️", "♥️", "♦️", "♣️", "🃏", "🀄",
+    "🏀", "⚽", "🎾", "🏐", "🎱", "⚾", "🏈", "🎯", "🏹", "⛳",
+    "🚗", "🚓", "🚕", "🚙", "🚌", "🚎", "🏎️", "🚀", "✈️", "🛩️",
+    "🍎", "🍌", "🍇", "🍓", "🍈", "🍒", "🍑", "🍍", "🥭", "🍉",
+    "🍕", "🍔", "🍟", "🌭", "🍿", "🧁", "🎂", "🍰", "🍦", "🍩"
+];
+
+
+function getRandomEmoji() {
+  
+    return randomEmojis[Math.floor(Math.random() * randomEmojis.length)];
+}
+
+
+function keith(obj, functions) {
+    let infoComs = obj;
+
+    if (!obj.category) infoComs.category = "General"; 
+
+    
+    if (!obj.react) infoComs.react = getRandomEmoji();
+
+    if (!obj.dontAddCommandList) infoComs.dontAddCommandList = false; 
+    
+    infoComs.function = functions;
+
+    const stack = new Error().stack;
+   
+    const filePath = stack.split('\n')[2].match(/\((.*):\d+:\d+\)/)[1];
+   
+    infoComs.filename = filePath;
+
+    commands.push(infoComs);
+    return infoComs;
+}
+
+module.exports = { keith, commands, evt, getRandomEmoji };
+
+evt.commands = commands;
