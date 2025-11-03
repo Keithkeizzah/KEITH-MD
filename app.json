@@ -19,38 +19,10 @@
   "logo": "https://i.imgur.com/dAtHp2k.jpeg",
   "success_url": "/",
   "env": {
-    "PREFIX": {
-      "description": "choose your prefix for keith. To prevent errors and confusion you must set a prefix",
-      "value": ".",
-      "required": false
-    },
-    "OWNER_NUMBER": {
-      "description": "Put any phone numbers you want to be bot owner without + or spaces \",\" Ex: 254748387615, 254796299159",
-      "required": false
-    },
-    "OWNER_NAME": {
-      "description": "add your owner name for the bot",
-      "value": "",
-      "required": true
-    },
-    "BOTNAME": {
-      "description": "Enter name for your bot",
-      "value": "",
-      "required": true
-    },
+    
     "SESSION": {
-      "description": "Paste the session id that you received in whatsapp after linking the bot. It's used for authentication",
+      "description": "add your session id here",
       "required": true
-    },
-    "URL": {
-      "description": "Replace with your image url",
-      "value": "https://files.catbox.moe/mikdi0.jpg",
-      "required": true
-    },
-    "MODE": {
-      "description": "Type private if you don't want other people to use the bot or public if you want everyone to access",
-      "value": "public",
-      "required": false
     }
   },
   "buildpacks": [
