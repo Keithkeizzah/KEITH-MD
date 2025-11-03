@@ -1,44 +1,12 @@
 /*I wrote a script to automate my job. Now I just sit back and watch Netflix while it runs.*/
 const fs = require('fs-extra');
-
 const path = require('path');
-
 if (fs.existsSync('set.env')) {
     require('dotenv').config({ path: __dirname + '/set.env' });
 }
 const session = process.env.SESSION || '';
-
-const prefix = process.env.PREFIX || '.';
-
-const author = process.env.OWNER_NAME || 'Keith';
-
-const packname = process.env.PACKNAME || 'keith';
-
-const dev = process.env.OWNER_NUMBER || '254748387615';
-
-const DevKeith = dev.split(",");
-
-const antibot = process.env.ANTIBOT || 'true';
-
-const botname = process.env.BOTNAME || 'KEITH-MD';
-
-const mode = process.env.MODE || 'public';
-
-const sessionName = "session";
-
-const url = process.env.URL || 'https://files.catbox.moe/mikdi0.jpg';
-
-const gurl = process.env.GURL || 'https://whatsapp.com/channel/0029Vaan9TF9Bb62l8wpoD47';
-
-const timezone = process.env.TIMEZONE || 'Africa/Nairobi';
-
-//fo mega users only
-const megaEmail = process.env.MEGA_EMAIL || '';
-const megaPassword = process.env.MEGA_PASSWORD || '';
-
-const { Sequelize } = require('sequelize'); // Ensure Sequelize is imported
-const DATABASE_URL = process.env.DATABASE_URL || './database.db'; // Define DATABASE_URL properly
-
+const { Sequelize } = require('sequelize'); 
+const DATABASE_URL = process.env.DATABASE_URL || './database.db'; 
 const database =
   DATABASE_URL === './database.db'
     ? new Sequelize({
@@ -56,21 +24,7 @@ const database =
         logging: false,
       });
 
-module.exports = {
-  sessionName,
+module.exports = {  
   database,  
-  botname, 
-  mode,
-  prefix,
-megaEmail,
- megaPassword,
-  timezone,
-  author,  
-  url,
-  gurl,
-  antibot,
-  packname,
-  dev,
-  DevKeith,  
   session,
 };
