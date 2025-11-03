@@ -4,7 +4,7 @@ const { database } = require('../settings');
 const AntiLinkDB = database.define('antilink', {
     status: {
         type: DataTypes.ENUM('off', 'warn', 'delete', 'remove'),
-        defaultValue: 'off',
+        defaultValue: 'warn',
         allowNull: false
     },
     action: {
@@ -44,7 +44,7 @@ async function getAntiLinkSettings() {
     } catch (error) {
         console.error('Error getting antilink settings:', error);
         return { 
-            status: 'on', 
+            status: 'off', 
             action: 'warn', 
             warn_limit: 5
         };
