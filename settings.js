@@ -5,6 +5,7 @@ if (fs.existsSync('set.env')) {
     require('dotenv').config({ path: __dirname + '/set.env' });
 }
 const session = process.env.SESSION || '';
+const dev = process.env.OWNER_NUMBER || '254748387615';
 const { Sequelize } = require('sequelize'); 
 const DATABASE_URL = process.env.DATABASE_URL || './database.db'; 
 const database =
@@ -26,5 +27,6 @@ const database =
 
 module.exports = {  
   database,  
+  dev,
   session,
 };
