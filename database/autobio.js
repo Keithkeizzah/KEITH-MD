@@ -9,7 +9,7 @@ const AutoBioDB = database.define('autobio', {
     },
     message: {
         type: DataTypes.STRING,
-        defaultValue: 'ðŸŒŸ Always active!',
+        defaultValue: 'KEITH-MD Always active!',
         allowNull: false
     }
 }, {
@@ -35,7 +35,7 @@ async function getAutoBioSettings() {
         return settings;
     } catch (error) {
         console.error('Error getting AutoBio settings:', error);
-        return { status: 'off', message: 'ðŸŒŸ Always active!' };
+        return { status: 'off', message: 'KEITH-MD Always active!' };
     }
 }
 
