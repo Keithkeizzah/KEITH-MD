@@ -40,6 +40,8 @@
     "fs": "^0.0.1-security",
     "fs-extra": "^11.1.0",
     "jimp": "^0.16.3",
+    "os": "latest",
+    "performance-now": "^2.1.0",   
     "sharp": "^0.32.6",
     "mime-types": "^2.1.35",
     "node-fetch": "^3.3.2",
