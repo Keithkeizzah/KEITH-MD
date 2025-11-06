@@ -22,4 +22,4 @@
 [download keithsite apk](https://keithsite.vercel.app/legit.apk)
  
    ## 🗿
-- Updates will be synced remotically 
+- Updates will be synced remotically .
