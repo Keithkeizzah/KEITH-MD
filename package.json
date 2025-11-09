@@ -22,8 +22,9 @@
   "author": "keithkeizzah",
   "license": "ISC",
   "dependencies": {
-    "@whiskeysockets/baileys": "https://github.com/Keithkeizzah/baileys/archive/refs/tags/Keith.tar.gz",
-    "axios": "*",
+    "@whiskeysockets/baileys": "npm:gifted-baileys",
+    "axios": "^1.2.5",
+    "@stvnnvs/baileys": "latest",
     "adm-zip": "latest",
     "body-parser": "latest",
     "buffer": "^6.0.3",
