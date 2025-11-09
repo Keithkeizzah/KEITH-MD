@@ -24,7 +24,7 @@
   "dependencies": {
     "@whiskeysockets/baileys": "npm:gifted-baileys",
     "axios": "^1.2.5",
-    "@stvnnvs/baileys": "latest",
+    "gifted-btns": "latest",
     "adm-zip": "latest",
     "body-parser": "latest",
     "buffer": "^6.0.3",
