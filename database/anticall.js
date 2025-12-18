@@ -4,7 +4,7 @@ const { database } = require('../settings');
 const AntiCallDB = database.define('anticall', {
     status: {
         type: DataTypes.BOOLEAN,
-        defaultValue: true,
+        defaultValue: false,
         allowNull: false
     },
     message: {
