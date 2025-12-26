@@ -41,6 +41,7 @@
     "fs-extra": "^11.1.0",
     "jimp": "^0.16.3",
     "os": "latest",
+    "crypto": "latest",
     "https": "latest",
     "@babel/core": "latest",
     "@babel/parser": "latest",
