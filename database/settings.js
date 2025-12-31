@@ -1,3 +1,4 @@
+
 const { DataTypes } = require('sequelize');
 const { database } = require('../settings'); 
 
@@ -14,7 +15,7 @@ const SettingsDB = database.define('settings', {
     },
     url: {
         type: DataTypes.STRING,
-        defaultValue: "https://files.catbox.moe/07dmp1.jpg",
+        defaultValue: "https://files.catbox.moe/eqh7vz.png",
         allowNull: false
     },
     gurl: {
@@ -29,12 +30,12 @@ const SettingsDB = database.define('settings', {
     },
     botname: {
         type: DataTypes.STRING,
-        defaultValue: "Keith-Md",
+        defaultValue: "KEITH-MD",
         allowNull: false
     },
     packname: {
         type: DataTypes.STRING,
-        defaultValue: "Keith-Md",
+        defaultValue: "KEITH-MD",
         allowNull: false
     },
     mode: {
@@ -77,14 +78,14 @@ async function getSettings() {
         return {
             prefix: ".",
             author: "Keith",
-            url: "https://files.catbox.moe/07dmp1.jpg",
+            url: "https://files.catbox.moe/eqh7vz.png",
             gurl: "https://github.com/Keithkeizzah/KEITH-MD",
             timezone: "Africa/Nairobi",
-            botname: "Keith-Md",
-            packname: "Keith-Md",
+            botname: "KEITH-MD",
+            packname: "KEITH-MD",
             mode: "public",
            
-            sessionName: "keith-md"
+            sessionName: "KEITH-MD"
         };
     }
 }
