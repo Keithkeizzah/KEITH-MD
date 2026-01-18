@@ -1,4 +1,4 @@
-  <a href="https://keithsite.vercel.app"><img src="https://files.catbox.moe/07dmp1.jpg" alt="01" border="0" /></a>                     
+  <a href="https://keithsite.vercel.app"><img src="https://files.catbox.moe/9zqj7g.jpg" alt="01" border="0" /></a>                     
 ## fork our repository [fork](https://github.com/Keithkeizzah/KEITH-MD/fork)
 ## visit this site to deploy [keith md](https://keithsite.vercel.app/keithmd)
                   
@@ -23,3 +23,11 @@
  
    ## 🗿
 - Updates will be synced remotically .
+### Thanks To
+
+<img src="https://github.com/mauricegift.png" width="180">
+
+> **Maurice Gift** - for stable baileys and the founder of gifted-baileys 
+
+[![GitHub Profile](https://img.shields.io/badge/👤_GitHub_Profile-000?logo=github)](https://github.com/mauricegift)
+[![Library Docs](https://img.shields.io/badge/📚_Baileys_Docs-25D366?logo=whatsapp)](https://baileys.giftedtech.co.ke)
