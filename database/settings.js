@@ -15,7 +15,7 @@ const SettingsDB = database.define('settings', {
     },
     url: {
         type: DataTypes.STRING,
-        defaultValue: "https://files.catbox.moe/eqh7vz.png",
+        defaultValue: "https://files.catbox.moe/9zqj7g.jpg",
         allowNull: false
     },
     gurl: {
@@ -78,7 +78,7 @@ async function getSettings() {
         return {
             prefix: ".",
             author: "Keith",
-            url: "https://files.catbox.moe/eqh7vz.png",
+            url: "https://files.catbox.moe/9zqj7g.jpg",
             gurl: "https://github.com/Keithkeizzah/KEITH-MD",
             timezone: "Africa/Nairobi",
             botname: "KEITH-MD",
