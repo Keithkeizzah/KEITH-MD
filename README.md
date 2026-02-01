@@ -1,4 +1,4 @@
-<a href="https://keithsite.vercel.app"><img src="https://files.catbox.moe/9zqj7g.jpg" alt="01" border="0" /></a>                     
+  <a href="https://keithsite.vercel.app"><img src="https://files.catbox.moe/9zqj7g.jpg" alt="01" border="0" /></a>                     
 ## fork our repository [fork](https://github.com/Keithkeizzah/KEITH-MD/fork)
 ## visit this site to deploy [keith md](https://keithsite.vercel.app/keithmd)
                   
@@ -14,7 +14,7 @@
    - cleaned all errors and reducing bot storage weight for panel users
  
 ### 95% of this bot plugins are highly maintained by keith apis
- [explore apis keith](https://apiskeith.vercel.app/)
+ [explore apis keith](https://apiskeith.top/)
  
 ### this site is considered as a option b everything you need on bot is in this site
 [keith site](https://keithsite.vercel.app/)
@@ -25,14 +25,9 @@
 - Updates will be synced remotically .
 ### Thanks To
 
-<a href="https://github.com/Fortunatusmokaya"><img src="https://github.com/Fortunatusmokaya.png" width="180"></a>
+<img src="https://github.com/mauricegift.png" width="180">
 
-> **Fortunatus Mokaya** - helped with building bot libs and elite ideas
+> **Maurice Gift** - for stable baileys and the founder of gifted-baileys 
 
-<a href="https://github.com/Bwmxmd254"><img src="https://github.com/Bwmxmd254.png" width="180"></a>
-
-> **Ibrahim Adams** - masterclass true friend and brilliant ideas to develop keith md
-
-<a href="https://github.com/mauricegift"><img src="https://github.com/mauricegift.png" width="180"></a>
-
-> **Maurice Gift** - helped with apis and baileys bugs fixes
+[![GitHub Profile](https://img.shields.io/badge/👤_GitHub_Profile-000?logo=github)](https://github.com/mauricegift)
+[![Library Docs](https://img.shields.io/badge/📚_Baileys_Docs-25D366?logo=whatsapp)](https://baileys.giftedtech.co.ke)
