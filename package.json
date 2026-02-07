@@ -23,7 +23,7 @@
   "author": "keithkeizzah",
   "license": "ISC",
   "dependencies": {
-    "@whiskeysockets/baileys": "npm:gifted-baileys",
+    "@whiskeysockets/baileys": "npm:keithbaileys",
     "axios": "^1.2.5",
     "gifted-btns": "latest",
     "adm-zip": "latest",
